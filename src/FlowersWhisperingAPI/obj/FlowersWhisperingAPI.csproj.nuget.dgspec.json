@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj": {}
+    "f:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj": {}
   },
   "projects": {
-    "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj": {
+    "f:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
+        "projectUniqueName": "f:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
         "projectName": "FlowersWhisperingAPI",
-        "projectPath": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
+        "projectPath": "f:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
         "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-        "outputPath": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\obj\\",
+        "outputPath": "f:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -49,11 +49,19 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.7, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.7, )"
             },
             "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.7, )"
+            },
+            "Microsoft.EntityFrameworkCore.InMemory": {
               "target": "Package",
               "version": "[8.0.7, )"
             },
@@ -70,6 +78,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.0.1, )"
             }
           },
           "imports": [
