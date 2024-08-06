@@ -28,20 +28,20 @@ namespace FlowersWhisperingAPI.Models
         public required string Email { get; set; }
 
         [Column("registration_date")]
-        public DateTime RegistrationDate { get; set; }
+        public DateTime RegistrationDate { get; set; }= DateTime.UtcNow.AddHours(8);
 
         [Required]
         [StringLength(20)]
         [Column("user_role")]
-        public required string UserRole { get; set; }
+        public required string UserRole { get; set; } = "User";
 
         [Required]
         [StringLength(20)]
         [Column("user_status")]
-        public required string UserStatus { get; set; }
+        public required string UserStatus { get; set; } = "Active";
 
         [StringLength(20)]
-        [Column("language_preference")]
-        public required string LanguagePreference { get; set; }
+        [Column("language_preference")] 
+        public required string LanguagePreference { get; set; } = "cn-ZH";
     }
 }

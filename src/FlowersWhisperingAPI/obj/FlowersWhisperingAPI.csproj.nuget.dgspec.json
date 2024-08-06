@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "f:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj": {}
+    "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj": {}
   },
   "projects": {
-    "f:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj": {
+    "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "f:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
+        "projectUniqueName": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
         "projectName": "FlowersWhisperingAPI",
-        "projectPath": "f:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
+        "projectPath": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
         "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-        "outputPath": "f:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\obj\\",
+        "outputPath": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

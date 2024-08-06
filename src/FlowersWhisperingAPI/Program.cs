@@ -6,12 +6,15 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Oracle.ManagedDataAccess.Client;
+using FlowersWhisperingAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // 添加数据库上下文
+
 builder.Services.AddDbContext<FlowersWhisperingContext>(options =>
-    options.UseOracle(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseOracle(builder.Configuration.GetConnectionString("OracleDbConnection")));
 
 
 // Add services to the container.
@@ -37,6 +40,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    var jwtKey = builder.Configuration["Jwt:Key"];
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -45,12 +49,46 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(jwtKey != null ? Encoding.UTF8.GetBytes(jwtKey) : throw new ArgumentNullException("Jwt:Key")),
     };
 });
 
 
 var app = builder.Build();
+var scope = app.Services.CreateScope();
+// try
+// {
+//     // 获取DbContext实例
+//     var db = scope.ServiceProvider.GetRequiredService<FlowersWhisperingContext>();
+
+//     // 尝试写入一条新的用户数据
+//     var newUser = new User
+//     {
+//         UserName = "newUser",
+//         Password = "password123",
+//         Email = "newuser@example.com",
+//         RegistrationDate = DateTime.Now,
+//         UserRole = "User",
+//         UserStatus = "Active",
+//         LanguagePreference = "en-US"
+//     };
+//     db.Users.Add(newUser);
+//     db.SaveChanges();
+//     Console.WriteLine("New user added successfully.");
+
+// }
+// catch (OracleException ex)
+// {
+//     // 捕捉到Oracle数据库的异常
+//     Console.WriteLine("Oracle error code: " + ex.Number);
+//     Console.WriteLine("Details: " + ex.Message);
+//     // 这里可以添加更多的日志记录或错误处理代码
+// }
+// catch (Exception ex)
+// {
+//     // 捕捉到其他类型的异常
+//     Console.WriteLine("An error occurred: " + ex.Message);
+// }
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

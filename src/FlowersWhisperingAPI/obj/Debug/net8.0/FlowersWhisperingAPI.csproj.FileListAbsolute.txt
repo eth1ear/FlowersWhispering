@@ -120,3 +120,4 @@ f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\refint\FlowersWhi
 f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\FlowersWhisperingAPI.pdb
 f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\FlowersWhisperingAPI.genruntimeconfig.cache
 f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\ref\FlowersWhisperingAPI.dll
+F:\FlowersWhispering\src\FlowersWhisperingAPI\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
