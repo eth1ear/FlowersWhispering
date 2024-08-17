@@ -102,6 +102,11 @@ export default {
 
       this.users.push(user); // 将用户信息存储到列表中
       alert('注册成功！请登录');
+      // 重置注册表单
+      this.registerForm.username = '';
+      this.registerForm.email = '';
+      this.registerForm.password = '';
+      this.registerForm.confirmPassword = '';
       this.isLogin = true; // 切换到登录页面
     },
   },
