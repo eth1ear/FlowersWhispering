@@ -10,11 +10,11 @@
             <img class="form__icon" src="@/assets/images/QQ.png" alt="QQ登录">
           </div>
           <span class="text">或使用邮箱进行注册</span>
-          <input class="form__input" type="text" placeholder="请输入用户名"/>
-          <input class="form__input" type="text" placeholder="请输入邮箱"/>
-          <input class="form__input" type="password" placeholder="请输入密码"/>
-          <input class="form__input" type="password" placeholder="请再次输入密码"/>
-          <div class="form__button">立即注册</div>
+          <input v-model="registerForm.username" class="form__input" type="text" placeholder="请输入用户名" required />
+          <input v-model="registerForm.email" class="form__input" type="email" placeholder="请输入邮箱" required />
+          <input v-model="registerForm.password" class="form__input" type="password" placeholder="请输入密码" required />
+          <input v-model="registerForm.confirmPassword" class="form__input" type="password" placeholder="请再次输入密码" required />
+          <div class="form__button" @click="register">立即注册</div>
         </form>
       </div>
       <div :class="['container', 'container-login', { 'is-txl is-z200': isLogin }]">
@@ -26,9 +26,9 @@
             <img class="form__icon" src="@/assets/images/QQ.png" alt="QQ登录">
           </div>
           <span class="text">或使用用户名登录</span>
-          <input class="form__input" type="text" placeholder="用户名/邮箱/手机号"/>
-          <input class="form__input" type="password" placeholder="请输入密码"/>
-          <div class="form__button">立即登录</div>
+          <input v-model="loginForm.usernameOrEmail" class="form__input" type="text" placeholder="用户名/邮箱" required />
+          <input v-model="loginForm.password" class="form__input" type="password" placeholder="请输入密码" required />
+          <div class="form__button" @click="login">立即登录</div>        
         </form>
       </div>
       <div :class="['switch', { 'login': isLogin }]">
@@ -59,20 +59,50 @@ export default {
     return {
       isLogin: true,
       loginForm: {
-        email: '',
+        usernameOrEmail: '',
         password: '',
       },
       registerForm: {
-        name: '',
+        username: '',
         email: '',
         password: '',
+        confirmPassword: '',
       },
+      users: [] // 存储用户信息的列表
     }
   },
   methods: {
     login() {
+      const { usernameOrEmail, password } = this.loginForm;
+
+      const user = this.users.find(user => 
+        (user.username === usernameOrEmail || user.email === usernameOrEmail) && user.password === password
+      );
+
+      if (user) {
+        alert('登录成功！');
+        // 在此处处理登录成功的逻辑
+      } else {
+        alert('用户名或密码错误');
+      }
     },
     register() {
+      const { username, email, password, confirmPassword } = this.registerForm;
+
+      if (password !== confirmPassword) {
+        alert('两次输入的密码不一致');
+        return;
+      }
+
+      const user = {
+        username,
+        email,
+        password
+      };
+
+      this.users.push(user); // 将用户信息存储到列表中
+      alert('注册成功！请登录');
+      this.isLogin = true; // 切换到登录页面
     },
   },
 }
