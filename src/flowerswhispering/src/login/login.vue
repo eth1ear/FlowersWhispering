@@ -1,5 +1,7 @@
+
 <template>
   <div class="body">
+    <router-view></router-view>  
     <div class="main-box">
       <div :class="['container', 'container-register', { 'is-txl': isLogin }]">
         <form>
@@ -10,11 +12,11 @@
             <img class="form__icon" src="@/assets/images/QQ.png" alt="QQ登录">
           </div>
           <span class="text">或使用邮箱进行注册</span>
-          <input v-model="registerForm.username" class="form__input" type="text" placeholder="请输入用户名" required />
-          <input v-model="registerForm.email" class="form__input" type="email" placeholder="请输入邮箱" required />
-          <input v-model="registerForm.password" class="form__input" type="password" placeholder="请输入密码" required />
-          <input v-model="registerForm.confirmPassword" class="form__input" type="password" placeholder="请再次输入密码" required />
-          <div class="form__button" @click="register">立即注册</div>
+          <input class="form__input" type="text" placeholder="请输入用户名"/>
+          <input class="form__input" type="text" placeholder="请输入邮箱"/>
+          <input class="form__input" type="password" placeholder="请输入密码"/>
+          <input class="form__input" type="password" placeholder="请再次输入密码"/>
+          <div class="form__button">立即注册</div>
         </form>
       </div>
       <div :class="['container', 'container-login', { 'is-txl is-z200': isLogin }]">
@@ -26,9 +28,9 @@
             <img class="form__icon" src="@/assets/images/QQ.png" alt="QQ登录">
           </div>
           <span class="text">或使用用户名登录</span>
-          <input v-model="loginForm.usernameOrEmail" class="form__input" type="text" placeholder="用户名/邮箱" required />
-          <input v-model="loginForm.password" class="form__input" type="password" placeholder="请输入密码" required />
-          <div class="form__button" @click="login">立即登录</div>        
+          <input class="form__input" type="text" placeholder="用户名/邮箱/手机号"/>
+          <input class="form__input" type="password" placeholder="请输入密码"/>
+          <div class="form__button">立即登录</div>
         </form>
       </div>
       <div :class="['switch', { 'login': isLogin }]">
@@ -43,7 +45,7 @@
                   : '如果您已经注册过账号，请点击下方立即登录按钮进行登录'
             }}
           </p>
-          <div class="form__button" @click="isLogin = !isLogin">
+          <div class="form__button" @click="login">
             {{ isLogin ? '立即注册' : '立即登录' }}
           </div>
         </div>
@@ -52,6 +54,17 @@
   </div>
 </template>
 
+
+
+<script setup>
+import {RouterLink, RouterView, useRouter} from 'vue-router'
+const router = useRouter()
+function goto() {
+  router.push('/main_theme');
+}
+</script>
+
+
 <script>
 export default {
   name: 'Login',
@@ -59,55 +72,22 @@ export default {
     return {
       isLogin: true,
       loginForm: {
-        usernameOrEmail: '',
+        email: '',
         password: '',
       },
       registerForm: {
-        username: '',
+        name: '',
         email: '',
         password: '',
-        confirmPassword: '',
       },
-      users: [] // 存储用户信息的列表
     }
   },
   methods: {
-    login() {
-      const { usernameOrEmail, password } = this.loginForm;
-
-      const user = this.users.find(user => 
-        (user.username === usernameOrEmail || user.email === usernameOrEmail) && user.password === password
-      );
-
-      if (user) {
-        alert('登录成功！');
-        // 在此处处理登录成功的逻辑
-      } else {
-        alert('用户名或密码错误');
-      }
-    },
+    login() 
+    {
+      this.$router.push('/main_theme')
+    },  //暂时测试页面跳转，路由跳转到首页
     register() {
-      const { username, email, password, confirmPassword } = this.registerForm;
-
-      if (password !== confirmPassword) {
-        alert('两次输入的密码不一致');
-        return;
-      }
-
-      const user = {
-        username,
-        email,
-        password
-      };
-
-      this.users.push(user); // 将用户信息存储到列表中
-      alert('注册成功！请登录');
-      // 重置注册表单
-      this.registerForm.username = '';
-      this.registerForm.email = '';
-      this.registerForm.password = '';
-      this.registerForm.confirmPassword = '';
-      this.isLogin = true; // 切换到登录页面
     },
   },
 }
