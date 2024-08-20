@@ -3,7 +3,7 @@
       <!-- 视频容器 -->
       <div id="videoContainer">
         <video class="fullscreenVideo" id="kotoba" playsinline autoplay muted loop>
-          <source src="../main_theme/video/background.mp4" type="video/mp4">
+          <source src="../assets/video/background.mp4" type="video/mp4">
         </video>
       </div>
   
@@ -12,15 +12,15 @@
         <div class="welcome">
         <img>
         <h1>欢迎回家！</h1>
-        <h1>{{name}}</h1>
+        <h1>{{currentUser.username}}</h1>
         </div>
         <div class="button-row">
           <div class="button-container">
-            <img @click="navigateToPage1" src="../main_theme/pictures/community.png" class="button-image" alt="按钮-通往论坛">
+            <img @click="navigateToPage1" src="./images/community.png" class="button-image" alt="按钮-通往论坛">
             <p class="button-label">社区</p>
           </div>
           <div class="button-container">
-            <img @click="navigateToPage2" src="../main_theme/pictures/book.png" class="button-image" alt="按钮-通往图鉴">
+            <img @click="navigateToPage2" src="./images/book.png" class="button-image" alt="按钮-通往图鉴">
             <p class="button-label">图鉴</p>
           </div>
         </div>
@@ -29,12 +29,11 @@
 </template>
   
 <script lang="ts">
+import { mapGetters } from 'vuex';
 export default {
   name: 'Welcome',
-  data() {
-    return {
-      name: 'Wuhuairline'   // 给后端同学接入登录的用户名
-    };
+  computed: {
+    ...mapGetters(['currentUser'])
   },
   methods: {
     navigateToPage1() {
@@ -75,7 +74,7 @@ export default {
     font-size: 25px;
     color: rgba(31, 141, 23, 0.737);
     text-align: center;
-    background-image: url("../main_theme/pictures/background.png");
+    background-image: url("./images/background.png");
     padding: 20px;
     border-radius: 15px;
     display: inline-block;
