@@ -163,8 +163,8 @@ export default {
       if (!response.success) {
         alert(response.message); // 显示错误消息
       } else {
-        this.$router.push('/home'); // 或其他逻辑
         alert('注册成功!请登录');
+        this.isLogin = true;
     }
     },
     handleInput(field) {

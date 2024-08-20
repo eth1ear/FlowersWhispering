@@ -83,7 +83,6 @@ export default createStore({
         // 创建新用户并添加到模拟数据中
         const newUser = { username, email, password };
         state.mockUsers.push(newUser);
-        commit('SET_USER', newUser);
         return { success: true };
       }
     },
