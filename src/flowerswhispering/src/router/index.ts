@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import store from '@/store';
 import Home from '../home/Home.vue';
-import Login from '../login/Login.vue';
+import Login from '../login/login.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {

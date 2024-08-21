@@ -11,7 +11,8 @@ export default createStore({
     // 模拟的用户数据
     mockUsers: [
         { username: 'user1', email: 'user1@example.com', password: 'password1' },
-        { username: 'user2', email: 'user2@example.com', password: 'password2' }
+        { username: 'user2', email: 'user2@example.com', password: 'password2' },
+        { username: '111', email: 'mingyanghao6@gmail.com', password: '12345678' }
       ]
 
   },
