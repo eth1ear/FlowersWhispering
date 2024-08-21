@@ -7,15 +7,15 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Oracle.ManagedDataAccess.Client;
-using FlowersWhisperingAPI.Models;
+using FlowersWhisperingAPI.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
+String connectionString = builder.Configuration.GetConnectionString("OracleDbConnection");
+
 // 添加数据库上下文
-
 builder.Services.AddDbContext<FlowersWhisperingContext>(options =>
-    options.UseOracle(builder.Configuration.GetConnectionString("OracleDbConnection")));
-
+    options.UseOracle(connectionString));
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -53,42 +53,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddUserService(connectionString);
 
 var app = builder.Build();
 var scope = app.Services.CreateScope();
-// try
-// {
-//     // 获取DbContext实例
-//     var db = scope.ServiceProvider.GetRequiredService<FlowersWhisperingContext>();
-
-//     // 尝试写入一条新的用户数据
-//     var newUser = new User
-//     {
-//         UserName = "newUser",
-//         Password = "password123",
-//         Email = "newuser@example.com",
-//         RegistrationDate = DateTime.Now,
-//         UserRole = "User",
-//         UserStatus = "Active",
-//         LanguagePreference = "en-US"
-//     };
-//     db.Users.Add(newUser);
-//     db.SaveChanges();
-//     Console.WriteLine("New user added successfully.");
-
-// }
-// catch (OracleException ex)
-// {
-//     // 捕捉到Oracle数据库的异常
-//     Console.WriteLine("Oracle error code: " + ex.Number);
-//     Console.WriteLine("Details: " + ex.Message);
-//     // 这里可以添加更多的日志记录或错误处理代码
-// }
-// catch (Exception ex)
-// {
-//     // 捕捉到其他类型的异常
-//     Console.WriteLine("An error occurred: " + ex.Message);
-// }
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -98,31 +66,11 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
 
 // 使用CORS
 app.UseCors("AllowSpecificOrigin");
@@ -135,8 +83,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
