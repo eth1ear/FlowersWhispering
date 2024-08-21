@@ -1,170 +1,188 @@
 <template>
   <div class="common-layout">
-    <el-container>
-      <el-header>
-        <div class="header">
-          <div class="logo">Flowers Whispering</div>
-          <div class="user-info">
-            <span class="username">{{currentUser.username}}</span>
-            <img src ="./images/user-avatar.jpg" alt="User Avatar" @click="goToUserProfile()">
+    <!-- 视频容器 -->
+    <div id="videoContainer">
+        <video class="fullscreenVideo" id="kotoba" playsinline autoplay muted loop>
+          <source src="../assets/video/background.mp4" type="video/mp4">
+        </video>
+      </div>
+    <header class="header">
+      <div class="logo">Flowers Whispering</div>
+      <div class="user-info" v-if="currentUser">
+        <span v-if="currentUser" class="username">{{ currentUser.username }}</span>
+        <div class="user-avatar-wrapper">
+          <img v-if="currentUser" src="./images/user-avatar.jpg" alt="User Avatar" @click="goToUserProfile()">
+          <!-- 用户详细信息列表 -->
+          <div class="user-info-list">
+            <p>用户名: {{ currentUser.username }}</p>
+            <p>邮箱: {{ currentUser.email }}</p>
+            <p>角色: {{ currentUser.role }}</p>
           </div>
         </div>
-      </el-header>
+        <button class="logout-button" @click="performLogout">{{ currentUser.role === 'guest' ? '登录' : '登出' }}</button>
+      </div>
+    </header>
 
-      <el-main>
-        <!-- 视频容器 -->
-        <div id="videoContainer">
-          <video class="fullscreenVideo" id="kotoba" playsinline autoplay muted loop>
-            <source src="../assets/video/background.mp4" type="video/mp4">
-          </video>      
+    <main class="main-content">
+      <!-- 用户界面 -->
+      <!-- 社区 -->
+      <div class="feature-card" @click="goToCommunity()">
+        <img src="./images/community.png" alt="Community">
+        <div class="card-content">
+          <h3 >Community</h3>
         </div>
+        <h2>社区</h2>
+        <p>加入我们的社区，分享你的植物故事，交流养护心得。</p>
+      </div>
+      <!-- 管理员界面 -->
+      <div v-if="isAdmin" class="feature-card" @click="goToAdminPanel()">
+        <img src="./images/admin.png" alt="Admin Panel">
+        <div class="card-content">
+          <h3>Admin Panel</h3>
+        </div>
+        <h2>管理员面板</h2>
+        <p>访问管理员面板，管理用户和内容。</p>
+      </div>
+      <!-- 图鉴 -->
+      <div class="feature-card" @click="goToCatalog()">
+        <img src="./images/book.png" alt="Catalog">
+        <div class="card-content">
+          <h3 >Catalog</h3>
+        </div>
+        <h2>图鉴</h2>
+        <p>浏览丰富的植物图鉴，获取详细的植物信息和养护建议。</p>
+      </div>
+    </main>
 
-        <!-- 用户界面 -->
-        <div class="feature-card" @click="goToCommunity()">
-          <img src="./images/community.png" alt="Community">
-          <h2>社区功能</h2>
-          <p>加入我们的社区，分享你的植物故事，交流养护心得。</p>
-          <button>进入社区</button>
-        </div>
-        <div class="feature-card" @click="goToCatalog()">
-          <img src="./images/book.png" alt="Catalog">
-          <h2>图鉴功能</h2>
-          <p>浏览丰富的植物图鉴，获取详细的植物信息和养护建议。</p>
-          <button>进入图鉴</button>
-        </div>
-      </el-main>
-
-      <el-footer>
-        <div class="footer">
-          <p><a href="contact.html">联系我们</a></p>
-          <p>© 2021 Flowers Whispering</p>
-        </div>
-      </el-footer>
-    </el-container>
+    <footer class="footer">
+      <p class="left"><a href="contact.html">联系我们</a></p>
+      <p class="center">© 2024 Flowers Whispering</p>
+      <div class="right"></div>
+    </footer>
   </div>
-  
-   
 </template>
-  
+
 <script lang="ts">
-import { mapGetters } from 'vuex';
-export default {
-  name: 'Welcome',
+import { defineComponent } from 'vue';
+import { mapGetters, mapActions } from 'vuex';
+export default defineComponent({
+  name: 'Home',
+  data() {
+    return {
+      isUserInfoVisible: false, // 控制用户信息列表的显示与隐藏
+    };
+  },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'isAdmin']),
   },
   methods: {
+    ...mapActions(['logout']),
     goToCatalog() {
-      window.location.href = 'catalog.html';
+      this.$router.push('/catalog');
     },
-
     goToCommunity() {
-      window.location.href = 'community.html';
+      this.$router.push('/community');;
     },
-
     goToUserProfile() {
-      window.location.href = 'user-profile.html';
-    }
+      this.$router.push('/userprofile');;
+    },
+    goToAdminPanel() {
+      this.$router.push('/adminpanel');
+    },
+    performLogout() {
+      this.logout(); 
+      this.$router.push('/login'); // 跳转到登录页面
+    },
+    showUserInfo() {
+      this.isUserInfoVisible = true;
+    },
+    hideUserInfo() {
+      this.isUserInfoVisible = false;
+    },
   }
-};
+});
 </script>
-  
+
 <style>
-  /* 视频容器 */
-  #videoContainer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1; /* 让视频在背景层 */
-    overflow: hidden;
-  }
-  
-  .fullscreenVideo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  /* 用户界面 */
-  .choose {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    font-size: 25px;
-    color: rgba(31, 141, 23, 0.737);
-    text-align: center;
-    background-image: url("./images/background.png");
-    padding: 20px;
-    border-radius: 15px;
+  .user-avatar-wrapper {
+    position: relative;
     display: inline-block;
-    width: 1000px;
-    height: 600px;
   }
 
-  /*按钮放置*/
-  .button-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 150px; /* 调整按钮之间的间距 */
-    top:500px;
+  .user-info-list {
+    position: absolute;
+    top: 50px;
+    left: -40px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid #46b476;
+    border-radius: 8px; 
+    padding: 15px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); 
+    z-index: 10;
+    min-width: 100px;
+    opacity: 0;
+    transform-origin: top;
+    transform: translateY(0px) scale(0.05);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
   }
-  
-  .button-container {
-    text-align: center;
+
+  .user-avatar-wrapper:hover .user-info-list {
+    opacity: 1;
+    transform: translateY(0) scale(1); 
+    pointer-events: auto; 
   }
-  
-  .button-image {
-    width: 200px;
-    height: 180px;
+
+  .user-info-list p {
+    margin: 2px 0;
+    font-size: 18px;
+    color: #333;
+    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+  }
+
+  .logout-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
     cursor: pointer;
-    transition: transform 0.3s ease;
-  }
-  
-  .button-image:hover {
-    transform: scale(1.1);
-  }
-  
-  .button-label {
-    margin-top: 10px; /* 调整文本与图标间距 */
-    color: rgba(35, 198, 23, 0.737);
-    font-size: 40px;
-    font-weight: bold;
+    transition: background-color 0.3s ease;
   }
 
-  body {
+  .logout-button:hover {
+    background-color: #ff1a1a;
+  }
+
+  .common-layout {
     margin: 0;
+    padding: 0;
     font-family: Arial, sans-serif;
-    background: url('./images/background.png') no-repeat center center fixed;
     background-size: cover;
     display: flex;
     flex-direction: column;
     height: 100vh;
-    color: #333;  
+    width: 100vw;
+    min-width: 1200px;
+    min-height: 800px;
+    color: #333;
   }
 
- 
   .header {
     display: flex;
-    justify-content: space-between; /* 让 logo 靠左，user-info 靠右 */
-    align-items: center; /* 垂直居中 */
-    padding: 0 20px; /* 可选：增加左右内边距 */
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
     background-color: #46b476cc;
-    /* 调整为柔和的蓝色背景 */
     color: white;
     z-index: 1;
-    /* 确保header在视频上方 */
     position: relative;
   }
 
   .logo {
-    font-size: 24px;
+    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+    font-size: 28px;
     font-weight: bold;
-    color: white;
   }
 
   .user-info {
@@ -183,135 +201,164 @@ export default {
 
   .user-info img:hover {
     transform: scale(1.1);
+    
   }
 
   .username {
-    font-size: 16px;
+    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+    font-size: 28px;
     font-weight: bold;
-    color: white;
   }
-  
 
-  main {
+  .main-content {
     flex: 1;
-    height: 1080px;
-    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 40px;
-    z-index: 1;
-    /* 确保main在视频上方 */
     position: relative;
   }
 
-    .feature-card {
-      width: 300px;
-      height: 400px;
-      background-color: rgba(255, 255, 255, 0.9);
-      /* 半透明白色背景 */
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      position: relative;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      overflow: hidden;
-    }
+  #videoContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 1200px;
+    min-height: 800px;
+    z-index: -1;
+    overflow: hidden;
+  }
 
-    .feature-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-      transition: opacity 0.3s ease, transform 0.5s ease;
-    }
+  .fullscreenVideo {
+    width: 100%;
+    height: 100%;
+    min-width: 1200px;
+    min-height: 800px;
+    object-fit: cover;
+  }
 
-    .feature-card h2,
-    .feature-card p,
-    .feature-card button {
-      z-index: 2;
-      opacity: 0;
-      position: relative;
-      transform: translateY(20px);
-      transition: opacity 0.3s ease, transform 0.5s ease;
-    }
+  .feature-card {
+    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+    width: 375px;
+    height: 500px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+  }
 
-    .feature-card h2 {
-      margin-top: -100px;
-      font-size: 24px;
-      color: #333;
-      z-index: 2;
-      position: relative;
-    }
+  .card-content {
+    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(0, 0, 0, 0.8);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
 
-    .feature-card p {
-      margin: 20px 20px;
-      font-size: 16px;
-      color: #666;
-      z-index: 2;
-      position: relative;
-    }
 
-    .feature-card button {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateY(100px);
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #43a047;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 2;
-      transition: 0.3s ease;
-    }
+  .feature-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    transition: opacity 0.3s ease, transform 0.5s ease;
+  }
 
-    .feature-card button:hover {
-      background-color: #388e3c;
+  .feature-card h2,
+  .feature-card p,
+  .feature-card button {
+    z-index: 2;
+    opacity: 0;
+    position: relative;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.5s ease;
+  }
 
-    }
+  .feature-card h2 {
+    margin-top: -100px;
+    font-size: 48px;
+    color: #333;
+  }
 
-    .feature-card:hover img {
-      opacity: 0.5;
-      transform: scale(0.8);
-    }
+  .feature-card p {
+    margin: 20px 20px;
+    font-size: 28px;
+    color: #666;
+  }
 
-    .feature-card:hover h2,
-    .feature-card:hover p,
-    .feature-card:hover button {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .card-content {
+    position: absolute;
+    font-size: 48px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    text-align: center;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 1; /* 确保文字在图片上方 */
+  }
+  .feature-card:hover img {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
 
-    footer {
-      text-align: center;
-      padding: 10px;
-      background-color: #46b476cc;
-      /* 调整为柔和的蓝色背景 */
-      font-size: 12px;
-      z-index: 1;
-      /* 确保footer在视频上方 */
-      position: relative;
-      color: white;
-    }
+  .feature-card:hover .card-content {
+    transform: translate(-50%, 50%) scale(0.5);
+    opacity: 0;
+  }
 
-    footer a {
-      color: white;
-      text-decoration: none;
-    }
+  .feature-card:hover h2,
+  .feature-card:hover p,
+  .feature-card:hover button {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
-    footer a:hover {
-      text-decoration: underline;
-    }
+  .footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 20px;
+  background-color: #46b476cc;
+  font-size: 15px;
+  color: white;
+}
 
-  </style>
+.footer .left {
+  flex: 1; /* 左侧元素占用剩余空间 */
+}
+
+.footer .center {
+  flex: 1;
+  text-align: center; /* 居中对齐 */
+}
+
+.footer .right {
+  flex: 1; /* 右侧占位元素占用剩余空间，保持居中 */
+}
+
+.footer a {
+  color: white;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+</style>

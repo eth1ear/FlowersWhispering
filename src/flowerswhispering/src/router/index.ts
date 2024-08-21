@@ -1,7 +1,11 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import store from '@/store';
 import Home from '../home/Home.vue';
-import Login from '../login/login.vue';
+import Login from '../login/Login.vue';
+import AdminPanel from '../adminpanel/AdminPanel.vue';
+import Catalog from '../catalog/Catalog.vue';
+import Community from '../community/Community.vue';
+import UserProfile from '../userprofile/UserProfile.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -14,12 +18,35 @@ const routes: Array<RouteRecordRaw> = [
     component: Login
   },
   {
+    path: '/catalog',
+    name: 'Catalog',
+    component: Catalog,
+    meta: { requiresAuth: true }  // 需要验证
+  },
+  {
+    path: '/community',
+    name: 'Community',
+    component: Community,
+    meta: { requiresAuth: true }  // 需要验证
+  },
+  {
+    path: '/userprofile',
+    name: 'UserProfile',
+    component: UserProfile,
+    meta: { requiresAuth: true }  // 需要验证
+  },
+  {
     path: '/home',
     name: 'Home',
     component: Home,
-    meta: { requiresAuth: true }  // 添加元数据标记需要验证
+    meta: { requiresAuth: true }  // 需要验证
   },
-  // 其他受保护的路由也应添加 requiresAuth 元数据
+  {
+    path: '/adminpanel',
+    name: 'AdminPanel',
+    component: AdminPanel,
+    meta: { requiresAuth: true, requiresAdmin: true }  // 需要管理员权限
+  },
 ];
 
 const router = createRouter({
@@ -29,8 +56,18 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
+    // 检查用户是否已认证
     if (!store.getters.isAuthenticated) {
+      alert('请先登录!');
       next({ name: 'Login' });
+    } else if (to.matched.some(record => record.meta.requiresAdmin)) {
+      // 检查用户是否是管理员
+      if (!store.getters.isAdmin) {
+        alert('您无权访问该页面。');
+        next({ name: 'Home' }); // 重定向到主页
+      } else {
+        next();
+      }
     } else {
       next();
     }

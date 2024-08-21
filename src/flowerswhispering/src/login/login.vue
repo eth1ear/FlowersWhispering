@@ -50,6 +50,8 @@
           <input v-model="loginForm.usernameOrEmail" class="form__input" type="text" placeholder="用户名/邮箱" required />
           <input v-model="loginForm.password" class="form__input" type="password" placeholder="请输入密码" required />
           <div class="form__button" @click="performLogin">立即登录</div>        
+           <!-- 游客登录按钮 -->
+           <div class="form__button guest-button" @click="performGuestLogin">游客登录</div>
         </form>
       </div>
       <div :class="['switch', { 'login': isLogin }]">
@@ -113,7 +115,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['login', 'logout', 'register']),
+    ...mapActions(['login', 'logout', 'register','guestLogin']),
     handleInput(field) {
       this.registerForm.touched[field] = true;
     },
@@ -130,6 +132,14 @@ export default {
         this.$router.push('/home');
       } else {
         alert(response.message);
+      }
+    },
+    async performGuestLogin() {
+      const response = await this.guestLogin();
+      if (response.success) {
+        this.$router.push('/home');
+      } else {
+        alert('游客登录失败，请稍后再试。');
       }
     },
     async performRegister() {
@@ -179,6 +189,8 @@ export default {
 .body {
   width: 100%;
   height: 100vh;
+  min-width: 1200px;
+  min-height: 800px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -187,18 +199,23 @@ export default {
   color: #a0a5a8;
 }
 #videoContainer {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    min-width: 1200px;
+    min-height: 800px;
     z-index: -1; /* 让视频在背景层 */
+    object-fit: cover;
     overflow: hidden;
   }
   
 .fullscreenVideo {
   width: 100%;
   height: 100%;
+  min-width: 1200px;
+  min-height: 800px;
   object-fit: cover;
 }
 .main-box {
@@ -250,15 +267,18 @@ export default {
       }
 
       .title {
-        font-size: 34px;
-        font-weight: 700;
-        line-height: 3;
+        font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+        font-size: 58px;
+        font-weight: 70;
+        line-height: 0;
         color: #181818;
       }
 
       .text {
+        font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
         margin-top: 30px;
         margin-bottom: 12px;
+        font-size: 20px;
       }
 
       .form__input {
@@ -266,11 +286,11 @@ export default {
         height: 40px;
         margin: 4px 0;
         padding-left: 25px;
-        font-size: 13px;
+        font-size: 14px;
         letter-spacing: 0.15px;
         border: none;
         outline: none;
-        font-family: 'Montserrat', sans-serif;
+        //font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
         background-color: #ecf0f3;
         transition: 0.25s ease;
         border-radius: 8px;
@@ -352,14 +372,16 @@ export default {
       transition: 1.25s;
 
       h2 {
-        font-size: 34px;
-        font-weight: 700;
+        font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+        font-size: 58px;
+        font-weight: 70;
         line-height: 3;
         color: #181818;
       }
 
       p {
-        font-size: 14px;
+        font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+        font-size: 20px;
         letter-spacing: 0.25px;
         text-align: center;
         line-height: 1.6;
@@ -396,13 +418,15 @@ export default {
   }
 
   .form__button {
+    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
     width: 180px;
     height: 50px;
     border-radius: 25px;
     margin-top: 50px;
     text-align: center;
     line-height: 50px;
-    font-size: 14px;
+    font-weight: 0;
+    font-size: 30px;
     letter-spacing: 2px;
     background-color: #4b70e2;
     color: #f9f9f9;
@@ -416,6 +440,16 @@ export default {
       inset 2px 2px 3px 0 rgba(0, 0, 0, 30%);
     }
   }
+  .guest-button {
+  margin-top: 10px;
+  background-color: #e0e0e0;
+  color: #333;
+  }
+
+  .guest-button:hover {
+  background-color: #ccc;
+  }
+
 }
 </style>
 
