@@ -267,18 +267,18 @@ export default {
       }
 
       .title {
-        font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
-        font-size: 58px;
+        //font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+        font-size: 50px;
         font-weight: 70;
         line-height: 0;
         color: #181818;
       }
 
       .text {
-        font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+        //font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
         margin-top: 30px;
         margin-bottom: 12px;
-        font-size: 20px;
+        font-size: 14px;
       }
 
       .form__input {
@@ -372,7 +372,7 @@ export default {
       transition: 1.25s;
 
       h2 {
-        font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+        //font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
         font-size: 58px;
         font-weight: 70;
         line-height: 3;
@@ -380,8 +380,8 @@ export default {
       }
 
       p {
-        font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
-        font-size: 20px;
+        //font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+        font-size: 14px;
         letter-spacing: 0.25px;
         text-align: center;
         line-height: 1.6;
@@ -418,7 +418,7 @@ export default {
   }
 
   .form__button {
-    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+    //font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
     width: 180px;
     height: 50px;
     border-radius: 25px;
@@ -426,7 +426,7 @@ export default {
     text-align: center;
     line-height: 50px;
     font-weight: 0;
-    font-size: 30px;
+    font-size: 18px;
     letter-spacing: 2px;
     background-color: #4b70e2;
     color: #f9f9f9;

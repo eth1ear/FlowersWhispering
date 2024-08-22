@@ -25,32 +25,48 @@
 
     <main class="main-content">
       <!-- 用户界面 -->
-      <!-- 社区 -->
-      <div class="feature-card" @click="goToCommunity()">
-        <img src="./images/community.png" alt="Community">
-        <div class="card-content">
-          <h3 >Community</h3>
-        </div>
-        <h2>社区</h2>
-        <p>加入我们的社区，分享你的植物故事，交流养护心得。</p>
+      <div class="introduction-card">
+        <h1>Flowers Whispering</h1>
+        <h2>充满诗意与梦想的园地 植物爱好者们的自留地</h2>
       </div>
-      <!-- 管理员界面 -->
-      <div v-if="isAdmin" class="feature-card" @click="goToAdminPanel()">
-        <img src="./images/admin.png" alt="Admin Panel">
-        <div class="card-content">
-          <h3>Admin Panel</h3>
-        </div>
-        <h2>管理员面板</h2>
-        <p>访问管理员面板，管理用户和内容。</p>
+
+      <div class="introduction-content">
+        <p>花语无声，婉转悠扬。欢迎来到flowerwhispering这里将引导您步入一个由花朵与绿植共织的奇幻世界。</p>
+        <p>植物图鉴中蕴藏丰富，每一朵花、每一片叶都有着自己的故事和灵魂。从罕见的野花到庭院中常见的绿植，每一种植物都被赋予了详尽而精美的描述，辅以图片，仿佛置身自然之中，能闻其香、触其绿。</p>
+        <p>植物论坛中激情澎湃，汇聚了一群同样热爱植物的朋友们。或是园艺初学者，或是资深植物爱好者，这里都是你们的俱乐部。分享养植经验，交流种植心得，论坛的讨论涵盖从植物照护到景观设计的各个方面，每一个帖子都充满了知识与热情。</p>
+        <p>我们信仰植物的力量，相信它们能够治愈心灵、修养身心。我们一起耳倾花语，手播绿意，走入一段宁静的幸福旅程。</p>
       </div>
-      <!-- 图鉴 -->
-      <div class="feature-card" @click="goToCatalog()">
-        <img src="./images/book.png" alt="Catalog">
-        <div class="card-content">
-          <h3 >Catalog</h3>
+
+
+      <!-- Feature Cards Container -->
+      <div class="feature-cards-container">
+        <!-- 社区 -->
+        <div class="feature-card" @click="goToCommunity()">
+          <img src="./images/community.png" alt="Community">
+          <div class="card-content">
+            <h3>Community</h3>
+          </div>
+          <h2>社区</h2>
+          <p>加入我们的社区，分享你的植物故事，交流养护心得。</p>
         </div>
-        <h2>图鉴</h2>
-        <p>浏览丰富的植物图鉴，获取详细的植物信息和养护建议。</p>
+        <!-- 管理员界面 -->
+        <div v-if="isAdmin" class="feature-card" @click="goToAdminPanel()">
+          <img src="./images/admin.png" alt="Admin Panel">
+          <div class="card-content">
+            <h3>Admin Panel</h3>
+          </div>
+          <h2>管理员面板</h2>
+          <p>访问管理员面板，管理用户和内容。</p>
+        </div>
+        <!-- 图鉴 -->
+        <div class="feature-card" @click="goToCatalog()">
+          <img src="./images/book.png" alt="Catalog">
+          <div class="card-content">
+            <h3>Catalog</h3>
+          </div>
+          <h2>图鉴</h2>
+          <p>浏览丰富的植物图鉴，获取详细的植物信息和养护建议。</p>
+        </div>
       </div>
     </main>
 
@@ -112,14 +128,14 @@ export default defineComponent({
   .user-info-list {
     position: absolute;
     top: 50px;
-    left: -40px;
+    left: -125px;
     background-color: rgba(255, 255, 255, 0.95);
     border: 2px solid #46b476;
     border-radius: 8px; 
     padding: 15px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); 
     z-index: 10;
-    min-width: 100px;
+    min-width: 200px;
     opacity: 0;
     transform-origin: top;
     transform: translateY(0px) scale(0.05);
@@ -135,9 +151,9 @@ export default defineComponent({
 
   .user-info-list p {
     margin: 2px 0;
-    font-size: 18px;
+    font-size: 14px;
     color: #333;
-    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+    font-family: '宋体','ZhiMangXing-Regular', sans-serif;
   }
 
   .logout-button {
@@ -213,7 +229,8 @@ export default defineComponent({
   .main-content {
     flex: 1;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
     gap: 40px;
     position: relative;
@@ -239,9 +256,84 @@ export default defineComponent({
     object-fit: cover;
   }
 
+
+  .introduction-card {
+    margin-top: 30px;
+    width: 100%; /* 使 introductionCard 占据整行 */
+    max-width: 1200px; /* 可选：设置最大宽度 */
+    height: 375px;
+    background-color: rgba(164, 207, 168, 0);
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    margin-bottom: 0px;
+  }
+
+  .introduction-card h1 {
+    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+    font-size: 154px;
+    margin-top:60px;
+    margin-bottom:40px;
+    color: #f3fff3;
+  }
+
+  .introduction-card h2 {
+    font-family: '黑体','ZhiMangXing-Regular', sans-serif;
+    font-size: 35px;
+    margin-top:0px;
+    color: #cfe3cf;
+  }
+
+  .introduction-content {
+    margin-top: 0px;
+    width: 100%; /* 使 introductionCard 占据整行 */
+    max-width: 1400px; /* 可选：设置最大宽度 */
+    height: 500px;
+    background-color: rgba(177, 212, 181, 0.874);
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.068);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  .introduction-content p {
+    font-family: '华文楷体','ZhiMangXing-Regular', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin-left:80px;
+    margin-right:80px;
+    margin-top:50px;
+    margin-bottom:0px;
+    text-align: justify;
+    color: #252b25;
+  }
+
+  .feature-cards-container {
+    display: flex;
+    justify-content: space-between; /* 让 feature-cards 横向排列 */
+    gap: 40px; /* 让卡片之间保持间距 */
+    width: 100%; /* 占据整个宽度 */
+    max-width: 1400px; /* 可选：设置最大宽度 */
+    margin-bottom:50px;
+  }
+  
   .feature-card {
     font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
-    width: 375px;
+    width: 390px;
     height: 500px;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
@@ -258,7 +350,6 @@ export default defineComponent({
   }
 
   .card-content {
-    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -290,14 +381,16 @@ export default defineComponent({
   }
 
   .feature-card h2 {
+    font-family: '楷体','ZhiMangXing-Regular', sans-serif;
     margin-top: -100px;
-    font-size: 48px;
+    font-size: 52px;
     color: #333;
   }
 
   .feature-card p {
+    font-family: '宋体','ZhiMangXing-Regular', sans-serif;
     margin: 20px 20px;
-    font-size: 28px;
+    font-size: 22px;
     color: #666;
   }
 
