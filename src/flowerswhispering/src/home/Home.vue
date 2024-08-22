@@ -31,12 +31,14 @@
       </div>
 
       <div class="introduction-content">
-        <p>花语无声，婉转悠扬。欢迎来到flowerwhispering这里将引导您步入一个由花朵与绿植共织的奇幻世界。</p>
-        <p>植物图鉴中蕴藏丰富，每一朵花、每一片叶都有着自己的故事和灵魂。从罕见的野花到庭院中常见的绿植，每一种植物都被赋予了详尽而精美的描述，辅以图片，仿佛置身自然之中，能闻其香、触其绿。</p>
-        <p>植物论坛中激情澎湃，汇聚了一群同样热爱植物的朋友们。或是园艺初学者，或是资深植物爱好者，这里都是你们的俱乐部。分享养植经验，交流种植心得，论坛的讨论涵盖从植物照护到景观设计的各个方面，每一个帖子都充满了知识与热情。</p>
-        <p>我们信仰植物的力量，相信它们能够治愈心灵、修养身心。我们一起耳倾花语，手播绿意，走入一段宁静的幸福旅程。</p>
+        <p>花语无声,婉转悠扬。欢迎来到flowerwhispering这里将引导您步入一个由花朵与绿植共织的奇幻世界。<br><br>
+          植物图鉴中蕴藏丰富,每一朵花、每一片叶都有着自己的故事和灵魂。从罕见的野花到庭院中常见的绿植,每一种植物都被赋予了详尽而精美的描述,辅以图片,仿佛置身自然之中,能闻其香、触其绿。<br><br>
+          植物论坛中激情澎湃,汇聚了一群同样热爱植物的朋友们。或是园艺初学者,或是资深植物爱好者,这里都是你们的俱乐部。分享养植经验,交流种植心得,论坛的讨论涵盖从植物照护到景观设计的各个方面,每一个帖子都充满了知识与热情。<br><br>
+          我们信仰植物的力量,相信它们能够治愈心灵、修养身心。我们一起耳倾花语,手播绿意,走入一段宁静的幸福旅程。</p>
       </div>
-
+      <div class="scroll-down-arrow" @click="scrollToCards">
+        <img src="./images/down-arrow.png" alt="Scroll Down" class="arrow-image">
+      </div>
 
       <!-- Feature Cards Container -->
       <div class="feature-cards-container">
@@ -47,7 +49,7 @@
             <h3>Community</h3>
           </div>
           <h2>社区</h2>
-          <p>加入我们的社区，分享你的植物故事，交流养护心得。</p>
+          <p>加入我们的社区,分享你的植物故事,交流养护心得。</p>
         </div>
         <!-- 管理员界面 -->
         <div v-if="isAdmin" class="feature-card" @click="goToAdminPanel()">
@@ -56,7 +58,7 @@
             <h3>Admin Panel</h3>
           </div>
           <h2>管理员面板</h2>
-          <p>访问管理员面板，管理用户和内容。</p>
+          <p>访问管理员面板,管理用户和内容。</p>
         </div>
         <!-- 图鉴 -->
         <div class="feature-card" @click="goToCatalog()">
@@ -65,7 +67,7 @@
             <h3>Catalog</h3>
           </div>
           <h2>图鉴</h2>
-          <p>浏览丰富的植物图鉴，获取详细的植物信息和养护建议。</p>
+          <p>浏览丰富的植物图鉴,获取详细的植物信息和养护建议。</p>
         </div>
       </div>
     </main>
@@ -93,6 +95,49 @@ export default defineComponent({
   },
   methods: {
     ...mapActions(['logout']),
+    typeEffect(el: HTMLElement, text: string, delay: number = 100, callback: () => void = () => {}) {
+      let i = 0;
+      const cursor = document.createElement('span');
+      cursor.classList.add('typing-cursor');
+      el.appendChild(cursor);
+
+      function typing() {
+        if (i < text.length) {
+          el.innerHTML = text.substring(0, i + 1);
+          el.appendChild(cursor); // 保持光标在末尾
+          i++;
+          setTimeout(typing, delay);
+        } else {
+          cursor.classList.add('blink'); // 打字完成后光标开始闪烁
+          if (callback) {
+            callback(); // 完成后调用回调函数
+          }
+        }
+      }
+      typing();
+    },
+    startTypingEffect() {
+      const paragraphElement = document.querySelector('.introduction-content p') as HTMLElement;
+      const text = paragraphElement.dataset.text || ''; // 获取段落的文本
+      paragraphElement.innerText = ''; // 清空段落的初始文本
+
+      this.typeEffect(paragraphElement, text, 50); // 启动打字效果
+    },
+    scrollToCards() {
+      const cardsSection = document.querySelector('.feature-cards-container') as HTMLElement;
+      const arrowButton = document.querySelector('.scroll-down-arrow') as HTMLElement;
+
+      if (cardsSection) {
+        cardsSection.style.display = 'flex'; // 将 display 设置为 flex 以显示卡片
+        cardsSection.classList.add('visible');
+        cardsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      if (arrowButton) {
+        arrowButton.classList.add('fade-out'); 
+        arrowButton.style.pointerEvents = 'none'; // 禁用点击
+      }
+    },
     goToCatalog() {
       this.$router.push('/catalog');
     },
@@ -115,11 +160,69 @@ export default defineComponent({
     hideUserInfo() {
       this.isUserInfoVisible = false;
     },
+  },
+  mounted() {
+    const paragraphElement = document.querySelector('.introduction-content p') as HTMLElement;
+    paragraphElement.dataset.text = paragraphElement.innerText;
+    paragraphElement.innerText = ''; // 清空文本内容以防止页面初始显示
+
+    this.startTypingEffect(); // 启动打字效果
   }
 });
 </script>
 
 <style>
+  .scroll-down-arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 20px;
+    animation: bounce 1.5s infinite;
+    transition: opacity 0.5s ease-in-out; /* 添加透明度渐变效果 */
+  }
+
+  .scroll-down-arrow.fade-out {
+    opacity: 0; /* 渐变到完全透明 */
+  }
+
+  .arrow-image {
+    width: 50px; /* 根据需要调整图片大小 */
+    height: auto;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    60% {
+      transform: translateY(-5px);
+    }
+  }
+
+  .typing-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background-color: black;
+    margin-left: 2px;
+    vertical-align: bottom;
+    animation: none;
+  }
+
+  .blink {
+    animation: blink 1s step-start infinite; 
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
   .user-avatar-wrapper {
     position: relative;
     display: inline-block;
@@ -314,23 +417,32 @@ export default defineComponent({
     font-family: '华文楷体','ZhiMangXing-Regular', sans-serif;
     font-size: 24px;
     font-weight: 600;
+    text-align: justify;
+    color: #252b25;
+    text-align: left;
+    white-space: pre-wrap; /* 保留换行 */
     margin-left:80px;
     margin-right:80px;
     margin-top:50px;
     margin-bottom:0px;
-    text-align: justify;
-    color: #252b25;
   }
 
+
   .feature-cards-container {
-    display: flex;
-    justify-content: space-between; /* 让 feature-cards 横向排列 */
+    display: none;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    justify-content: space-evenly; /* 让 feature-cards 横向排列 */
     gap: 40px; /* 让卡片之间保持间距 */
     width: 100%; /* 占据整个宽度 */
     max-width: 1400px; /* 可选：设置最大宽度 */
     margin-bottom:50px;
   }
-  
+  .feature-cards-container.visible {
+    display: flex; /* 当添加 .visible 类时显示 */
+    opacity: 1;
+  }
+
   .feature-card {
     font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
     width: 390px;
@@ -442,7 +554,7 @@ export default defineComponent({
 }
 
 .footer .right {
-  flex: 1; /* 右侧占位元素占用剩余空间，保持居中 */
+  flex: 1; /* 右侧占位元素占用剩余空间,保持居中 */
 }
 
 .footer a {
