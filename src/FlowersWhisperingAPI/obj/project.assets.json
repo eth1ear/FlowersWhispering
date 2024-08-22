@@ -3488,31 +3488,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\12427\\.nuget\\packages\\": {},
-    "D:\\vs shared\\NuGetPackages": {}
+    "C:\\Users\\17615\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\大二下\\数据库课程设计\\code\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
+      "projectUniqueName": "D:\\桌面\\大二\\数据库\\课设\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
       "projectName": "FlowersWhisperingAPI",
-      "projectPath": "F:\\大二下\\数据库课程设计\\code\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
-      "packagesPath": "C:\\Users\\12427\\.nuget\\packages\\",
-      "outputPath": "F:\\大二下\\数据库课程设计\\code\\FlowersWhispering\\src\\FlowersWhisperingAPI\\obj\\",
+      "projectPath": "D:\\桌面\\大二\\数据库\\课设\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
+      "packagesPath": "C:\\Users\\17615\\.nuget\\packages\\",
+      "outputPath": "D:\\桌面\\大二\\数据库\\课设\\FlowersWhispering\\src\\FlowersWhisperingAPI\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "D:\\vs shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\12427\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\17615\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3590,7 +3583,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.201/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -145,7 +145,7 @@ export default defineComponent({
       this.$router.push('/community');;
     },
     goToUserProfile() {
-      this.$router.push('/userprofile');;
+      this.$router.push('/profile');;
     },
     goToAdminPanel() {
       this.$router.push('/adminpanel');

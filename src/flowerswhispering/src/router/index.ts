@@ -5,7 +5,12 @@ import Login from '../login/Login.vue';
 import AdminPanel from '../adminpanel/AdminPanel.vue';
 import Catalog from '../catalog/Catalog.vue';
 import Community from '../community/Community.vue';
-import UserProfile from '../userprofile/UserProfile.vue';
+import Profile from '../userprofile/Profile.vue';
+import Account from '../userprofile/Account.vue';
+import Setting from '../userprofile/Setting.vue';
+import Auth from '../userprofile/Auth.vue';
+import CollectionList from '../userprofile/collection-list.vue';
+import History from '../userprofile/History.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -30,10 +35,40 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true }  // 需要验证
   },
   {
-    path: '/userprofile',
-    name: 'UserProfile',
-    component: UserProfile,
-    meta: { requiresAuth: true }  // 需要验证
+    path: '/profile',
+    name: 'Profile',
+    component: Profile,
+    meta: { requiresAuth: true } // 需要验证
+  },
+  {
+    path: '/account',
+    name: 'Account',
+    component: Account,
+    meta: { requiresAuth: true } // 需要验证
+  },
+  {
+    path: '/setting',
+    name: 'Setting',
+    component: Setting,
+    meta: { requiresAuth: true } // 需要验证
+  },
+  {
+    path: '/auth',
+    name: 'Auth',
+    component: Auth,
+    meta: { requiresAuth: true } // 需要验证
+  },
+  {
+    path: '/collection-list',
+    name: 'CollectionList',
+    component: CollectionList,
+    meta: { requiresAuth: true } // 需要验证
+  },
+  {
+    path: '/history',
+    name: 'History',
+    component: History,
+    meta: { requiresAuth: true } // 需要验证
   },
   {
     path: '/home',
