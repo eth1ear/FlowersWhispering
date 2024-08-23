@@ -1,5 +1,5 @@
-using FlowersWhisperingAPI.src.User.Services;
 using FlowersWhisperingAPI.User.Mappers;
+using FlowersWhisperingAPI.User.Services;
 using FlowersWhisperingAPI.User.Services.Interface;
 
 namespace FlowersWhisperingAPI.User
@@ -12,7 +12,9 @@ namespace FlowersWhisperingAPI.User
             
             // 注册自定义服务
             services.AddSingleton(new UserAccountMapper(connectionString));
+            services.AddSingleton(new UserCommentMapper(connectionString));
             services.AddScoped<IUserAccountService, UserAccountService>();
+            services.AddScoped<IUserCommentService, UserCommentService>();
             // 可以在这里继续注册其他服务
             // services.AddScoped<IOtherService, OtherService>();
 
