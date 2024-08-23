@@ -22,4 +22,3 @@ src/FlowersWhisperingAPI/obj/FlowersWhisperingAPI.csproj.nuget.dgspec.json
 src/FlowersWhisperingAPI/obj/FlowersWhisperingAPI.csproj.nuget.g.props
 src/FlowersWhisperingAPI/obj/project.assets.json
 src/FlowersWhisperingAPI/obj/project.nuget.cache
-src/FlowersWhisperingAPI/User/UserServiceRegistration.cs
