@@ -2,7 +2,7 @@ using FlowersWhisperingAPI.User.Mappers;
 using FlowersWhisperingAPI.User.Models;
 using FlowersWhisperingAPI.User.Services.Interface;
 
-namespace FlowersWhisperingAPI.src.User.Services
+namespace FlowersWhisperingAPI.User.Services
 {
     public class UserAccountService : IUserAccountService
     {
@@ -87,13 +87,16 @@ namespace FlowersWhisperingAPI.src.User.Services
             }
         }
 
-        public string GetUsernameByEmail(string email)
+        public int GetUserIdByUsername(string username)
         {
-            var result = _accountMapper.GetUserByEmail(email);
-            if(result == null)
-                return "";
-            string username = result.Username;
-            return username;
+            var user = _accountMapper.GetUserByUsername(username);
+            return user != null ? user.UserId : 0;
+        }
+
+        public int GetUserIdByEmail(string email)
+        {
+            var user = _accountMapper.GetUserByEmail(email);
+            return user != null ? user.UserId : 0;
         }
     }
 }

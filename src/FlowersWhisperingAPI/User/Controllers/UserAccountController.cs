@@ -22,14 +22,15 @@ namespace FlowersWhisperingAPI.User.Controllers
             if(_userAccountService.IsHaveUsername(loginDTO.Username)){
                 string password = _userAccountService.GetPasswordByUsername(loginDTO.Username);
                 if(password == loginDTO.Password)
-                    return Ok(new { Message = "登录成功", loginDTO.Username });
+                    return Ok(new { Message = "登录成功",
+                        userID = _userAccountService.GetUserIdByUsername(loginDTO.Username)});
                 else
                     return Unauthorized("密码错误");
             }else if(_userAccountService.IsHaveEmail(loginDTO.Username)){
                 string password = _userAccountService.GetPasswordByEmail(loginDTO.Username);//把传来的用户名作为邮箱
                 if(password == loginDTO.Password)
                     return Ok(new { Message = "登录成功", 
-                        Username =  _userAccountService.GetUsernameByEmail(loginDTO.Username)});
+                        userID = _userAccountService.GetUserIdByEmail(loginDTO.Username)});
                 else
                     return Unauthorized("密码错误");
             }
@@ -57,13 +58,15 @@ namespace FlowersWhisperingAPI.User.Controllers
        }
 
        //用户资料编辑
-       [HttpPost("edit")]
+       [HttpPut("edit")]
        public IActionResult UserEdit([FromBody] UserDTO userDTO)
        {
+            if (_userAccountService.IsHaveUsername(userDTO.Username))
+                return BadRequest("编辑失败，用户名已有人使用");
             if (_userAccountService.IsHaveEmail(userDTO.Email))
                 return BadRequest("编辑失败，邮箱已有人使用");
-           bool result = _userAccountService.UserUpdate(userDTO);
-           if (result)
+            bool result = _userAccountService.UserUpdate(userDTO);
+            if (result)
                 return Ok("编辑成功");
             else
                 return BadRequest("编辑失败");

@@ -10,8 +10,8 @@ namespace FlowersWhisperingAPI.User.Services.Interface
         bool UserUpdate(UserDTO registerDTO);
         bool IsHaveUsername(string username);
         bool IsHaveEmail(string email);
-
-        string GetUsernameByEmail(string email);
+        int GetUserIdByUsername(string username);
+        int GetUserIdByEmail(string email);
     }
 
 }

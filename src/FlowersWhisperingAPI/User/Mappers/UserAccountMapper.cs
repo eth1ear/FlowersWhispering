@@ -28,13 +28,14 @@ namespace FlowersWhisperingAPI.User.Mappers
                             if (reader.Read())
                             {
                                 // 从数据读取器中提取用户信息
+                                int userId = reader.GetInt32(reader.GetOrdinal("user_id"));
                                 string usernameResult = reader.GetString(reader.GetOrdinal("username"));
                                 string passwordResult = reader.GetString(reader.GetOrdinal("password"));
                                 string emailResult = reader.GetString(reader.GetOrdinal("email"));
                                 string languagePreferenceResult = reader.GetString(reader.GetOrdinal("language_preference"));
                                 string userStatusResult = reader.GetString(reader.GetOrdinal("user_status"));
                                 string userRoleResult = reader.GetString(reader.GetOrdinal("user_role"));
-                                UserInfo userInfo = new UserInfo(usernameResult,passwordResult,emailResult,languagePreferenceResult,userStatusResult,userRoleResult);
+                                UserInfo userInfo = new UserInfo(usernameResult,passwordResult,emailResult,languagePreferenceResult,userStatusResult,userRoleResult,userId);
                                 return userInfo;  // 返回 UserInfo 对象
                             }
                         }
@@ -57,13 +58,14 @@ namespace FlowersWhisperingAPI.User.Mappers
                             if (reader.Read())
                             {
                                 // 从数据读取器中提取用户信息
+                                int userId = reader.GetInt32(reader.GetOrdinal("user_id"));
                                 string usernameResult = reader.GetString(reader.GetOrdinal("username"));
                                 string passwordResult = reader.GetString(reader.GetOrdinal("password"));
                                 string emailResult = reader.GetString(reader.GetOrdinal("email"));
                                 string languagePreferenceResult = reader.GetString(reader.GetOrdinal("language_preference"));
                                 string userStatusResult = reader.GetString(reader.GetOrdinal("user_status"));
                                 string userRoleResult = reader.GetString(reader.GetOrdinal("user_role"));
-                                UserInfo userInfo = new UserInfo(usernameResult,passwordResult,emailResult,languagePreferenceResult,userStatusResult,userRoleResult);
+                                UserInfo userInfo = new UserInfo(usernameResult,passwordResult,emailResult,languagePreferenceResult,userStatusResult,userRoleResult,userId);
                                 return userInfo;  // 返回 UserInfo 对象
                             }
                         }
@@ -104,8 +106,8 @@ namespace FlowersWhisperingAPI.User.Mappers
 
         public bool UserUpdate(UserDTO userDTO)
         {
-            string sql = @"UPDATE users SET password = :Password, email = :Email, 
-                language_preference = :LanguagePreference WHERE username = :Username";
+            string sql = @"UPDATE users SET username = :Username, password = :Password, email = :Email, 
+                language_preference = :LanguagePreference WHERE user_id = :UserId";
             try
             {
                 using (var connection = new OracleConnection(_connectionString))
@@ -113,10 +115,11 @@ namespace FlowersWhisperingAPI.User.Mappers
                     connection.Open();
                     using (var command = new OracleCommand(sql, connection))
                     {   
+                        command.Parameters.Add(":Username", OracleDbType.Varchar2).Value = userDTO.Username;
                         command.Parameters.Add(":Password", OracleDbType.Varchar2).Value = userDTO.Password;
                         command.Parameters.Add(":Email", OracleDbType.Varchar2).Value =userDTO.Email;
                         command.Parameters.Add(":LanguagePreference", OracleDbType.Varchar2).Value = userDTO.LanguagePreference;
-                        command.Parameters.Add(":Username", OracleDbType.Varchar2).Value = userDTO.Username;
+                        command.Parameters.Add(":UserId", OracleDbType.Int32).Value = userDTO.UserId;
                         command.ExecuteNonQuery();
                         return true;
                     }
