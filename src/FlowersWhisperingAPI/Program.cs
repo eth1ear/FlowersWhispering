@@ -53,7 +53,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddUserService(connectionString);
+if(connectionString != null)
+{
+    builder.Services.AddUserService(connectionString);
+}
 
 var app = builder.Build();
 var scope = app.Services.CreateScope();
