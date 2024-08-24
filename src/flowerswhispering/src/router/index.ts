@@ -11,6 +11,7 @@ import Setting from '../userprofile/Setting.vue';
 import Auth from '../userprofile/Auth.vue';
 import CollectionList from '../userprofile/collection-list.vue';
 import History from '../userprofile/History.vue';
+import PostDetail from '../community/PostDetail.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -69,6 +70,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'History',
     component: History,
     meta: { requiresAuth: true } // 需要验证
+  },
+  {
+    path: '/postDetail',
+    name: 'PostDetail',
+    component: PostDetail,
+    meta: { requiresAuth: true }  // 需要验证
   },
   {
     path: '/home',
