@@ -4,14 +4,9 @@ using FlowersWhisperingAPI.User.Services.Interface;
 
 namespace FlowersWhisperingAPI.User.Services
 {
-    public class UserAccountService : IUserAccountService
+    public class UserAccountService(UserAccountMapper accountMapper) : IUserAccountService
     {
-        private readonly UserAccountMapper _accountMapper;
-
-        public UserAccountService(UserAccountMapper accountMapper)
-        {
-            _accountMapper = accountMapper;
-        }
+        private readonly UserAccountMapper _accountMapper = accountMapper;
 
         public string GetPasswordByUsername(string username)
         {

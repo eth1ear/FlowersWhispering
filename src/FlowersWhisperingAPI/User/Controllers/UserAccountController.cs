@@ -6,14 +6,9 @@ namespace FlowersWhisperingAPI.User.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserAccountController : ControllerBase
+    public class UserAccountController(IUserAccountService userAccountService) : ControllerBase
     {
-        private readonly IUserAccountService _userAccountService;
-
-        public UserAccountController(IUserAccountService userAccountService)
-        {
-            _userAccountService = userAccountService;
-        }
+        private readonly IUserAccountService _userAccountService = userAccountService;
 
         //用户登录
         [HttpPost("login")]
@@ -58,7 +53,7 @@ namespace FlowersWhisperingAPI.User.Controllers
        }
 
        //用户资料编辑
-       [HttpPut("edit")]
+       [HttpPut("edit/user")]
        public IActionResult UserEdit([FromBody] UserDTO userDTO)
        {
             if (_userAccountService.IsHaveUsername(userDTO.Username))
