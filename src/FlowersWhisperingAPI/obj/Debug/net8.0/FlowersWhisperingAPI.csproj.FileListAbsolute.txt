@@ -114,10 +114,10 @@ f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\staticwebassets\m
 f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.FlowersWhisperingAPI.props
 f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\staticwebassets.pack.json
 f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\scopedcss\bundle\FlowersWhisperingAPI.styles.css
-f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\FlowersW.C1911F06.Up2Date
 f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\FlowersWhisperingAPI.dll
 f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\refint\FlowersWhisperingAPI.dll
 f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\FlowersWhisperingAPI.pdb
 f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\FlowersWhisperingAPI.genruntimeconfig.cache
 f:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\ref\FlowersWhisperingAPI.dll
 F:\FlowersWhispering\src\FlowersWhisperingAPI\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
+F:\FlowersWhispering\src\FlowersWhisperingAPI\obj\Debug\net8.0\FlowersWhisperingAPI.csproj.CopyComplete
