@@ -12,6 +12,45 @@ interface State {
   isAuthenticated: boolean;
   currentUser: User | null;
   users: User[];
+  posts: Post[];
+  comments: Comment[];
+  plants: Plant[];
+  feedbacks: Feedbacks[];
+  announcements: Announcement[];
+}
+
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+}
+
+interface Comment {
+  id: number;
+  postId: number;
+  content: string;
+}
+
+interface Plant {
+  id: number;
+  name: string;
+  category: string;
+  description: string;
+  image: string;
+  approved: boolean;
+}
+
+interface Feedbacks{
+  id: number;
+  title: string;
+  content: string;
+}
+
+interface Announcement {
+  id: number;
+  title: string;
+  content: string;
+  date: string;//
 }
 
 const store = createStore<State>({
@@ -19,13 +58,34 @@ const store = createStore<State>({
     currentUser: null,
     isAuthenticated: false,
 
-
     // 模拟的用户数据
     users: [
       {username: 'user', email: 'user1@example.com', password: 'password', role: 'user' },
       { username: 'admin', email: 'admin@example.com', password: 'admin', role: 'admin' }, // 管理员用户
       { username: 'guest', email: 'guest@example.com', password: '', role: 'guest' }, // 游客用户
       { username: '111', email: 'mingyanghao6@gmail.com', password: '12345678', role: 'admin' }, // 管理员用户
+    ],
+    posts:[
+      { id: 1, title: 'First Post', content: 'This is the content of the first post.' },
+      { id: 2, title: 'Second Post', content: 'This is the content of the second post.' }
+    ],
+    comments: [
+      { id: 1, postId: 101, content: '这是第一条评论' },
+      { id: 2, postId: 102, content: '这是第二条评论' }
+    ],
+
+    plants: [
+      { id: 1, name: '植物1', category: '花卉', description: '描述1', image: '/images/mudan.png', approved: true },
+      { id: 2, name: '植物2', category: '树木', description: '描述2', image: '/images/rose.png', approved: false },
+    ],
+
+    feedbacks: [
+      { id: 1, title: '反馈1', content: '这是第一条用户反馈，包含较多内容以供测试。' },
+      { id: 2, title: '反馈2', content: '这是第二条用户反馈，包含较多内容以供测试。' }
+    ], 
+    announcements: [
+      { id: 1, title: '公告1', content: '这是第一条公告的内容。', date: '2024-01-01' },
+      { id: 2, title: '公告2', content: '这是第二条公告的内容。', date: '2024-02-01' }
     ]
 
   },
@@ -49,7 +109,54 @@ const store = createStore<State>({
         state.currentUser = JSON.parse(storedUser);
         state.isAuthenticated = true;
       }
+    },
+   // 用户管理相关的 mutation
+  ADD_USER(state, user) {
+    state.users.push(user);
+  },
+  DELETE_USER(state, username) {
+    state.users = state.users.filter(user => user.username !== username);
+  },
+  UPDATE_USER(state, updatedUser) {
+    const index = state.users.findIndex(user => user.username === updatedUser.username);
+    if (index !== -1) {
+      state.users.splice(index, 1, updatedUser);
     }
+  },
+  // 帖子管理相关的 mutation
+  /*
+  ADD_POST(state, post) {
+    state.posts.push(post);
+  },
+  
+  UPDATE_POST(state, updatedPost) {
+    const index = state.posts.findIndex(post => post.id === updatedPost.id);
+    if (index !== -1) {
+      state.posts.splice(index, 1, updatedPost);
+    }
+  },
+*/
+  DELETE_POST(state, postId) {
+    state.posts = state.posts.filter(post => post.id !== postId);
+  },
+  DELETE_COMMENT(state, commentId) {
+    state.comments = state.comments.filter(comment => comment.id !== commentId);
+  },
+  DELETE_ANNOUNCEMENT(state, announcementId) {
+    state.announcements = state.announcements.filter(announcement => announcement.id !== announcementId);
+  },
+  ADD_ANNOUNCEMENT(state, announcement) {
+    state.announcements.push(announcement);
+  },
+  APPROVE_PLANT(state, plantId) {
+    const plant = state.plants.find(p => p.id === plantId);
+    if (plant) {
+      plant.approved = true;
+    }
+  },
+  DELETE_PLANT(state, plantId) {
+    state.plants = state.plants.filter(plant => plant.id !== plantId);
+  }
   },
 
   // actions: {
@@ -137,14 +244,59 @@ const store = createStore<State>({
     },
     restoreState({ commit }) {
       commit('RESTORE_STATE');
-    }
+    },
+  // 管理用户操作
+    addUser({ commit }, user) {
+        commit('ADD_USER', user); // 确保这里传递的 user 是有效的
+
+    },
+    deleteUser({ commit }, username: string) {
+    commit('DELETE_USER', username);
+    },
+    updateUser({ commit }, updatedUser: User) {
+    commit('UPDATE_USER', updatedUser);
+    },
+
+  // 管理帖子操作
+  /*
+  addPost({ commit }, post: Post) {
+    post.id = Date.now(); // 简单生成唯一 ID
+    commit('ADD_POST', post);
+  },
+  updatePost({ commit }, updatedPost: Post) {
+    commit('UPDATE_POST', updatedPost);
+  },*/
+  deletePost({ commit }, postId: number) {
+    commit('DELETE_POST', postId);
+  },
+  deleteComment({ commit }, commentId) {
+    commit('DELETE_COMMENT', commentId);
+  },
+  deleteAnnouncement({ commit }, announcementId) {
+    commit('DELETE_ANNOUNCEMENT', announcementId);
+  },
+  addAnnouncement({ commit }, announcement) {
+    commit('ADD_ANNOUNCEMENT', announcement);
+  },
+  deletePlant({ commit }, plantId) {
+    commit('DELETE_PLANT', plantId);
+  },
+  approvePlant({ commit }, plantId) {
+    commit('APPROVE_PLANT', plantId);
+  }
   },
 
 
   getters: {
-    isAuthenticated: state => state.isAuthenticated,
-    currentUser: state => state.currentUser,
-    isAdmin: state => state.currentUser?.role === 'admin',
+    allUsers: (state) => state.users,
+    allPosts: (state) => state.posts,
+    allComments: (state) => state.comments,
+    allFeedbacks: state => state.feedbacks,
+    allPlants: (state) => state.plants,
+    allAnnouncements: (state) => state.announcements,
+    currentUser: (state) => state.currentUser,
+    isAuthenticated: (state) => state.isAuthenticated,
+    isAdmin: (state) => state.currentUser?.role === 'admin'
   }
 });
 

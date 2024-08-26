@@ -17,6 +17,8 @@
     "vuex": "^4.1.0"
   },
   "devDependencies": {
+    "@types/node": "^22.5.0",
+    "@types/webpack-env": "^1.18.5",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-typescript": "~5.0.0",
