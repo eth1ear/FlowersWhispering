@@ -7,5 +7,6 @@ namespace FlowersWhisperingAPI.User.Models
         public int PlantId { get; set; } = plantId;
         public string CommentContent { get; set; } = commentContent;
         public DateTime CommentTime { get; set; } = commentTime;
+        public string Username { get; set; } = null!;
     }
 }

@@ -17,15 +17,15 @@ namespace FlowersWhisperingAPI.User.Controllers
             if(_userAccountService.IsHaveUsername(loginDTO.Username)){
                 string password = _userAccountService.GetPasswordByUsername(loginDTO.Username);
                 if(password == loginDTO.Password)
-                    return Ok(new { Message = "登录成功",
-                        userID = _userAccountService.GetUserIdByUsername(loginDTO.Username)});
+                    return Ok(new { message = "登录成功",
+                        userId = _userAccountService.GetUserIdByUsername(loginDTO.Username)});
                 else
                     return Unauthorized("密码错误");
             }else if(_userAccountService.IsHaveEmail(loginDTO.Username)){
                 string password = _userAccountService.GetPasswordByEmail(loginDTO.Username);//把传来的用户名作为邮箱
                 if(password == loginDTO.Password)
-                    return Ok(new { Message = "登录成功", 
-                        userID = _userAccountService.GetUserIdByEmail(loginDTO.Username)});
+                    return Ok(new { message = "登录成功", 
+                        userId = _userAccountService.GetUserIdByEmail(loginDTO.Username)});
                 else
                     return Unauthorized("密码错误");
             }
@@ -56,9 +56,11 @@ namespace FlowersWhisperingAPI.User.Controllers
        [HttpPut("edit/user")]
        public IActionResult UserEdit([FromBody] UserDTO userDTO)
        {
-            if (_userAccountService.IsHaveUsername(userDTO.Username))
+            if (_userAccountService.IsHaveUsername(userDTO.Username) &&
+                    _userAccountService.GetUserIdByUsername(userDTO.Username) != userDTO.UserId)
                 return BadRequest("编辑失败，用户名已有人使用");
-            if (_userAccountService.IsHaveEmail(userDTO.Email))
+            if (_userAccountService.IsHaveEmail(userDTO.Email) && 
+                    _userAccountService.GetUserIdByEmail(userDTO.Email) != userDTO.UserId)
                 return BadRequest("编辑失败，邮箱已有人使用");
             bool result = _userAccountService.UserUpdate(userDTO);
             if (result)
