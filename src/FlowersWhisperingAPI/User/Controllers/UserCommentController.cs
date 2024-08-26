@@ -23,11 +23,11 @@ namespace FlowersWhisperingAPI.User.Controllers
 
         //全部评论
         [HttpGet("all/comments")]
-        public IActionResult GetAllComments()
+        public IActionResult GetAllComments(int plantId)
         {
-            List<Comment> comments = _userCommentService.GetAllComments();
-            if(!comments.Any())
-                return NoContent();
+            List<Comment> comments = _userCommentService.GetAllCommentsOfPlantId(plantId);
+            // if(comments.Count == 0)
+            //     return NoContent();
             return Ok(comments);
         }
 

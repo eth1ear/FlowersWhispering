@@ -6,7 +6,7 @@ namespace FlowersWhisperingAPI.User.Services.Interface
     {
         public bool CommentContent(CommentDTO commentDTO);
 
-        public List<Comment> GetAllComments();
+        public List<Comment> GetAllCommentsOfPlantId(int plantId);
 
         public bool DeleteComment(int commentId);
 
