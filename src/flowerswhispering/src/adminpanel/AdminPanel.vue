@@ -186,7 +186,7 @@
       <button type="submit" class="btn-submit">提交公告</button>
           </form>
   
-          <ul class="item-list">
+          <ul class="item-list assignment">
             <li v-for="announcement in announcements" :key="announcement.id" class="item">
               <div class="item-details">
                 <p><strong>标题:</strong> {{ announcement.title }}</p>
@@ -357,7 +357,8 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   z-index: 10;
   position: fixed;
-  width: 100%;
+  width: 8%;
+  height:100%;
   top: 0;
   left: 0;
 }
@@ -367,15 +368,17 @@
   margin: 0;
   padding: 0;
   display: flex;
+  flex-direction: column; 
   justify-content: space-around;
 }
 
 .top-navbar li {
-  padding: 10px 20px;
+  padding: 20px;
   cursor: pointer;
   border-radius: 4px;
   color: rgb(255, 255, 255);
   font-weight: bold;
+  margin-bottom: 10px; /* 每条数据条之间的间距 */
   transition: background-color 0.3s ease;
 }
   
@@ -384,11 +387,13 @@
   background-color: #1abc9c;
 }
 
-  
+ 
 .main-content {
   margin-top: 120px; /* 增加 margin-top 值，将内容向下移动 */
   flex: 1;
-  padding: 25px;
+  width:83%;
+  margin-left: 11%;
+  padding: 40px;
   background-color: rgba(255, 255, 255, 0.9);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -399,43 +404,50 @@
 h2 {
   font-size: 24px;
   color: #333;
+  margin-top:0px;
+  margin-bottom: 20px;
 }
   
 .item-list {
   list-style: none;
+  align-items: center; /* 垂直居中 */
   padding: 0;
-  margin: 0;
-  width: 100%; /* 确保列表占据可用的全宽度 */
+  margin-top: 10px;
+  width: 80vw;
+  display: flex; /* 启用 Flexbox 布局 */
+  flex-wrap: wrap; /* 允许换行 */
+  gap: 10px; /* 设置列和行之间的间距 */
 }
 
 .item-list li {
   display: flex; /* 让内容在同一行内对齐 */
   align-items: center; /* 垂直居中 */
-  width: 100%; /* 让每条数据条占满父容器宽度 */
+  width: calc(49% - 5px); /* 设置每条数据条占父容器宽度的50%，并减去一半的间距 */
   padding: 15px 20px; /* 增加内部间距，使条目显得更宽 */
   margin-bottom: 10px; /* 每条数据条之间的间距 */
-  background-color: #f8f9fa; /* 背景色，便于视觉区分 */
+  background-color: #ffffff; /* 背景色，便于视觉区分 */
   border-radius: 8px; /* 圆角效果 */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影 */
   box-sizing: border-box; /* 包含内边距和边框在内 */
 }
-  
-  .item {
-    background-color: #f4f5f6;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(153, 97, 97, 0.1);
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 80%; /* 设置宽度为父容器的 80% */
-    max-width: 600px; /* 设置最大宽度为 600px，防止过宽 */
-  }
 
+.assignment{
+  height:120px;
+}
+
+.item {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(153, 97, 97, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 50px; /* 设置宽度为父容器的 100%，使其适应 flex 布局 */
+}
   
   .item-details p {
-    margin: 0;
+    margin: 10px;
     color: #238d89;
   }
   
