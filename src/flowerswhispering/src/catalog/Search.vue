@@ -38,10 +38,13 @@
                 <p class="user-name">{{userName}}</p>    <!--显示用户名-->
     
                 <div class="tabs">              <!--显示选项卡-->
-                    <button @click="GoToFavorites">贡献词条</button>
-                    <button @click="GoToSubmissions">地区适宜</button>
-                    <button @click="GoToSubmissions">最新品种</button>
-                    <button @click="GoToHome">返回上步</button>
+                  <button :class="{ active: activeTab === 'search' }" @click="setActiveTab('search')">百科搜索</button>
+                  <button :class="{ active: activeTab === 'contribution' }" @click="setActiveTab('contribution')">贡献词条</button>
+                  <button :class="{ active: activeTab === 'region' }" @click="setActiveTab('region')">地区适宜</button>
+                  <button :class="{ active: activeTab === 'new' }" @click="setActiveTab('new')">最新品种</button>
+                  <button @click = "TestPage">页面测试</button>   <!--仅用于测试页面布局，后端接成功后，得删除-->
+                  <button :class="{ active: activeTab === 'home' }" @click="GoToHome">返回上步</button>
+
                 </div> 
             </div>
         </div>
@@ -52,20 +55,41 @@
             </button>
         </div>
 
+            
+          <!--搜索引擎部分-->
+          <div v-if="activeTab === 'search'">
+            <div class ="search-logo">    <!--搜索引擎logo-->
+            </div>
 
-        <div class ="search-logo">    <!--搜索引擎logo-->
-        </div>
+            <div class ="search-box">          <!--搜索框，重要部分！！！-->
+             <input 
+              type="text" 
+              v-model="searchQuery"   
+              placeholder="输入植物名称，去一探究竟吧！" 
+              class="search-input" 
+             />
+            <button @click="searchDatabase" class="search-button">搜索</button>
+          </div>
+          <!--搜索引擎部分-->
 
-        <div class ="search-box">          <!--搜索框，重要部分！！！-->
-          <input 
-           type="text" 
-           v-model="searchQuery"   
-           placeholder="输入植物名称，去一探究竟吧！" 
-           class="search-input" 
-          />
-      <button @click="searchDatabase" class="search-button">搜索</button>
-      </div>
-    
+          <!--贡献词条部分，待完成！-->
+          <div v-if="activeTab === 'contribution'">
+          </div>
+          <!--贡献词条部分，待完成！-->
+
+          <!--地区适宜部分，待完成！-->
+          <div v-if="activeTab === 'region'">
+          </div>
+          <!--地区适宜部分，待完成！-->
+
+          <!--最新品种部分，待完成！-->
+          <div v-if="activeTab === 'new'">
+          </div>
+          <!--最新品种部分，待完成！-->
+
+
+       </div>
+
     
     </div>
     
@@ -78,12 +102,13 @@
     import { ref, onMounted } from 'vue';
     
     export default {
-      name: "Catalog",
+      name: "Search",
       data() {
         return {
           buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像
           userName: 'Wuhuairline' ,// 默认用户名,后端接入用户姓名
           searchQuery:'',   //对应输入框的内容，重要部分！！！
+          activeTab: 'search',  //选项卡选项
         };
       },
       methods:
@@ -111,6 +136,16 @@
         {
           console.log(`Searching for: ${this.searchQuery}`);
         }, //从搜索框搜索的后端逻辑，重要部分！！！, 从数据库遍历名字与 searchQuery 配对
+
+        setActiveTab(tabName)
+        {
+          this.activeTab=tabName;  
+        },  //设置选项卡
+
+        TestPage()
+        {
+          this.$router.push('/information');
+        }, //跳转植物信息,后端接入测试完毕后，得删除
       }
     };
     </script>
@@ -214,6 +249,12 @@
     .tabs button:hover {
         background-color: rgba(38, 208, 234, 0.289); /* 鼠标悬停效果 */
         color: #11c3e7; /* 鼠标悬停时文本颜色 */
+    }
+
+    .tabs button.active
+    {
+       background-color: rgba(38, 208, 234, 0.6); 
+       color: #1131e7; /* 选中状态的文本颜色 */
     }
     
     

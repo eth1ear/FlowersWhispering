@@ -5,6 +5,7 @@ import Login from '../login/Login.vue';
 import AdminPanel from '../adminpanel/AdminPanel.vue';
 import Catalog from '../catalog/Catalog.vue';
 import Search from '../catalog/Search.vue';
+import Information from '../catalog/information.vue';
 import Community from '../community/Community.vue';
 import Profile from '../userprofile/UserProfile.vue';
 import PostDetail from '../community/PostDetail.vue';
@@ -29,6 +30,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/search',
     name: 'Search',
     component: Search,
+    meta: { requiresAuth: true }  // 需要验证
+  },
+  {
+    path: '/information',
+    name: 'Information',
+    component: Information,
     meta: { requiresAuth: true }  // 需要验证
   },
   {
