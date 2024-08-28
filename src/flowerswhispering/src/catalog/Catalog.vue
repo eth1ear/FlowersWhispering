@@ -105,10 +105,10 @@ export default {
     GoToHome()
     {
         this.$router.push('/home');
-    },
+    },//返回主页界面
     GoToBook()
     {
-
+      this.$router.push('/search');
     }, //切换到百科，待实现-----
     GoToCultivation()
     {
