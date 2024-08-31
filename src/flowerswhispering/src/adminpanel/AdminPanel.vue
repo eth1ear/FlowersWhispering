@@ -208,9 +208,9 @@
 
       </main>
     </div>
-  </template>
+</template>
   
-  <script>
+<script>
   import { mapActions, mapGetters } from 'vuex';
   
   export default {
@@ -355,9 +355,9 @@
     },
     }
   };
-  </script>
+</script>
   
-  <style scoped>
+<style scoped>
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
   
   .admin-panel-page {
@@ -648,5 +648,5 @@ h2 {
     0% { opacity: 0; transform: translateY(20%); }
     100% { opacity: 1; transform: translateY(0); }
 }
-  </style>
+</style>
   

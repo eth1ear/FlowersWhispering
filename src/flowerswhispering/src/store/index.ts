@@ -253,30 +253,51 @@ const store = createStore<State>({
     //留出addUser的后端连接接口
     /*
     async addUser({ commit }, user) {
-    try {
-      // 发送 POST 请求到后端 API
-      const response = await axios.post('/api/users', user);
+      try {
+        // 发送 POST 请求到后端 API
+        const response = await axios.post('/api/addUsers', user);
 
-      if (response.data.success) {
-        // 如果后端返回成功，提交 mutation 将用户添加到 Vuex state 中
-        commit('ADD_USER', response.data.user);
-      } else {
-        // 处理后端返回的错误信息
-        console.error('添加用户失败:', response.data.message);
-        return { success: false, message: response.data.message };
+        if (response.data.success) {
+          // 如果后端返回成功，提交 mutation 将用户添加到 Vuex state 中
+          commit('ADD_USER', response.data.user);
+        } else {
+          // 处理后端返回的错误信息
+          console.error('添加用户失败:', response.data.message);
+          return { success: false, message: response.data.message };
+        }
+      } catch (error) {
+        // 捕获并处理请求中的错误
+        console.error('请求失败:', error.message);
+        return { success: false, message: '添加用户时发生网络或服务器错误' };
       }
-    } catch (error) {
-      // 捕获并处理请求中的错误
-      console.error('请求失败:', error.message);
-      return { success: false, message: '添加用户时发生网络或服务器错误' };
-    }
-  },
+    },
     */
     deleteUser({ commit }, username: string) {
-    commit('DELETE_USER', username);
+      commit('DELETE_USER', username);
     },
+    /*
+      async deleteUser({ commit }, username) {
+        try {
+          // 发送 DELETE 请求到后端 API
+          const response = await axios.post(`/api/deleteUsers`, user);
+
+          if(response.data.success) {
+            // 如果后端返回成功，提交 mutation 从 Vuex state 中删除用户
+            commit('DELETE_USER', username);
+          } else {
+            // 处理后端返回的错误信息
+            console.error('删除用户失败:', response.data.message);
+            return { success: false, message: response.data.message };
+          }
+        } catch (error) {
+          // 捕获并处理请求中的错误
+          console.error('请求失败:', error.message);
+          return { success: false, message: '删除用户时发生网络或服务器错误' };
+        }
+      }
+     */
     updateUser({ commit }, updatedUser: User) {
-    commit('UPDATE_USER', updatedUser);
+      commit('UPDATE_USER', updatedUser);
     },
 
   // 管理帖子操作
