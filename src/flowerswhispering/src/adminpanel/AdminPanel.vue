@@ -279,6 +279,25 @@
           this.showAddUserForm = false;
         }
       },
+      /**
+       * handleAddUser部分连接后端接口后的调用
+          handleAddUser() {
+            if (this.newUser.username && this.newUser.email && this.newUser.password) {
+              this.addUser({ ...this.newUser })
+                .then(response => {
+                  if (response && !response.success) {
+                    alert(response.message);
+                  } else {
+                    this.newUser = { username: '', email: '', password: '', role: '' };
+                    this.showAddUserForm = false;
+                  }
+                });
+            } else {
+              alert('请填写所有字段');
+            }
+          }
+       * 
+       */
       handleDeleteUser(username) {
         this.deleteUser(username);
       },
