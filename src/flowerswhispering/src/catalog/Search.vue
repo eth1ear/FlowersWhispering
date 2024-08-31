@@ -1,0 +1,486 @@
+<template>
+
+    <!--大标题-->
+    <header class="header">
+          <div class="logo">Flowers Whispering</div>
+          <div class="user-info" v-if="currentUser">
+            <span v-if="currentUser" class="username">{{ currentUser.username }}</span>
+            <div class="user-avatar-wrapper">
+              <img v-if="currentUser" src="../home/images/user-avatar.jpg" alt="User Avatar" @click="goToUserProfile()">
+              <!-- 用户详细信息列表 -->
+              <div class="user-info-list">
+                <p>用户名: {{ currentUser.username }}</p>
+                <p>邮箱: {{ currentUser.email }}</p>
+                <p>角色: {{ currentUser.role }}</p>
+              </div>
+            </div>
+            <button class="logout-button" @click="performLogout">{{ currentUser.role === 'guest' ? '登录' : '登出' }}</button>
+          </div>
+        </header>
+         <!--大标题-->
+    
+    
+        <div class="book-background">
+            <!-- 视频容器 -->
+        <div id="videoContainer">
+            <video class="fullscreenVideo" id="kotoba" playsinline autoplay muted loop>
+              <source src="../assets/video/background.mp4" type="video/mp4">
+            </video>
+        </div>
+        </div>
+    
+         
+        <!-- 用户操作界面容器 ，所有界面内的按钮，文本都在此改动-->
+    <div class="search-interface">
+        <!-- 竖条图片容器 -->
+        <div class="side-bar">
+            <div class="user-info">
+                <p class="user-name">{{userName}}</p>    <!--显示用户名-->
+    
+                <div class="tabs">              <!--显示选项卡-->
+                  <button :class="{ active: activeTab === 'search' }" @click="setActiveTab('search')">百科搜索</button>
+                  <button :class="{ active: activeTab === 'contribution' }" @click="setActiveTab('contribution')">贡献词条</button>
+                  <button :class="{ active: activeTab === 'region' }" @click="setActiveTab('region')">地区适宜</button>
+                  <button :class="{ active: activeTab === 'new' }" @click="setActiveTab('new')">最新品种</button>
+                  <button @click = "TestPage">页面测试</button>   <!--仅用于测试页面布局，后端接成功后，得删除-->
+                  <button :class="{ active: activeTab === 'home' }" @click="GoToHome">返回上步</button>
+
+                </div> 
+            </div>
+        </div>
+    
+        <div class="top-banner">
+            <button class="user-button" @click="Gotouserpage">   <!--用户头像-->
+                <img src="../catalog/images/user_example.png" alt="User" />   
+            </button>
+        </div>
+
+            
+          <!--搜索引擎部分-->
+          <div v-if="activeTab === 'search'">
+            <div class ="search-logo">    <!--搜索引擎logo-->
+            </div>
+
+            <div class ="search-box">          <!--搜索框，重要部分！！！-->
+             <input 
+              type="text" 
+              v-model="searchQuery"   
+              placeholder="输入植物名称，去一探究竟吧！" 
+              class="search-input" 
+             />
+            <button @click="searchDatabase" class="search-button">搜索</button>
+          </div>
+          <!--搜索引擎部分-->
+
+          <!--贡献词条部分，待完成！-->
+          <div v-if="activeTab === 'contribution'">
+          </div>
+          <!--贡献词条部分，待完成！-->
+
+          <!--地区适宜部分，待完成！-->
+          <div v-if="activeTab === 'region'">
+          </div>
+          <!--地区适宜部分，待完成！-->
+
+          <!--最新品种部分，待完成！-->
+          <div v-if="activeTab === 'new'">
+          </div>
+          <!--最新品种部分，待完成！-->
+
+
+       </div>
+
+    
+    </div>
+    
+    
+    
+    </template>
+    
+    <script>
+    import { useRouter } from 'vue-router';
+    import { ref, onMounted } from 'vue';
+    
+    export default {
+      name: "Search",
+      data() {
+        return {
+          buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像
+          userName: 'Wuhuairline' ,// 默认用户名,后端接入用户姓名
+          searchQuery:'',   //对应输入框的内容，重要部分！！！
+          activeTab: 'search',  //选项卡选项
+        };
+      },
+      methods:
+      {
+        Gotouserpage()
+        {
+            this.$router.push('/userprofile');
+        }, //切换用户页面
+        
+        GoToFavorites()
+        {
+            
+        }, //切换到收藏页面
+    
+        GoToSubmissions()
+        {
+    
+        },//切换到贡献页面
+        GoToHome()
+        {
+            this.$router.push('/catalog');
+        },//返回主页界面
+
+        searchDatabase()
+        {
+          console.log(`Searching for: ${this.searchQuery}`);
+        }, //从搜索框搜索的后端逻辑，重要部分！！！, 从数据库遍历名字与 searchQuery 配对
+
+        setActiveTab(tabName)
+        {
+          this.activeTab=tabName;  
+        },  //设置选项卡
+
+        TestPage()
+        {
+          this.$router.push('/information');
+        }, //跳转植物信息,后端接入测试完毕后，得删除
+      }
+    };
+    </script>
+    
+    
+    
+    
+    <style>
+    .book-background 
+    {
+        display: flex;
+       flex-direction: column;
+       min-height: 100vh;
+       position: relative;
+    }
+      
+      /* 设置背景图像 */
+      .book-background 
+      {
+        background-size: cover;
+        height: 100vh; /* 使背景覆盖整个视口 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index:-1;
+      }
+      
+    
+      /* 操作界面*/ 
+      .search-interface {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 90%;
+      background-color: rgb(196, 252, 203);
+      background-size: cover;
+      background-position: center;
+      z-index: 2; /* 层数要大于视频 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: rgb(255, 255, 255); /* 设置文本颜色，以便在深色背景上可见 */
+    
+      border: 5px solid rgb(28, 127, 13); /* 绿色边框 */
+      box-sizing: border-box; /* 确保边框包含在元素的宽度和高度内 */
+      border-radius: 10px; /* 添加圆角 */
+      opacity: 0.9;
+    }
+    
+    
+    /* 竖条图片格式*/
+    
+    .side-bar {
+        position: absolute;
+        top: 20%; /* 从顶部开始对齐 */
+        left: 0; /* 从左侧开始对齐 */
+        width: 140px; /* 自定义宽度 */
+        height: fill; /* 自定义高度 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 3; /* 确保竖条在其他内容之上 */
+        background-color: rgb(46, 131, 58); /* 背景颜色，使内容更显眼 */
+    }
+    
+    
+    .user-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: rgb(17, 213, 244); /* 设置文本颜色 */
+    }
+    
+    .user-name {
+        margin: 20px 0; /* 自定义用户名上下间距 */
+        font-size: 20px; /* 自定义用户名字体大小 */
+        text-align: center; /* 文本居中对齐 */
+    }
+    
+    .tabs {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .tabs button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        margin: 10px 0;
+        cursor: pointer;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    .tabs button:hover {
+        background-color: rgba(38, 208, 234, 0.289); /* 鼠标悬停效果 */
+        color: #11c3e7; /* 鼠标悬停时文本颜色 */
+    }
+
+    .tabs button.active
+    {
+       background-color: rgba(38, 208, 234, 0.6); 
+       color: #1131e7; /* 选中状态的文本颜色 */
+    }
+    
+    
+    
+    
+    /* 横条图片格式*/ 
+    .top-banner {
+      width: 100%; /* 横条图片容器宽度占据整个用户界面宽度 */
+      display: flex;
+      position: absolute;
+      top: 0; /* 将横条图片定位到容器顶部 */
+      left: 0; /* 从左侧开始对齐 */
+      z-index: 4; /* 确保横条图片在用户界面内容之上 */
+    }
+    
+    
+    
+    
+    .top-banner img {
+      width: 870px; /* 自定义横条宽度 */
+      height: 150px; /* 自定义高度 */
+    }
+    
+    .user-button
+    {
+       z-index: 4;
+      border: 5px solid rgb(4, 195, 202); /* 绿色边框 */
+      box-sizing: border-box; 
+      transition: transform 0.3s ease, background-color 0.3s ease;  /*动态平滑*/
+      cursor: pointer; /*指针变化*/
+    }
+    
+    .user-button img {
+      width: 120px; /* 自定义按钮图片的宽度 */
+      height: 135px; /* 自定义按钮图片的高度 */
+    }
+    
+    /* 鼠标悬停效果 */
+    .user-button:hover {
+      transform: scale(1.1); /* 放大按钮 */
+    }
+    
+   
+    
+    /* 搜索引擎LOGO */
+    .search-logo
+    {
+      position: absolute;
+      top: 5%;
+      left: 42%;
+      background-image: url(../catalog/images/search_logo.png);
+      z-index: 5;
+      background-size: cover;
+      background-position: center;
+      width:300px;
+      height:300px;
+    }
+
+    /*  搜索框   */
+
+  .search-box 
+  {
+  position:absolute;
+  left:20%; /* 控制左边距离*/
+  top:45%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.search-input 
+{
+ 
+  width: 800px;
+  padding: 10px;
+  border: 2px solid rgb(28, 127, 13); /* 绿色边框 */
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  margin-right: 10px; /* 搜索框与按钮之间的间距 */
+  font-size:20px;
+}
+
+.search-input:focus {
+  border-color: rgb(46, 131, 58); /* 聚焦时的边框颜色 */
+}
+
+.search-button {
+  padding: 10px 20px;
+  background-color: rgb(46, 131, 58); /* 按钮背景色 */
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size:20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: rgb(28, 127, 13); /* 悬停时的按钮背景色 */
+  transform: scale(1.05); /* 悬停时放大效果 */
+}
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    /*  固有写法，显示用户*/ 
+    .user-avatar-wrapper {
+        position: relative;
+        display: inline-block;
+      }
+    
+      .user-info-list {
+        position: absolute;
+        top: 50px;
+        left: -125px;
+        background-color: rgba(255, 255, 255, 0.95);
+        border: 2px solid #46b476;
+        border-radius: 8px; 
+        padding: 15px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); 
+        z-index: 10;
+        min-width: 200px;
+        opacity: 0;
+        transform-origin: top;
+        transform: translateY(0px) scale(0.05);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        pointer-events: none;
+      }
+    
+      .user-avatar-wrapper:hover .user-info-list {
+        opacity: 1;
+        transform: translateY(0) scale(1); 
+        pointer-events: auto; 
+      }
+    
+      .user-info-list p {
+        margin: 2px 0;
+        font-size: 14px;
+        color: #333;
+        font-family: '宋体','ZhiMangXing-Regular', sans-serif;
+      }
+    
+      .logout-button {
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+    
+      .logout-button:hover {
+        background-color: #ff1a1a;
+      }
+    
+      .common-layout {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-size: cover;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100vw;
+        min-width: 1200px;
+        min-height: 800px;
+        color: #333;
+      }
+    
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        background-color: #46b476cc;
+        color: white;
+        z-index: 1;
+        position: relative;
+      }
+    
+    
+    
+      .logo {
+        font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+        font-size: 28px;
+        font-weight: bold;
+      }
+    
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+    
+      .user-info img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+    
+      .user-info img:hover {
+        transform: scale(1.1);
+        
+      }
+    
+      .username {
+        font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+        font-size: 28px;
+        font-weight: bold;
+      }
+    
+    
+      /*  固有写法，显示用户*/ 
+    
+    
+    </style>
