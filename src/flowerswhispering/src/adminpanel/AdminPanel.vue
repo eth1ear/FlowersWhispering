@@ -1,5 +1,8 @@
 <template>
     <div class="admin-panel-page">
+
+
+
       <!-- 侧边栏导航 -->
       <aside class="top-navbar">
         <nav>
@@ -392,7 +395,7 @@
 }
 
 .top-navbar li {
-  padding: 20px;
+  padding: 20px 33px;
   cursor: pointer;
   border-radius: 4px;
   color: rgb(255, 255, 255);
