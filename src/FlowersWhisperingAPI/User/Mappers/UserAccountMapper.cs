@@ -33,6 +33,30 @@ namespace FlowersWhisperingAPI.User.Mappers
             return null;  // 如果查询结果为空或者出现异常，则返回 null
         }
 
+        public UserInfo? GetUserById(int id)
+        {
+            string sql = "SELECT * FROM users WHERE user_id = :Id";
+            using var connection = new OracleConnection(_connectionString);
+            connection.Open();
+            using var command = new OracleCommand(sql, connection);
+            command.Parameters.Add(":Id", OracleDbType.Int32).Value = id;
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                // 从数据读取器中提取用户信息
+                int userId = reader.GetInt32(reader.GetOrdinal("user_id"));
+                string usernameResult = reader.GetString(reader.GetOrdinal("username"));
+                string passwordResult = reader.GetString(reader.GetOrdinal("password"));
+                string emailResult = reader.GetString(reader.GetOrdinal("email"));
+                string languagePreferenceResult = reader.GetString(reader.GetOrdinal("language_preference"));
+                string userStatusResult = reader.GetString(reader.GetOrdinal("user_status"));
+                string userRoleResult = reader.GetString(reader.GetOrdinal("user_role"));
+                UserInfo userInfo = new(usernameResult, passwordResult, emailResult, languagePreferenceResult, userStatusResult, userRoleResult, userId);
+                return userInfo;  // 返回 UserInfo 对象
+            }
+            return null;  // 如果查询结果为空或者出现异常，则返回 null
+        }
+
         public UserInfo? GetUserByEmail(string email)
         {
             string sql = "SELECT * FROM users WHERE email = :Email";

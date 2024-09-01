@@ -93,5 +93,10 @@ namespace FlowersWhisperingAPI.User.Services
             var user = _accountMapper.GetUserByEmail(email);
             return user != null ? user.UserId : 0;
         }
+
+        public UserInfo? GetUserInfoById(int id)
+        {
+            return _accountMapper.GetUserById(id);
+        }
     }
 }

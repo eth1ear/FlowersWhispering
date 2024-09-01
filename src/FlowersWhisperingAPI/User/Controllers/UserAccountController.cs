@@ -17,15 +17,35 @@ namespace FlowersWhisperingAPI.User.Controllers
             if(_userAccountService.IsHaveUsername(loginDTO.Username)){
                 string password = _userAccountService.GetPasswordByUsername(loginDTO.Username);
                 if(password == loginDTO.Password)
-                    return Ok(new { message = "登录成功",
-                        userId = _userAccountService.GetUserIdByUsername(loginDTO.Username)});
+                {
+                    int id = _userAccountService.GetUserIdByUsername(loginDTO.Username);                   
+                    var userInfo = _userAccountService.GetUserInfoById(id);
+                    if(userInfo == null)
+                        return BadRequest("未查到此账户，请先注册");
+                    if(userInfo.UserStatus == "banned")
+                        return BadRequest("账户已被封禁");
+                    return Ok(new { message = "登录成功",userId = id, username = loginDTO.Username, 
+                        email = userInfo.Email, password = userInfo.Password,
+                        languagePreference = userInfo.LanguagePreference,                     
+                        userState = userInfo.UserStatus, userRole = userInfo.UserRole});                       
+                }
                 else
                     return Unauthorized("密码错误");
             }else if(_userAccountService.IsHaveEmail(loginDTO.Username)){
                 string password = _userAccountService.GetPasswordByEmail(loginDTO.Username);//把传来的用户名作为邮箱
                 if(password == loginDTO.Password)
-                    return Ok(new { message = "登录成功", 
-                        userId = _userAccountService.GetUserIdByEmail(loginDTO.Username)});
+                {
+                    int id = _userAccountService.GetUserIdByEmail(loginDTO.Username);                   
+                    var userInfo = _userAccountService.GetUserInfoById(id);
+                    if(userInfo == null)
+                        return BadRequest("未查到此账户，请先注册");
+                    if(userInfo.UserStatus == "banned")
+                        return BadRequest("账户已被封禁");
+                    return Ok(new { message = "登录成功",userId = id, username = loginDTO.Username, 
+                        email = userInfo.Email, password = userInfo.Password,
+                        languagePreference = userInfo.LanguagePreference,                     
+                        userState = userInfo.UserStatus, userRole = userInfo.UserRole});      
+                }                    
                 else
                     return Unauthorized("密码错误");
             }
