@@ -10,7 +10,7 @@ namespace FlowersWhisperingAPI.Administrator.Controllers
     {
         private readonly IAdminAnnoService _adminAnnoService = adminAnnoService;
 
-        [HttpGet("all")]
+        [HttpGet("announcement/all")]
         public IActionResult GetAllAnnouncements()
         {
             return Ok(_adminAnnoService.GetAllAnnouncements());

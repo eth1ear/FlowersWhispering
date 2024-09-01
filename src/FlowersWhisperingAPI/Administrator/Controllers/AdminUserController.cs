@@ -10,29 +10,30 @@ namespace FlowersWhisperingAPI.Administrator.Controllers
     {
         private readonly IAdminUserService _adminUserService = adminUserService;
 
-        [HttpPut("ban/user")]
+        [HttpPut("ban")]
         public void BanUser(int id)
         {
            _adminUserService.ChangeUserState(id,"banned");
         }
-
-        [HttpPut("unblock/user")]
+        [HttpPut("unblock")]
         public void NoBanUser(int id)
         {
            _adminUserService.ChangeUserState(id,"active");
         }
 
         [HttpPost("user/feedback")]
-        public void Feedback([FromBody] FeedbackDTO feedbackDTO)
+        public IActionResult Feedback([FromBody] FeedbackDTO feedbackDTO)
         {
-            if(feedbackDTO.FeedbackContent != null)
-                _adminUserService.Feedback(feedbackDTO.UserId,feedbackDTO.FeedbackContent);
+            if(feedbackDTO.FeedbackContent != null && _adminUserService.Feedback(feedbackDTO.UserId,feedbackDTO.FeedbackContent))
+                return Ok("反馈成功");
+            else
+                return BadRequest("反馈失败");          
         }
 
         [HttpGet("all/feedback")]
         public IActionResult GetAllFeedback()
         {
-            return Ok(_adminUserService.GetAllFeedback());
+            return Ok(_adminUserService.GetAllFeedback().OrderBy(x => x.FeedbackId).ToList());
         }
     }
 }

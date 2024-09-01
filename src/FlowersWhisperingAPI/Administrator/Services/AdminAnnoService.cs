@@ -19,7 +19,7 @@ namespace FlowersWhisperingAPI.Administrator.Services
 
         public List<Announcement> GetAllAnnouncements()
         {
-            return _annoMapper.GetAllAnnouncements();
+            return _annoMapper.GetAllAnnouncements().OrderBy(anno =>anno.AnnouncementId).ToList();
         }
     }
 }

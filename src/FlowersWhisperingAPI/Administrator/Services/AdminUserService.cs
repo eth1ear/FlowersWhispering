@@ -13,9 +13,9 @@ namespace FlowersWhisperingAPI.Administrator.Services
             _userMapper.ChangeUserState(id,state);
         }
 
-        public void Feedback(int id, string feedback)
+        public bool Feedback(int id, string feedback)
         {
-            _userMapper.Feedback(id, feedback);
+            return _userMapper.Feedback(id, feedback);
         }
         public List<Feedback> GetAllFeedback()
         {

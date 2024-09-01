@@ -9,7 +9,9 @@ namespace FlowersWhisperingAPI.Administrator.Services
         private readonly AdminReviewMapper _reviewMapper = reviewMapper;
         public List<Review> GetAllReviews()
         {
-            return _reviewMapper.GetAllReviews();
+            List<Review> reviews = _reviewMapper.GetAllReviews();
+            List<Review> sortedReviews = reviews.OrderBy(review => review.ReviewId).ToList();
+            return sortedReviews;
         }
 
         public void Pass(int reviewId)

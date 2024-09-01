@@ -18,14 +18,24 @@ namespace FlowersWhisperingAPI.Administrator.Mappers
             command.ExecuteNonQuery();
         }
 
-        public void Feedback(int userId,string feedback)
+        public bool Feedback(int userId,string feedback)
         {
-            using var connection = new OracleConnection(_connectionString);
-            connection.Open();
-            using var command = new OracleCommand("INSERT INTO FEEDBACKS (USER_ID, FEEDBACK_CONTENT) VALUES (:Id, :Feedback)", connection);
-            command.Parameters.Add(":Id", OracleDbType.Int32).Value = userId;
-            command.Parameters.Add(":Feedback", OracleDbType.Varchar2).Value = feedback;
-            command.ExecuteNonQuery();
+            try
+            {
+                using var connection = new OracleConnection(_connectionString);
+                connection.Open();
+                using var command = new OracleCommand("INSERT INTO FEEDBACKS (USER_ID, FEEDBACK_CONTENT) VALUES (:Id, :Feedback)", connection);
+                command.Parameters.Add(":Id", OracleDbType.Int32).Value = userId;
+                command.Parameters.Add(":Feedback", OracleDbType.Varchar2).Value = feedback;
+                command.ExecuteNonQuery();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            
         }
 
         public List<Feedback> GetAllFeedback()

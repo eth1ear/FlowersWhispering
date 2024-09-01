@@ -10,7 +10,7 @@ namespace FlowersWhisperingAPI.Administrator.Controllers
     {
         private readonly IAdminReviewService _adminReviewService = adminReviewService;
 
-        [HttpPost("all")]
+        [HttpGet("all")]
         public IActionResult GetAllReviews()
         {
             return Ok(_adminReviewService.GetAllReviews());
@@ -38,7 +38,7 @@ namespace FlowersWhisperingAPI.Administrator.Controllers
                 return BadRequest("该植物不存在");
         }
 
-        [HttpPut("plant/update")]
+        [HttpPut("plant/edit")]
         public void UpdatePlant([FromBody] Plant plant)
         {
             _adminReviewService.UpdatePlant(plant);
