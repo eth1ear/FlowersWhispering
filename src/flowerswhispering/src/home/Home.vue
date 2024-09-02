@@ -11,7 +11,7 @@
       <div class="user-info" v-if="currentUser">
         <span v-if="currentUser" class="username">{{ currentUser.username }}</span>
         <div class="user-avatar-wrapper">
-          <img v-if="currentUser" src="./images/user-avatar.jpg" alt="User Avatar" @click="goToUserProfile()">
+         <img v-if="currentUser" :src="userAvatar" alt="User Avatar" @click="goToUserProfile()">
           <!-- 用户详细信息列表 -->
           <div class="user-info-list">
             <p>用户名: {{ currentUser.username }}</p>
@@ -91,7 +91,7 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapGetters(['currentUser', 'isAdmin']),
+    ...mapGetters(['currentUser', 'isAdmin','userAvatar']),
   },
   methods: {
     ...mapActions(['logout']),
