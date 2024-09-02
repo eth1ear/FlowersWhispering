@@ -12,7 +12,8 @@
             <li @click="currentView = 'comments'" :class="{ active: currentView === 'comments' }">评论管理</li>
             <li @click="currentView = 'plants'" :class="{ active: currentView === 'plants' }">植物审核</li>
             <li @click="currentView = 'feedbacks'" :class="{ active: currentView === 'feedbacks' }">用户反馈</li>
-            <li @click="currentView = 'announcements'" :class="{ active: currentView === 'announcements' }">公告发布</li>           
+            <li @click="currentView = 'announcements'" :class="{ active: currentView === 'announcements' }">公告发布</li>  
+            <li @click="GoToHome">返回主页</li>       
           </ul>
         </nav>
       </aside>
@@ -363,9 +364,14 @@
     },
     deletePlant(plantId) {
       this.$store.commit('DELETE_PLANT', plantId);
-    },
+      },
+    GoToHome()
+    {
+        this.$router.push('/home');
+    },//返回主页界面
     }
-  };
+};
+  
 </script>
   
 <style scoped>
