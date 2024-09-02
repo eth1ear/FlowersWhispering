@@ -39,11 +39,17 @@
               <div class="item-details">
                 <p><strong>用户名:</strong> {{ user.username }}</p>
                 <p><strong>邮箱:</strong> {{ user.email }}</p>
-                <p><strong>角色:</strong> {{ user.role }}</p>
+                <p><strong>角色:</strong>
+                <span v-if="!user.editing">{{ user.role }}</span>
+                <select v-else v-model="user.newRole" class="form-input">
+                  <option value="user">user</option>
+                  <option value="admin">admin</option>
+                </select>
+                </p>
               </div>
               <div class="item-actions">
-                <button @click="editUser(user)" class="btn-edit my-animation-slide-bottom">修改</button>
-                <button @click="deleteUser(user.username)" class="btn-delete my-animation-slide-bottom">删除</button>
+                <button v-if="!user.editing" @click="editUser(user)" class="btn-edit my-animation-slide-bottom">修改</button>
+                <button v-else @click="saveUser(user)" class="btn-submit my-animation-slide-bottom">保存</button>
               </div>
             </li>
           </ul>
@@ -305,11 +311,13 @@
         this.deleteUser(username);
       },
       editUser(user) {
-        const newEmail = prompt('输入新的邮箱:', user.email);
-        const newRole = prompt('输入新的角色:', user.role);
-        if (newEmail && newRole) {
-          this.updateUser({ ...user, email: newEmail, role: newRole });
-        }
+        user.editing = true;
+        user.newRole = user.role; // 初始化下拉栏的值
+      },
+      saveUser(user) {
+        user.role = user.newRole;
+        user.editing = false;
+        this.updateAdmin(user); // 仅触发 Vuex 的 updateAdmin action
       },
       handleDeletePost(postId) {
         this.deletePost(postId);

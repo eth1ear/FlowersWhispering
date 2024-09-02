@@ -60,7 +60,7 @@ const store = createStore<State>({
 
     // 模拟的用户数据
     users: [
-      {username: 'user', email: 'user1@example.com', password: 'password', role: 'user' },
+      { username: 'user', email: 'user1@example.com', password: 'password', role: 'user' },
       { username: 'admin', email: 'admin@example.com', password: 'admin', role: 'admin' }, // 管理员用户
       { username: 'guest', email: 'guest@example.com', password: '', role: 'guest' }, // 游客用户
       { username: '111', email: 'mingyanghao6@gmail.com', password: '12345678', role: 'admin' }, // 管理员用户
@@ -123,6 +123,12 @@ const store = createStore<State>({
       state.users.splice(index, 1, updatedUser);
     }
   },
+  UPDATE_USER_ROLE(state, { username, role }) {
+    const user = state.users.find(user => user.username === username);
+    if (user) {
+      user.role = role;
+      }
+    },
   // 帖子管理相关的 mutation
   /*
   ADD_POST(state, post) {
@@ -247,8 +253,7 @@ const store = createStore<State>({
     },
   // 管理用户操作
     addUser({ commit }, user) {
-        commit('ADD_USER', user); // 确保这里传递的 user 是有效的
-
+      commit('ADD_USER', user); // 确保这里传递的 user 是有效的
     },
     //留出addUser的后端连接接口
     /*
@@ -276,7 +281,7 @@ const store = createStore<State>({
       commit('DELETE_USER', username);
     },
     /*
-      async deleteUser({ commit }, username) {
+      async deleteUser({ commit }, user) {
         try {
           // 发送 DELETE 请求到后端 API
           const response = await axios.post(`/api/deleteUsers`, user);
@@ -299,6 +304,41 @@ const store = createStore<State>({
     updateUser({ commit }, updatedUser: User) {
       commit('UPDATE_USER', updatedUser);
     },
+    /**
+    async updateUser({ commit }, user) {
+      try {
+        const reponse = await axios.post
+      } catch (error){
+
+      }
+    },
+     */
+    updateAdmin({ commit }, { username, role }) {
+      commit('UPDATE_USER_ROLE', { username, role });
+    },
+
+    /*
+    async updateAdmin({ commit }, { username, role }) {
+      try {
+        // 假设后端 API 的 URL 为 `/api/updateUserRole`
+        const response = await axios.post('/api/updateUserRole', { username, role });
+
+        if (response.data.success) {
+          // 如果后端返回成功，提交 mutation 更新 Vuex 状态
+          commit('UPDATE_USER_ROLE', { username, role });
+        } else {
+          // 处理后端返回的错误信息
+          console.error('更新用户角色失败:', response.data.message);
+          return { success: false, message: response.data.message };
+        }
+      } catch (error) {
+        // 捕获并处理请求中的错误
+        console.error('请求失败:', error.message);
+        return { success: false, message: '更新用户角色时发生网络或服务器错误' };
+      }
+    },
+    */
+    
 
   // 管理帖子操作
   /*
@@ -312,18 +352,130 @@ const store = createStore<State>({
   deletePost({ commit }, postId: number) {
     commit('DELETE_POST', postId);
   },
+  /*
+  // 删除帖子
+  async deletePost({ commit }, postId: number) {
+    try {
+      // 假设后端 API 的 URL 为 `/api/deletePost`
+      const response = await axios.delete(`/api/deletePost/${postId}`);
+
+      if (response.data.success) {
+        // 如果后端返回成功，提交 mutation 从 Vuex state 中删除帖子
+        commit('DELETE_POST', postId);
+      } else {
+        // 处理后端返回的错误信息
+        console.error('删除帖子失败:', response.data.message);
+        return { success: false, message: response.data.message };
+      }
+    } catch (error) {
+      // 捕获并处理请求中的错误
+      console.error('请求失败:', error.message);
+      return { success: false, message: '删除帖子时发生网络或服务器错误' };
+    }
+  },
+  */
   deleteComment({ commit }, commentId) {
     commit('DELETE_COMMENT', commentId);
+    },
+  /*
+  // 删除评论
+  async deleteComment({ commit }, commentId: number) {
+    try {
+      // 假设后端 API 的 URL 为 `/api/deleteComment`
+      const response = await axios.delete(`/api/deleteComment/${commentId}`);
+
+      if (response.data.success) {
+        // 如果后端返回成功，提交 mutation 从 Vuex state 中删除评论
+        commit('DELETE_COMMENT', commentId);
+      } else {
+        // 处理后端返回的错误信息
+        console.error('删除评论失败:', response.data.message);
+        return { success: false, message: response.data.message };
+      }
+    } catch (error) {
+      // 捕获并处理请求中的错误
+      console.error('请求失败:', error.message);
+      return { success: false, message: '删除评论时发生网络或服务器错误' };
+    }
   },
+  */
   deleteAnnouncement({ commit }, announcementId) {
     commit('DELETE_ANNOUNCEMENT', announcementId);
+    },
+  /*
+  // 删除公告
+  async deleteAnnouncement({ commit }, announcementId: number) {
+    try {
+      // 假设后端 API 的 URL 为 `/api/deleteAnnouncement`
+      const response = await axios.delete(`/api/deleteAnnouncement/${announcementId}`);
+
+      if (response.data.success) {
+        // 如果后端返回成功，提交 mutation 从 Vuex state 中删除公告
+        commit('DELETE_ANNOUNCEMENT', announcementId);
+      } else {
+        // 处理后端返回的错误信息
+        console.error('删除公告失败:', response.data.message);
+        return { success: false, message: response.data.message };
+      }
+    } catch (error) {
+      // 捕获并处理请求中的错误
+      console.error('请求失败:', error.message);
+      return { success: false, message: '删除公告时发生网络或服务器错误' };
+    }
   },
+  */
   addAnnouncement({ commit }, announcement) {
     commit('ADD_ANNOUNCEMENT', announcement);
+    },
+  /*
+  // 添加公告
+  async addAnnouncement({ commit }, announcement) {
+    try {
+      // 假设后端 API 的 URL 为 `/api/addAnnouncement`
+      const response = await axios.post('/api/addAnnouncement', announcement);
+
+      if (response.data.success) {
+        // 如果后端返回成功，提交 mutation 将公告添加到 Vuex state 中
+        commit('ADD_ANNOUNCEMENT', response.data.announcement);
+        return { success: true };
+      } else {
+        // 处理后端返回的错误信息
+        console.error('添加公告失败:', response.data.message);
+        return { success: false, message: response.data.message };
+      }
+    } catch (error) {
+      // 捕获并处理请求中的错误
+      console.error('请求失败:', error.message);
+      return { success: false, message: '添加公告时发生网络或服务器错误' };
+    }
   },
+   */
   deletePlant({ commit }, plantId) {
     commit('DELETE_PLANT', plantId);
+    },
+  /*
+  // 删除植物
+  async deletePlant({ commit }, plantId: number) {
+    try {
+      // 假设后端 API 的 URL 为 `/api/deletePlant`
+      const response = await axios.delete(`/api/deletePlant/${plantId}`);
+
+      if (response.data.success) {
+        // 如果后端返回成功，提交 mutation 从 Vuex state 中删除植物
+        commit('DELETE_PLANT', plantId);
+      } else {
+        // 处理后端返回的错误信息
+        console.error('删除植物失败:', response.data.message);
+        return { success: false, message: response.data.message };
+      }
+    } catch (error) {
+      // 捕获并处理请求中的错误
+      console.error('请求失败:', error.message);
+      return { success: false, message: '删除植物时发生网络或服务器错误' };
+    }
   },
+
+  */
   approvePlant({ commit }, plantId) {
     commit('APPROVE_PLANT', plantId);
   }
