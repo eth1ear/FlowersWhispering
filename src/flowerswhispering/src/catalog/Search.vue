@@ -39,8 +39,8 @@
     
                 <div class="tabs">              <!--显示选项卡-->
                   <button :class="{ active: activeTab === 'search' }" @click="setActiveTab('search')">百科搜索</button>
+                  <button :class="{ active: activeTab === 'Myfavorited' }" @click="setActiveTab('Myfavorited')">我的收藏</button>
                   <button :class="{ active: activeTab === 'contribution' }" @click="setActiveTab('contribution')">贡献词条</button>
-                  <button :class="{ active: activeTab === 'region' }" @click="setActiveTab('region')">地区适宜</button>
                   <button :class="{ active: activeTab === 'new' }" @click="setActiveTab('new')">最新品种</button>
                   <button @click = "TestPage">页面测试</button>   <!--仅用于测试页面布局，后端接成功后，得删除-->
                   <button :class="{ active: activeTab === 'home' }" @click="GoToHome">返回上步</button>
@@ -55,7 +55,7 @@
             </button>
         </div>
 
-            
+        
           <!--搜索引擎部分-->
           <div v-if="activeTab === 'search'">
             <div class ="search-logo">    <!--搜索引擎logo-->
@@ -70,25 +70,37 @@
              />
             <button @click="searchDatabase" class="search-button">搜索</button>
           </div>
-          <!--搜索引擎部分-->
+          </div>
+         <!--搜索引擎部分-->
+          
+          <!--我的收藏部分-->
+          <div v-if="activeTab === 'Myfavorited'" class="favorite-plants-container">
+           <h2 class ="favorite-title">我的收藏</h2>
+           <ul class="favorite-plants-list">
+            <li v-for="(item, index) in paginatedFavoritePlants" :key="index" class="favorite-plant-item">
+              <span @click="viewPlantDetail(item.id)" class="plant-name">{{ item.Plantname }}</span>
+              <button @click="removeFromFavorites(item.id)" class="remove-button">取消收藏</button>
+            </li>
+          </ul>
+          <div class="pagination">
+            <button @click="prevPage" :disabled="currentPage === 1">上一页</button>
+            <span>页码 {{ currentPage }} / {{ totalPages }}</span>
+            <button @click="nextPage" :disabled="currentPage === totalPages">下一页</button>
+          </div>
+          <p v-if="favoritePlants.length === 0">你还没有收藏任何植物。</p>
+          </div>
+          <!--我的收藏部分-->
 
           <!--贡献词条部分，待完成！-->
-          <div v-if="activeTab === 'contribution'">
+          <div v-if="activeTab === 'contribution'">       
           </div>
           <!--贡献词条部分，待完成！-->
 
-          <!--地区适宜部分，待完成！-->
-          <div v-if="activeTab === 'region'">
-          </div>
-          <!--地区适宜部分，待完成！-->
 
           <!--最新品种部分，待完成！-->
           <div v-if="activeTab === 'new'">
           </div>
           <!--最新品种部分，待完成！-->
-
-
-       </div>
 
     
     </div>
@@ -109,8 +121,26 @@
           userName: 'Wuhuairline' ,// 默认用户名,后端接入用户姓名
           searchQuery:'',   //对应输入框的内容，重要部分！！！
           activeTab: 'search',  //选项卡选项
+          favoritePlants: [], //存储用户收藏的植物
+          currentPage: 1,
+          itemsPerPage: 8 // 每页显示的植物数量
         };
       },
+      mounted()
+      {
+        this.loadFavorites();
+      },
+
+      computed: {
+      totalPages() {
+      return Math.ceil(this.favoritePlants.length / this.itemsPerPage);
+      },
+      paginatedFavoritePlants() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.favoritePlants.slice(start, end);
+      }
+      },  //页面计算功能
       methods:
       {
         Gotouserpage()
@@ -142,11 +172,54 @@
           this.activeTab=tabName;  
         },  //设置选项卡
 
+        loadFavorites() {
+         this.favoritePlants = [
+         { id: 1, Plantname: '蒲公英' },
+        { id: 2, Plantname: '玫瑰' },
+        { id: 3, Plantname: '百合' },
+        { id: 4, Plantname: '竹子' },
+        { id: 5, Plantname: '兰花' },
+        { id: 6, Plantname: '茉莉花' } ,
+        { id: 7, Plantname: '绿萝' }, // 示例数据
+        { id: 8, Plantname: '牡丹' } ,
+        { id: 9, Plantname: '柳树' } ,
+        { id: 10, Plantname: '向日葵' } ,
+        // 示例数据
+      ];
+
+      },  //初始渲染时，读取用户的原有的收藏列表，等待后端接入
+
+      removeFromFavorites(plantId) {
+        this.favoritePlants = this.favoritePlants.filter(plant => plant.id !== plantId);
+         console.log(`删除植物的ID: ${plantId}`);
+       },  //取消收藏，等待后端接入
+
+
         TestPage()
         {
           this.$router.push('/information');
         }, //跳转植物信息,后端接入测试完毕后，得删除
+
+        prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
       }
+      }, //上一页跳转
+
+      nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+      }, //下一页跳转
+
+
+      viewPlantDetail(plantId) 
+      {
+      this.$router.push(`/plant/${plantId}`);
+      },     // 页面跳转逻辑，等待后端实现
+      }
+
+  
     };
     </script>
     
@@ -357,6 +430,106 @@
 .search-button:hover {
   background-color: rgb(28, 127, 13); /* 悬停时的按钮背景色 */
   transform: scale(1.05); /* 悬停时放大效果 */
+}
+
+
+/* 我的收藏 */
+.favorite-plants-container 
+{
+  position:absolute;
+  top:8%;
+  left:20%;
+  width:900px;
+  height:600px;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgb(45, 198, 22);
+}
+
+.favorite-title
+{
+  position:relative;
+  top:-5%;
+  left:42%;
+  font-size: 35PX;
+  z-index:6;
+  color:rgb(45, 198, 22);
+  margin-bottom: 0;
+}
+
+.favorite-plants-list 
+{
+  padding: 0;
+  margin: 0;
+}
+
+.favorite-plant-item 
+{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  transition: transform 0.3s ease; /* 点击动态效果 */
+  cursor: pointer; /* 鼠标放在上面改变指针 */
+  background-color: #d2f0ed;
+  margin:8px;
+  border-radius: 5px;
+
+}
+
+
+.favorite-plant-item:hover 
+{
+  transform: scale(1.05); /* 放大效果 */
+}
+
+.plant-name 
+{
+  font-size: 22px!important;   /* 强制修改大标题字体大小 */
+  transition: color 0.3s ease; /* 动态颜色变化效果 */
+}
+
+.plant-name:hover {
+  color: rgb(37, 210, 226); /* 悬停时的文字颜色 */
+}
+
+.remove-button {
+  background-color: #e74c3c;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+
+
+.remove-button:hover {
+  background-color: #c0392b;
+}
+
+/* 分页 */
+.pagination {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.pagination button {
+  padding: 5px 10px;
+  background-color: rgb(46, 131, 58);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
     
     
