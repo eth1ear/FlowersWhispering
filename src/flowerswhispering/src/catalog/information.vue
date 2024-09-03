@@ -67,6 +67,14 @@
     <div class="content">
       <div class="plant-info" v-if="plant">
         <h1 class = 'plant-name'>{{ plant.name }}</h1>     <!--植物名字大标题-->
+        
+        <!--收藏功能按钮-->
+        <button               
+        class ="favorite-button"
+        :class= "{'favorited' : isFavorited}"
+        @click ="GoToFavorite">
+        {{isFavorited ? '取消收藏' : '收藏'}}
+        </button>
       </div>
       
       <!-- 小标题内容 -->
@@ -105,6 +113,7 @@ export default {
   data() {
   return {
     searchQuery: '',  // 对应输入框的内容
+    isFavorited:false, //用于跟踪植物是否被收藏
     plant: {
         name: '绿萝',      //植物名字
         image: require('../catalog/images/plant_example.jpg'), // 植物图片位置
@@ -142,6 +151,10 @@ export default {
       ],  //此处为7个分类学部分,value值要动态改变,先提前设置初始值
   };
 },
+
+mounted() {
+    this.getFavoriteStatus(); // 在组件挂载时获取收藏状态
+  },
   methods:
   {
     searchDatabase()
@@ -171,13 +184,39 @@ export default {
       });
     } ,  // 用于分类函数，等待后端接入 改变item.value的数值
 
+
+ 
+  getFavoriteStatus()
+  {
+
+  }, //从后端获取收藏状态，待后端接入
+    
+   GoToFavorite()
+   {
+    if (this.isFavorited) {
+        this.unfavoritePlant();
+      } else {
+        this.favoritePlant();
+      }
+      this.isFavorited = !this.isFavorited; // 切换收藏状态
+   },  //按钮处理逻辑，先调用不同后端接口，再改变状态
+
+   unfavoritePlant()
+   {
+    console.log("进行取消收藏操作"); //前端测试语句，接入后可删除
+   },//取消收藏逻辑，待后端接入
+
+   favoritePlant()
+   {
+      console.log("进行收藏操作"); //前端测试语句，接入后可删除
+   },//收藏逻辑，待后端接入
     
   }
 };
 </script>
 
 
-<style>
+<style scoped>
 .book-background 
 {
     display: flex;
@@ -360,7 +399,7 @@ export default {
   margin-bottom: 20px;
 }
 
-.plant-name
+.information.plant-name
 {
     font-size: 70px;
     color:rgb(59, 175, 41);
@@ -369,8 +408,33 @@ export default {
     text-align: center;
 }
 
+/* 收藏按钮 */
+.favorite-button {
+  padding: 8px 18px;
+  font-size: 16px;
+  border: 2px solid #62e060;
+  border-radius: 5px;
+  background-color: white;
+  color: #62e060;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin-left: 20px; 
+}
+
+.favorite-button.favorited {
+  background-color: #62e060;
+  color: white;
+  border-color: #62e060;
+}
+
+.favorite-button:hover {
+  background-color: #58d357;
+  color: white;
+}
 
 
+
+/* 分类小标题 */ 
 .subsection {
   margin-bottom: 20px;
 }
