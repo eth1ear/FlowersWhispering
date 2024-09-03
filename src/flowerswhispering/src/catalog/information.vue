@@ -216,7 +216,7 @@ mounted() {
 </script>
 
 
-<style>
+<style scoped>
 .book-background 
 {
     display: flex;
@@ -399,7 +399,7 @@ mounted() {
   margin-bottom: 20px;
 }
 
-.plant-name
+.information.plant-name
 {
     font-size: 70px;
     color:rgb(59, 175, 41);
