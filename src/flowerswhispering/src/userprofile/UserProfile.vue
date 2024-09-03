@@ -1,5 +1,30 @@
 <template>
   <div class="container" v-if="currentUser">
+     <header class="header">
+      <div class="logo">Flowers Whispering</div>
+       <div class="nav-user-container">
+          <nav class="nav-links">
+            <button @click="goHome" class="nav-button">首页</button>
+            <button @click="goToCommunity" class="nav-button">社区</button>
+            <button @click="goToCatalog" class="nav-button">图鉴</button>
+          </nav>
+          <div class="user-info">
+            <div class="user-avatar-wrapper">
+              <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
+              <div class="user-info-list">
+                <div v-if="currentUser.role !== 'guest'">
+                  <p>用户名: {{ currentUser.username }}</p>
+                  <p>邮箱: {{ currentUser.email }}</p>
+                  <p>角色: {{ currentUser.role }}</p>
+                </div>
+                <div v-else>
+                 <p class="login-prompt">点击登录</p>
+                </div>
+              </div>
+            </div>
+          </div>
+       </div>
+    </header>
     <div class="background"></div>
     <div class="content-wrapper">
       <div class="left-panel">
@@ -11,26 +36,26 @@
           <div class="user-details">
             <!-- 用户信息表单部分 -->
            <div class="form-group">
-  <label for="username">用户名：</label>
-  <div class="editable-field-container">
-    <span v-if="!editing">{{ currentUser.username }}</span>
-    <input v-if="editing" type="text" v-model="userTemp.username" class="fixed-input" />
-  </div>
-</div>
+             <label for="username">用户名：</label>
+                <div class="editable-field-container">
+                 <span v-if="!editing">{{ currentUser.username }}</span>
+                 <input v-if="editing" type="text" v-model="userTemp.username" class="fixed-input" />
+                </div>
+           </div>
 
-<div class="form-group">
-  <label for="email">邮&nbsp;&nbsp;&nbsp;&nbsp;箱：</label>
-  <div class="editable-field-container">
-    <span v-if="!editing">{{ currentUser.email }}</span>
-    <input 
-      v-if="editing" 
-      type="email" 
-      v-model="userTemp.email" 
-      @input="validateEmail" 
-      class="fixed-input" 
-    />
+           <div class="form-group">
+             <label for="email">邮&nbsp;&nbsp;&nbsp;&nbsp;箱：</label>
+               <div class="editable-field-container">
+                <span v-if="!editing">{{ currentUser.email }}</span>
+                <input 
+                v-if="editing" 
+                type="email" 
+                v-model="userTemp.email" 
+                @input="validateEmail" 
+                class="fixed-input" 
+                />
                 <!-- 错误信息显示在输入框下方 -->
-                 <p v-if="emailError" class="error-message">{{ emailError }}</p> <!-- 报错信息显示在输入框下方 -->
+                <p v-if="emailError" class="error-message">{{ emailError }}</p> <!-- 报错信息显示在输入框下方 -->
               </div>
             </div>
             <div class="form-group gender-group">
@@ -64,9 +89,9 @@
           </div>
           
         </div>
-          <div class="return-home-button-container">
-          <button class="return-home-button" @click="goHome">返回主页</button>
-        </div>
+          <div class="logout-button-container">
+  <button class="logout-button" @click="performLogout">退出登录</button>
+</div>
         </div>
        
         <!-- 返回主页按钮 -->
@@ -104,8 +129,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
-
+import { mapState, mapGetters, mapActions} from 'vuex';
 export default {
   computed: {
     ...mapState({
@@ -131,6 +155,7 @@ export default {
     };
   },
   methods: {
+     ...mapActions(['logout']),
     editUserInfo() {
       this.userTemp = { ...this.currentUser };  // 创建 currentUser 的临时副本
       this.editing = true;
@@ -152,7 +177,16 @@ export default {
         // alert("Edit successful!"); // 调试：确认提交成功后显示成功信息
         } 
     },
-
+     toggleUserMenu() {
+    this.showUserMenu = !this.showUserMenu;
+    },
+    handleUserAvatarClick() {
+      if (this.currentUser.role === 'guest') {
+        this.$router.push('/login'); // 如果是guest用户，点击跳转到登录页面
+      } else {
+        this.goToUserProfile(); // 否则跳转到个人主页
+      }
+    },
     cancelEdit() {
       this.editing = false;  // 恢复到原来的状态，不保存修改
       this.emailError = '';  // 取消编辑时，清除错误信息
@@ -171,9 +205,22 @@ export default {
     cancelAvatarSelection() {
       this.showAvatarSelection = false;
     },
+    goToCatalog() {
+      this.$router.push('/catalog');
+    },
+    goToCommunity() {
+      this.$router.push('/community');;
+    },
     goHome() {
       this.$router.push('/home');
-    }
+    },
+    performLogout() {
+      this.logout(); 
+      this.$router.push('/login'); // 跳转到登录页面
+    },
+     goToUserProfile() {
+      this.$router.push('/userprofile');;
+    },
   }
 };
 </script>
@@ -236,7 +283,7 @@ export default {
 
 .background {
   position: absolute;
-  top: 0;
+  top: -1;
   left: 0;
   width: 100%;
   height: 100%;
@@ -266,6 +313,9 @@ export default {
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   height: 80%;
+  z-index: 2;
+  margin-top: 20px; /* 与 header 之间的距离 */
+  margin-bottom: 20px; /* 与底部之间的距离 */
 }
 
 .user-details {
@@ -361,30 +411,33 @@ textarea {
   width: 260px; /* 容器的宽度设置为按钮的总宽度加上间距 */
 }
 
-.return-home-button-container {
+.logout-button-container {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: auto; /* 让按钮靠下 */
+  margin-bottom: 20px;
 }
 
-.return-home-button {
-  padding: 10px 20px;
-  background-color: #007bff;
+.logout-button {
+  background-color: #ff4d4d;
+  width: 136px; /* 调整宽度为长方形 */
+  height:35px;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
+  font-size:16px;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top:20px;
 }
 
-.return-home-button:hover {
-  background-color: #0056b3;
+.logout-button:hover {
+  background-color: #ff1a1a;
   transform: scale(1.05);
 }
 
-.return-home-button:active {
-  background-color: #004085;
+.logout-button:active {
+  background-color: #cc0000;
   transform: scale(1);
 }
 
@@ -498,5 +551,131 @@ textarea {
 
 .validation-feedback.success {
   color: green; /* 成功信息颜色 */
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background-color: rgba(70, 180, 118, 0.8); /* 使用rgba设置透明度，0.8表示80%的不透明度 */
+    color: white;
+    z-index: 10; /* 提高 z-index，确保 header 在其他内容上层 */
+    position: relative;
+}
+
+.logo {
+    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.user-info {
+    display:table-column;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.user-info img:hover {
+    transform: scale(1.1);
+}
+.user-info-list {
+  z-index: 2; /* 提高用户信息列表的层级，确保它显示在 header 之上 */
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background-color: white; /* 为弹出的内容添加背景色，避免透明度导致内容不清晰 */
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 添加阴影效果，确保弹出层次感 */
+}
+.username {
+    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.logout-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #ff1a1a;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #6DB583; /* 绿色背景 */
+  color: white;
+}
+
+.logo {
+  font-family: 'Caveat-VariableFont', 'ZhiMangXing-Regular', sans-serif;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.nav-user-container {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 按钮与头像之间的间距 */
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px; /* 按钮之间的间距 */
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.nav-button:hover {
+  color: #ffcc00; /* 鼠标悬停时变色 */
+}
+
+.user-info {
+  position: relative;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.login-prompt {
+  display: flex;
+  justify-content: center;  /* 水平居中对齐 */
+  align-items: center;      /* 垂直居中对齐 */
+  height: 100%;             /* 让内容充满父容器的高度 */
+  color: blue;
+  cursor: pointer;
+  text-align: center;
+}
+
+.login-prompt:hover {
+  text-decoration: underline;
 }
 </style>

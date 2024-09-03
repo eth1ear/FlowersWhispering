@@ -6,22 +6,32 @@
           <source src="../assets/video/background.mp4" type="video/mp4">
         </video>
       </div>
-    <header class="header">
-      <div class="logo">Flowers Whispering</div>
-      <div class="user-info" v-if="currentUser">
-        <span v-if="currentUser" class="username">{{ currentUser.username }}</span>
-        <div class="user-avatar-wrapper">
-         <img v-if="currentUser" :src="userAvatar" alt="User Avatar" @click="goToUserProfile()">
-          <!-- 用户详细信息列表 -->
-          <div class="user-info-list">
+  <header class="header">
+  <div class="logo">Flowers Whispering</div>
+  <div class="nav-user-container">
+    <nav class="nav-links">
+      <button @click="goHome" class="nav-button">首页</button>
+      <button @click="goToCommunity" class="nav-button">社区</button>
+      <button @click="goToCatalog" class="nav-button">图鉴</button>
+    </nav>
+    <div class="user-info">
+      <div class="user-avatar-wrapper">
+        <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
+        <div class="user-info-list">
+          <div v-if="currentUser.role !== 'guest'">
             <p>用户名: {{ currentUser.username }}</p>
             <p>邮箱: {{ currentUser.email }}</p>
             <p>角色: {{ currentUser.role }}</p>
           </div>
+          <div v-else>
+            <p class="login-prompt">点击登录</p>
+          </div>
         </div>
-        <button class="logout-button" @click="performLogout">{{ currentUser.role === 'guest' ? '登录' : '登出' }}</button>
       </div>
-    </header>
+    </div>
+  </div>
+</header>
+
 
     <main class="main-content">
       <!-- 用户界面 -->
@@ -137,6 +147,16 @@ export default defineComponent({
         arrowButton.classList.add('fade-out'); 
         arrowButton.style.pointerEvents = 'none'; // 禁用点击
       }
+    },
+    handleUserAvatarClick() {
+      if (this.currentUser.role === 'guest') {
+        this.$router.push('/login'); // 如果是guest用户，点击跳转到登录页面
+      } else {
+        this.goToUserProfile(); // 否则跳转到个人主页
+      }
+    },
+    goHome() {
+      this.$router.push('/home');
     },
     goToCatalog() {
       this.$router.push('/catalog');
@@ -287,47 +307,88 @@ export default defineComponent({
     color: #333;
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    background-color: #46b476cc;
-    color: white;
-    z-index: 1;
-    position: relative;
-  }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  background-color: rgba(70, 180, 118, 0.8); /* 使用rgba设置透明度，0.8表示80%的不透明度 */
+  color: white;
+  z-index: 10; /* 提高 z-index，确保 header 在其他内容上层 */
+  position: relative;
+}
 
-  .logo {
-    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
-    font-size: 28px;
-    font-weight: bold;
-  }
+.logo {
+  font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+  font-size: 28px;
+  font-weight: bold;
+}
 
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+.nav-user-container {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 按钮与头像之间的间距 */
+}
 
-  .user-info img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-  }
+.nav-links {
+  display: flex;
+  gap: 20px; /* 按钮之间的间距 */
+}
 
-  .user-info img:hover {
-    transform: scale(1.1);
-    
-  }
+.nav-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
 
-  .username {
-    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
-    font-size: 28px;
-    font-weight: bold;
-  }
+.nav-button:hover {
+  color: #ffcc00; /* 鼠标悬停时变色 */
+}
+
+.user-info {
+  position: relative;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.user-avatar-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.user-info-list {
+  z-index: 20; /* 提高用户信息列表的层级，确保它显示在 header 之上 */
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background-color: white; /* 为弹出的内容添加背景色，避免透明度导致内容不清晰 */
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 添加阴影效果，确保弹出层次感 */
+}
+
+.login-prompt {
+  display: flex;
+  justify-content: center;  /* 水平居中对齐 */
+  align-items: center;      /* 垂直居中对齐 */
+  height: 100%;             /* 让内容充满父容器的高度 */
+  color: blue;
+  cursor: pointer;
+  text-align: center;
+}
+
+.login-prompt:hover {
+  text-decoration: underline;
+}
+
 
   .main-content {
     flex: 1;
