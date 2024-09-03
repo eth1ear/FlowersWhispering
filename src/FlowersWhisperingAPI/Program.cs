@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Oracle.ManagedDataAccess.Client;
 using FlowersWhisperingAPI.User;
+using FlowersWhisperingAPI.Administrator;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,7 @@ builder.Services.AddAuthentication(options =>
 if(connectionString != null)
 {
     builder.Services.AddUserService(connectionString);
+    builder.Services.AddAdminService(connectionString);
 }
 
 var app = builder.Build();
