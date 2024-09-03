@@ -17,6 +17,7 @@ interface State {
   plants: Plant[];
   feedbacks: Feedbacks[];
   announcements: Announcement[];
+  userAvatar: string; // 新增的头像状态
 }
 
 interface Post {
@@ -40,7 +41,7 @@ interface Plant {
   approved: boolean;
 }
 
-interface Feedbacks{
+interface Feedbacks {
   id: number;
   title: string;
   content: string;
@@ -57,7 +58,7 @@ const store = createStore<State>({
   state: {
     currentUser: null,
     isAuthenticated: false,
-
+    userAvatar: require('@/userprofile/images/user-avatar.jpg'), // 使用 require 语句
     // 模拟的用户数据
     users: [
       { username: 'user', email: 'user1@example.com', password: 'password', role: 'user' },
@@ -65,7 +66,7 @@ const store = createStore<State>({
       { username: 'guest', email: 'guest@example.com', password: '', role: 'guest' }, // 游客用户
       { username: '111', email: 'mingyanghao6@gmail.com', password: '12345678', role: 'admin' }, // 管理员用户
     ],
-    posts:[
+    posts: [
       { id: 1, title: 'First Post', content: 'This is the content of the first post.' },
       { id: 2, title: 'Second Post', content: 'This is the content of the second post.' }
     ],
@@ -82,7 +83,7 @@ const store = createStore<State>({
     feedbacks: [
       { id: 1, title: '反馈1', content: '这是第一条用户反馈，包含较多内容以供测试。' },
       { id: 2, title: '反馈2', content: '这是第二条用户反馈，包含较多内容以供测试。' }
-    ], 
+    ],
     announcements: [
       { id: 1, title: '公告1', content: '这是第一条公告的内容。', date: '2024-01-01' },
       { id: 2, title: '公告2', content: '这是第二条公告的内容。', date: '2024-02-01' }
@@ -110,59 +111,64 @@ const store = createStore<State>({
         state.isAuthenticated = true;
       }
     },
-   // 用户管理相关的 mutation
-  ADD_USER(state, user) {
-    state.users.push(user);
-  },
-  DELETE_USER(state, username) {
-    state.users = state.users.filter(user => user.username !== username);
-  },
-  UPDATE_USER(state, updatedUser) {
-    const index = state.users.findIndex(user => user.username === updatedUser.username);
-    if (index !== -1) {
-      state.users.splice(index, 1, updatedUser);
-    }
-  },
-  UPDATE_USER_ROLE(state, { username, role }) {
-    const user = state.users.find(user => user.username === username);
-    if (user) {
-      user.role = role;
+    SET_AVATAR(state, avatar: string) {  // 新增的mutation
+      state.userAvatar = avatar;
+    },
+    // 用户管理相关的 mutation
+    ADD_USER(state, user) {
+      state.users.push(user);
+    },
+    DELETE_USER(state, username) {
+      state.users = state.users.filter(user => user.username !== username);
+    },
+
+    //userprofile
+    UPDATE_USER(state, updatedUser) {
+      const index = state.users.findIndex(user => user.username === updatedUser.username);
+      if (index !== -1) {
+        state.users.splice(index, 1, updatedUser); // 更新用户信息
+        if (state.currentUser && state.currentUser.username === updatedUser.username) {
+          state.currentUser = updatedUser; // 同时更新 currentUser
+        }
+      } else if (state.currentUser) {
+        // 如果 currentUser 存在，但 username 发生了变化（例如用户修改了用户名）
+        state.currentUser = updatedUser;
       }
     },
-  // 帖子管理相关的 mutation
-  /*
-  ADD_POST(state, post) {
-    state.posts.push(post);
-  },
-  
-  UPDATE_POST(state, updatedPost) {
-    const index = state.posts.findIndex(post => post.id === updatedPost.id);
-    if (index !== -1) {
-      state.posts.splice(index, 1, updatedPost);
+    // 帖子管理相关的 mutation
+    /*
+    ADD_POST(state, post) {
+      state.posts.push(post);
+    },
+    
+    UPDATE_POST(state, updatedPost) {
+      const index = state.posts.findIndex(post => post.id === updatedPost.id);
+      if (index !== -1) {
+        state.posts.splice(index, 1, updatedPost);
+      }
+    },
+  */
+    DELETE_POST(state, postId) {
+      state.posts = state.posts.filter(post => post.id !== postId);
+    },
+    DELETE_COMMENT(state, commentId) {
+      state.comments = state.comments.filter(comment => comment.id !== commentId);
+    },
+    DELETE_ANNOUNCEMENT(state, announcementId) {
+      state.announcements = state.announcements.filter(announcement => announcement.id !== announcementId);
+    },
+    ADD_ANNOUNCEMENT(state, announcement) {
+      state.announcements.push(announcement);
+    },
+    APPROVE_PLANT(state, plantId) {
+      const plant = state.plants.find(p => p.id === plantId);
+      if (plant) {
+        plant.approved = true;
+      }
+    },
+    DELETE_PLANT(state, plantId) {
+      state.plants = state.plants.filter(plant => plant.id !== plantId);
     }
-  },
-*/
-  DELETE_POST(state, postId) {
-    state.posts = state.posts.filter(post => post.id !== postId);
-  },
-  DELETE_COMMENT(state, commentId) {
-    state.comments = state.comments.filter(comment => comment.id !== commentId);
-  },
-  DELETE_ANNOUNCEMENT(state, announcementId) {
-    state.announcements = state.announcements.filter(announcement => announcement.id !== announcementId);
-  },
-  ADD_ANNOUNCEMENT(state, announcement) {
-    state.announcements.push(announcement);
-  },
-  APPROVE_PLANT(state, plantId) {
-    const plant = state.plants.find(p => p.id === plantId);
-    if (plant) {
-      plant.approved = true;
-    }
-  },
-  DELETE_PLANT(state, plantId) {
-    state.plants = state.plants.filter(plant => plant.id !== plantId);
-  }
   },
 
   // actions: {
@@ -216,7 +222,7 @@ const store = createStore<State>({
   actions: {
     login({ commit, state }, { usernameOrEmail, password }) {
       // 检查模拟数据中的用户名/邮箱和密码
-      const user = state.users.find(u => 
+      const user = state.users.find(u =>
         (u.username === usernameOrEmail || u.email === usernameOrEmail) && u.password === password
       );
       if (user) {
@@ -233,14 +239,14 @@ const store = createStore<State>({
     },
     register({ commit, state }, { username, email, password }) {
       // 检查用户名或邮箱是否已存在
-      const userExists = state.users.some(u => 
+      const userExists = state.users.some(u =>
         u.username === username || u.email === email
       );
       if (userExists) {
         return { success: false, message: '用户名或邮箱已被注册' };
       } else {
         // 创建新用户并添加到模拟数据中
-        const newUser = { username, email, password ,role: 'user'};
+        const newUser = { username, email, password, role: 'user' };
         state.users.push(newUser);
         return { success: true };
       }
@@ -255,28 +261,6 @@ const store = createStore<State>({
     addUser({ commit }, user) {
       commit('ADD_USER', user); // 确保这里传递的 user 是有效的
     },
-    //留出addUser的后端连接接口
-    /*
-    async addUser({ commit }, user) {
-      try {
-        // 发送 POST 请求到后端 API
-        const response = await axios.post('/api/addUsers', user);
-
-        if (response.data.success) {
-          // 如果后端返回成功，提交 mutation 将用户添加到 Vuex state 中
-          commit('ADD_USER', response.data.user);
-        } else {
-          // 处理后端返回的错误信息
-          console.error('添加用户失败:', response.data.message);
-          return { success: false, message: response.data.message };
-        }
-      } catch (error) {
-        // 捕获并处理请求中的错误
-        console.error('请求失败:', error.message);
-        return { success: false, message: '添加用户时发生网络或服务器错误' };
-      }
-    },
-    */
     deleteUser({ commit }, username: string) {
       commit('DELETE_USER', username);
     },
@@ -374,8 +358,8 @@ const store = createStore<State>({
     }
   },
   */
-  deleteComment({ commit }, commentId) {
-    commit('DELETE_COMMENT', commentId);
+    deleteComment({ commit }, commentId) {
+      commit('DELETE_COMMENT', commentId);
     },
   /*
   // 删除评论
@@ -399,8 +383,8 @@ const store = createStore<State>({
     }
   },
   */
-  deleteAnnouncement({ commit }, announcementId) {
-    commit('DELETE_ANNOUNCEMENT', announcementId);
+    deleteAnnouncement({ commit }, announcementId) {
+      commit('DELETE_ANNOUNCEMENT', announcementId);
     },
   /*
   // 删除公告
@@ -424,8 +408,8 @@ const store = createStore<State>({
     }
   },
   */
-  addAnnouncement({ commit }, announcement) {
-    commit('ADD_ANNOUNCEMENT', announcement);
+    addAnnouncement({ commit }, announcement) {
+      commit('ADD_ANNOUNCEMENT', announcement);
     },
   /*
   // 添加公告
@@ -450,8 +434,8 @@ const store = createStore<State>({
     }
   },
    */
-  deletePlant({ commit }, plantId) {
-    commit('DELETE_PLANT', plantId);
+    deletePlant({ commit }, plantId) {
+      commit('DELETE_PLANT', plantId);
     },
   /*
   // 删除植物
@@ -476,9 +460,9 @@ const store = createStore<State>({
   },
 
   */
-  approvePlant({ commit }, plantId) {
-    commit('APPROVE_PLANT', plantId);
-  }
+    approvePlant({ commit }, plantId) {
+      commit('APPROVE_PLANT', plantId);
+    }
   },
 
 
@@ -491,7 +475,8 @@ const store = createStore<State>({
     allAnnouncements: (state) => state.announcements,
     currentUser: (state) => state.currentUser,
     isAuthenticated: (state) => state.isAuthenticated,
-    isAdmin: (state) => state.currentUser?.role === 'admin'
+    isAdmin: (state) => state.currentUser?.role === 'admin',
+    userAvatar: (state) => state.userAvatar  // 新增的getter
   }
 });
 

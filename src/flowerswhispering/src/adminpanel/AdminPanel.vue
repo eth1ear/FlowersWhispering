@@ -1,10 +1,9 @@
 <template>
-    <div class="admin-panel-page">
+  <div class="admin-panel-page">
 
 
-
-      <!-- 侧边栏导航 -->
-      <aside class="top-navbar">
+    <!-- 侧边栏导航 -->
+    <aside class="top-navbar">
         <nav>
           <ul>
             <li @click="currentView = 'users'" :class="{ active: currentView === 'users' }">用户管理</li>
@@ -13,13 +12,19 @@
             <li @click="currentView = 'plants'" :class="{ active: currentView === 'plants' }">植物审核</li>
             <li @click="currentView = 'feedbacks'" :class="{ active: currentView === 'feedbacks' }">用户反馈</li>
             <li @click="currentView = 'announcements'" :class="{ active: currentView === 'announcements' }">公告发布</li>  
-            <li @click="GoToHome">返回主页</li>       
+            <li @click="toggleHomeDropdown">快速导航</li>
+            <!-- 下拉选择栏 -->
+            <ul v-if="showHomeDropdown" class="dropdown">
+              <li @click="goToHomeSection">返回主页</li>
+              <li @click="goToCatalogueSection">图鉴部分</li>
+              <li @click="goToCommunitySection">社区部分</li>
+            </ul>       
           </ul>
         </nav>
-      </aside>
+    </aside>
       
-      <!-- 主内容区域 -->
-      <main class="main-content">
+    <!-- 主内容区域 -->
+    <main class="main-content">
         <!-- 用户管理视图 -->
         <div v-if="currentView === 'users'">
           <h2>用户管理</h2>
@@ -216,8 +221,8 @@
           </ul>
         </div>  
 
-      </main>
-    </div>
+    </main>
+  </div>
 </template>
   
 <script>
@@ -233,6 +238,7 @@
         expandedPost: null,
         expandedFeedback: null,
         expandedAnnouncement: null, // 当前展开的公告
+        showHomeDropdown: false, // 控制返回主页下拉菜单显示
         newUser: {
           username: '',
           email: '',
@@ -270,7 +276,7 @@
     }
     },
     methods: {
-      ...mapActions(['addUser', 'deleteUser', 'updateUser', 'deletePost', 'deleteComment', 'deleteAnnouncement', 'addAnnouncement']),
+      ...mapActions(['addUser', 'deleteUser', 'updateUser', 'deletePost', 'deleteComment', 'deleteAnnouncement', 'addAnnouncement','updateAdmin']),
       
       toggleExpandAnnouncement(announcement) {
       if (this.expandedAnnouncement === announcement) {
@@ -278,7 +284,20 @@
       } else {
         this.expandedAnnouncement = announcement;
       }
-    },
+      },
+      toggleHomeDropdown() {
+        this.showHomeDropdown = !this.showHomeDropdown;
+      },
+      goToHomeSection() {
+        this.$router.push({ name: 'Home'});
+        this.showHomeDropdown = false; // 导航后隐藏下拉菜单
+      },
+      goToCatalogueSection(){
+        this.$router.push('/catalog');
+      },
+      goToCommunitySection(){
+        this.$router.push('/community');;
+      },
       toggleAddUserForm() {
         this.showAddUserForm = !this.showAddUserForm;
       },
@@ -364,11 +383,8 @@
     },
     deletePlant(plantId) {
       this.$store.commit('DELETE_PLANT', plantId);
-      },
-    GoToHome()
-    {
-        this.$router.push('/home');
-    },//返回主页界面
+    },
+  
     }
 };
   
