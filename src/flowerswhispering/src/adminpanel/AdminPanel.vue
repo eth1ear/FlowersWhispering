@@ -12,8 +12,7 @@
             <li @click="currentView = 'plants'" :class="{ active: currentView === 'plants' }">植物审核</li>
             <li @click="currentView = 'feedbacks'" :class="{ active: currentView === 'feedbacks' }">用户反馈</li>
             <li @click="currentView = 'announcements'" :class="{ active: currentView === 'announcements' }">公告发布</li>  
-            <li @click="toggleHomeDropdown">快速导航</li>
-            <!-- 下拉选择栏 -->
+            <li @click="toggleHomeDropdown" :class="{ 'fast-navigater': true, 'active-dropdown': showHomeDropdown }">快速导航</li>            <!-- 下拉选择栏 -->
             <ul v-if="showHomeDropdown" class="dropdown">
               <li @click="goToHomeSection">返回主页</li>
               <li @click="goToCatalogueSection">图鉴部分</li>
@@ -289,14 +288,16 @@
         this.showHomeDropdown = !this.showHomeDropdown;
       },
       goToHomeSection() {
-        this.$router.push({ name: 'Home'});
-        this.showHomeDropdown = false; // 导航后隐藏下拉菜单
+        this.$router.push({ name: 'Home' });
+        this.showHomeDropdown = false;
       },
-      goToCatalogueSection(){
+      goToCatalogueSection() {
         this.$router.push('/catalog');
+        this.showHomeDropdown = false;
       },
-      goToCommunitySection(){
-        this.$router.push('/community');;
+      goToCommunitySection() {
+        this.$router.push('/community');
+        this.showHomeDropdown = false;
       },
       toggleAddUserForm() {
         this.showAddUserForm = !this.showAddUserForm;
@@ -436,10 +437,51 @@
   
 .top-navbar li:hover,
 .top-navbar li.active {
-  background-color: #1abc9c;
+  background-color: #3fcea1; /* 其他导航项的悬停颜色 */
 }
 
- 
+/* 快速导航按钮悬停时的颜色 */
+.fast-navigater:hover {
+  background-color: #631b1b; /* 鼠标悬停时更亮的绿色 */
+  color: #f5f5f5; /* 悬停时的字体颜色 */
+}
+
+/* 快速导航按钮样式 */
+.fast-navigater {
+  background-color: #3fce6a; /* 默认背景色 */
+  color: #ecf0f1; /* 浅色字体 */
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+
+/* 下拉菜单激活时 */
+.active-dropdown {
+  background-color: #44f27e; /* 激活状态时的背景色 */
+}
+
+/* 下拉菜单样式 */
+.dropdown {
+  margin-top: 50px;
+  background-color: #1b4228;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  list-style: none;
+  padding: 0;
+}
+
+.dropdown li {
+  padding: 15px 20px;
+  cursor: pointer;
+  color: #ace6c5;
+  font-size: 13px;
+}
+
+.dropdown li:hover {
+  background-color: #85eeb1;
+  color: #43b052;
+}
 .main-content {
   margin-top: 120px; /* 增加 margin-top 值，将内容向下移动 */
   flex: 1;
