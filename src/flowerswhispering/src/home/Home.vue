@@ -16,7 +16,7 @@
           <div class="user-info-list">
             <p>用户名: {{ currentUser.username }}</p>
             <p>邮箱: {{ currentUser.email }}</p>
-            <p>角色: {{ currentUser.role }}</p>
+            <p>角色: {{ currentUser.userRole }}</p>
           </div>
         </div>
         <button class="logout-button" @click="performLogout">{{ currentUser.role === 'guest' ? '登录' : '登出' }}</button>
@@ -91,7 +91,10 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapGetters(['currentUser', 'isAdmin']),
+    ...mapGetters({
+      currentUser: 'getUserInfo', // 获取当前用户信息
+      isAdmin: 'isAdmin',
+    }),
   },
   methods: {
     ...mapActions(['logout']),
