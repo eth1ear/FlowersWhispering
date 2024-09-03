@@ -5,7 +5,7 @@
         <video class="fullscreenVideo" id="kotoba" playsinline autoplay muted loop>
           <source src="../assets/video/background.mp4" type="video/mp4">
         </video>
-      </div>
+    </div>
     <header class="header">
       <div class="logo">Flowers Whispering</div>
       <div class="user-info" v-if="currentUser">
