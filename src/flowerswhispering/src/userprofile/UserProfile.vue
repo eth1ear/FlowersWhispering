@@ -556,7 +556,7 @@ textarea {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 100px;
     background-color: rgba(70, 180, 118, 0.8); /* 使用rgba设置透明度，0.8表示80%的不透明度 */
     color: white;
     z-index: 10; /* 提高 z-index，确保 header 在其他内容上层 */
@@ -620,11 +620,12 @@ textarea {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #6DB583; /* 绿色背景 */
+  padding: 0 20px;
+  background-color: rgba(70, 180, 118, 0.8); /* 使用rgba设置透明度，0.8表示80%的不透明度 */
   color: white;
+  z-index: 10; /* 提高 z-index，确保 header 在其他内容上层 */
+  position: relative;
 }
-
 .logo {
   font-family: 'Caveat-VariableFont', 'ZhiMangXing-Regular', sans-serif;
   font-size: 28px;
