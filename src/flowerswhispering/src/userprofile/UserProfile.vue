@@ -1,30 +1,30 @@
 <template>
   <div class="container" v-if="currentUser">
-     <header class="header">
-      <div class="logo">Flowers Whispering</div>
-       <div class="nav-user-container">
-          <nav class="nav-links">
-            <button @click="goHome" class="nav-button">首页</button>
-            <button @click="goToCommunity" class="nav-button">社区</button>
-            <button @click="goToCatalog" class="nav-button">图鉴</button>
-          </nav>
-          <div class="user-info">
-            <div class="user-avatar-wrapper">
-              <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
-              <div class="user-info-list">
-                <div v-if="currentUser.role !== 'guest'">
-                  <p>用户名: {{ currentUser.username }}</p>
-                  <p>邮箱: {{ currentUser.email }}</p>
-                  <p>角色: {{ currentUser.role }}</p>
-                </div>
-                <div v-else>
-                 <p class="login-prompt">点击登录</p>
-                </div>
-              </div>
-            </div>
+      <header class="header">
+  <div class="logo">Flowers Whispering</div>
+  <div class="nav-user-container">
+    <nav class="nav-links">
+      <button @click="goHome" class="nav-button">首页</button>
+      <button @click="goToCommunity" class="nav-button">社区</button>
+      <button @click="goToCatalog" class="nav-button">图鉴</button>
+    </nav>
+    <div class="user-info">
+      <div class="user-avatar-wrapper">
+        <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
+        <div class="user-info-list">
+          <div v-if="currentUser.role !== 'guest'">
+            <p>用户名: {{ currentUser.username }}</p>
+            <p>邮箱: {{ currentUser.email }}</p>
+            <p>角色: {{ currentUser.role }}</p>
           </div>
-       </div>
-    </header>
+          <div v-else>
+            <p class="login-prompt">点击登录</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
     <div class="background"></div>
     <div class="content-wrapper">
       <div class="left-panel">
@@ -133,7 +133,8 @@ import { mapState, mapGetters, mapActions} from 'vuex';
 export default {
   computed: {
     ...mapState({
-      currentUser: state => state.currentUser  // 从Vuex store中获取 currentUser
+      currentUser: state => state.currentUser , // 从Vuex store中获取 currentUser
+      userAvatar: state => state.userAvatar // 确保这里绑定了全局的 userAvatar
     }),
     ...mapGetters(['userAvatar'])  // 使用全局的userAvatar
   },
@@ -589,6 +590,7 @@ textarea {
 .user-info-list {
   z-index: 2; /* 提高用户信息列表的层级，确保它显示在 header 之上 */
   position: absolute;
+  left: -200px!important;
   top: 50px;
   right: 0;
   background-color: white; /* 为弹出的内容添加背景色，避免透明度导致内容不清晰 */
