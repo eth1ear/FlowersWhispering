@@ -42,7 +42,10 @@
                   <button :class="{ active: activeTab === 'Myfavorited' }" @click="setActiveTab('Myfavorited')">我的收藏</button>
                   <button :class="{ active: activeTab === 'contribution' }" @click="setActiveTab('contribution')">贡献词条</button>
                   <button :class="{ active: activeTab === 'new' }" @click="setActiveTab('new')">最新品种</button>
+
                   <button @click = "TestPage">页面测试</button>   <!--仅用于测试页面布局，后端接成功后，得删除-->
+                  <button @click = "ErrorPage">错误测试</button>   <!--仅用于测试页面布局，后端接成功后，得删除-->
+
                   <button :class="{ active: activeTab === 'home' }" @click="GoToHome">返回上步</button>
 
                 </div> 
@@ -79,7 +82,7 @@
            <ul class="favorite-plants-list">
             <li v-for="(item, index) in paginatedFavoritePlants" :key="index" class="favorite-plant-item">
               <span @click="viewPlantDetail(item.Plantid,item.Plantname)" class="plant-name">{{ item.Plantname }}</span>
-              <button @click="removeFromFavorites(item.Plantid,item.Plantname)" class="remove-button">取消收藏</button>
+              <button @click="removeFromFavorites(item.id)" class="remove-button">取消收藏</button>
             </li>
           </ul>
           <div class="pagination">
@@ -226,7 +229,7 @@
 
         GoToContributionPage()
         {
-
+            this.$router.push('/Contribution');
         },//切换贡献页面
 
         searchDatabase()
@@ -291,9 +294,10 @@
     }, // 初始渲染时，读取最新品种的植物列表，等待后端接入
 
 
-      removeFromFavorites(plantId,plantName) {
+      removeFromFavorites(plantId) {
+        const plantToRemove = this.favoritePlants.find(plant => plant.id === plantId); //定位到名字，用于后端
         this.favoritePlants = this.favoritePlants.filter(plant => plant.id !== plantId);
-         console.log(`删除植物的名字: ${plantName}`);
+         console.log(`删除植物的名字: ${plantToRemove.Plantname}`);
        },  //取消收藏，等待后端接入
 
 
@@ -301,6 +305,11 @@
         {
           this.$router.push('/information');
         }, //跳转植物信息,后端接入测试完毕后，得删除
+
+        ErrorPage()
+        {
+          this.$router.push('/FindError');
+        },
 
         prevPage() {
       if (this.currentPage > 1) {
