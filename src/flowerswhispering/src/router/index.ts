@@ -9,7 +9,7 @@ import Information from '../catalog/information.vue';
 import Community from '../community/Community.vue';
 import Profile from '../userprofile/UserProfile.vue';
 import PostDetail from '../community/PostDetail.vue';
-
+import PersonalCenter from '../community/PersonalCenter.vue';
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -60,6 +60,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/home',
     name: 'Home',
     component: Home,
+    meta: { requiresAuth: true }  // 需要验证
+  },
+  {
+    path: '/personalCenter',
+    name: 'PersonalCenter',
+    component: PersonalCenter,
     meta: { requiresAuth: true }  // 需要验证
   },
   {
