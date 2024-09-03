@@ -1,7 +1,9 @@
 <template>
-    <div class="admin-panel-page">
-      <!-- 侧边栏导航 -->
-      <aside class="top-navbar">
+  <div class="admin-panel-page">
+
+
+    <!-- 侧边栏导航 -->
+    <aside class="top-navbar">
         <nav>
           <ul>
             <li @click="currentView = 'users'" :class="{ active: currentView === 'users' }">用户管理</li>
@@ -9,13 +11,19 @@
             <li @click="currentView = 'comments'" :class="{ active: currentView === 'comments' }">评论管理</li>
             <li @click="currentView = 'plants'" :class="{ active: currentView === 'plants' }">植物审核</li>
             <li @click="currentView = 'feedbacks'" :class="{ active: currentView === 'feedbacks' }">用户反馈</li>
-            <li @click="currentView = 'announcements'" :class="{ active: currentView === 'announcements' }">公告发布</li>           
+            <li @click="currentView = 'announcements'" :class="{ active: currentView === 'announcements' }">公告发布</li>  
+            <li @click="toggleHomeDropdown" :class="{ 'fast-navigater': true, 'active-dropdown': showHomeDropdown }">快速导航</li>            <!-- 下拉选择栏 -->
+            <ul v-if="showHomeDropdown" class="dropdown">
+              <li @click="goToHomeSection">返回主页</li>
+              <li @click="goToCatalogueSection">图鉴部分</li>
+              <li @click="goToCommunitySection">社区部分</li>
+            </ul>       
           </ul>
         </nav>
-      </aside>
+    </aside>
       
-      <!-- 主内容区域 -->
-      <main class="main-content">
+    <!-- 主内容区域 -->
+    <main class="main-content">
         <!-- 用户管理视图 -->
         <div v-if="currentView === 'users'">
           <h2>用户管理</h2>
@@ -36,11 +44,17 @@
               <div class="item-details">
                 <p><strong>用户名:</strong> {{ user.username }}</p>
                 <p><strong>邮箱:</strong> {{ user.email }}</p>
-                <p><strong>角色:</strong> {{ user.role }}</p>
+                <p><strong>角色:</strong>
+                <span v-if="!user.editing">{{ user.role }}</span>
+                <select v-else v-model="user.newRole" class="form-input">
+                  <option value="user">user</option>
+                  <option value="admin">admin</option>
+                </select>
+                </p>
               </div>
               <div class="item-actions">
-                <button @click="editUser(user)" class="btn-edit my-animation-slide-bottom">修改</button>
-                <button @click="deleteUser(user.username)" class="btn-delete my-animation-slide-bottom">删除</button>
+                <button v-if="!user.editing" @click="editUser(user)" class="btn-edit my-animation-slide-bottom">修改</button>
+                <button v-else @click="saveUser(user)" class="btn-submit my-animation-slide-bottom">保存</button>
               </div>
             </li>
           </ul>
@@ -186,7 +200,7 @@
       <button type="submit" class="btn-submit">提交公告</button>
           </form>
   
-          <ul class="item-list">
+          <ul class="item-list assignment">
             <li v-for="announcement in announcements" :key="announcement.id" class="item">
               <div class="item-details">
                 <p><strong>标题:</strong> {{ announcement.title }}</p>
@@ -206,11 +220,11 @@
           </ul>
         </div>  
 
-      </main>
-    </div>
-  </template>
+    </main>
+  </div>
+</template>
   
-  <script>
+<script>
   import { mapActions, mapGetters } from 'vuex';
   
   export default {
@@ -223,6 +237,7 @@
         expandedPost: null,
         expandedFeedback: null,
         expandedAnnouncement: null, // 当前展开的公告
+        showHomeDropdown: false, // 控制返回主页下拉菜单显示
         newUser: {
           username: '',
           email: '',
@@ -260,7 +275,7 @@
     }
     },
     methods: {
-      ...mapActions(['addUser', 'deleteUser', 'updateUser', 'deletePost', 'deleteComment', 'deleteAnnouncement', 'addAnnouncement']),
+      ...mapActions(['addUser', 'deleteUser', 'updateUser', 'deletePost', 'deleteComment', 'deleteAnnouncement', 'addAnnouncement','updateAdmin']),
       
       toggleExpandAnnouncement(announcement) {
       if (this.expandedAnnouncement === announcement) {
@@ -268,7 +283,22 @@
       } else {
         this.expandedAnnouncement = announcement;
       }
-    },
+      },
+      toggleHomeDropdown() {
+        this.showHomeDropdown = !this.showHomeDropdown;
+      },
+      goToHomeSection() {
+        this.$router.push({ name: 'Home' });
+        this.showHomeDropdown = false;
+      },
+      goToCatalogueSection() {
+        this.$router.push('/catalog');
+        this.showHomeDropdown = false;
+      },
+      goToCommunitySection() {
+        this.$router.push('/community');
+        this.showHomeDropdown = false;
+      },
       toggleAddUserForm() {
         this.showAddUserForm = !this.showAddUserForm;
       },
@@ -279,15 +309,36 @@
           this.showAddUserForm = false;
         }
       },
+      /**
+       * handleAddUser部分连接后端接口后的调用
+          handleAddUser() {
+            if (this.newUser.username && this.newUser.email && this.newUser.password) {
+              this.addUser({ ...this.newUser })
+                .then(response => {
+                  if (response && !response.success) {
+                    alert(response.message);
+                  } else {
+                    this.newUser = { username: '', email: '', password: '', role: '' };
+                    this.showAddUserForm = false;
+                  }
+                });
+            } else {
+              alert('请填写所有字段');
+            }
+          }
+       * 
+       */
       handleDeleteUser(username) {
         this.deleteUser(username);
       },
       editUser(user) {
-        const newEmail = prompt('输入新的邮箱:', user.email);
-        const newRole = prompt('输入新的角色:', user.role);
-        if (newEmail && newRole) {
-          this.updateUser({ ...user, email: newEmail, role: newRole });
-        }
+        user.editing = true;
+        user.newRole = user.role; // 初始化下拉栏的值
+      },
+      saveUser(user) {
+        user.role = user.newRole;
+        user.editing = false;
+        this.updateAdmin(user); // 仅触发 Vuex 的 updateAdmin action
       },
       handleDeletePost(postId) {
         this.deletePost(postId);
@@ -334,11 +385,13 @@
     deletePlant(plantId) {
       this.$store.commit('DELETE_PLANT', plantId);
     },
-    }
-  };
-  </script>
   
-  <style scoped>
+    }
+};
+  
+</script>
+  
+<style scoped>
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
   
   .admin-panel-page {
@@ -357,7 +410,8 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   z-index: 10;
   position: fixed;
-  width: 100%;
+  width: 8%;
+  height:100%;
   top: 0;
   left: 0;
 }
@@ -367,28 +421,73 @@
   margin: 0;
   padding: 0;
   display: flex;
+  flex-direction: column; 
   justify-content: space-around;
 }
 
 .top-navbar li {
-  padding: 10px 20px;
+  padding: 20px 33px;
   cursor: pointer;
   border-radius: 4px;
   color: rgb(255, 255, 255);
   font-weight: bold;
+  margin-bottom: 10px; /* 每条数据条之间的间距 */
   transition: background-color 0.3s ease;
 }
   
 .top-navbar li:hover,
 .top-navbar li.active {
-  background-color: #1abc9c;
+  background-color: #3fcea1; /* 其他导航项的悬停颜色 */
 }
 
-  
+/* 快速导航按钮悬停时的颜色 */
+.fast-navigater:hover {
+  background-color: #631b1b; /* 鼠标悬停时更亮的绿色 */
+  color: #f5f5f5; /* 悬停时的字体颜色 */
+}
+
+/* 快速导航按钮样式 */
+.fast-navigater {
+  background-color: #3fce6a; /* 默认背景色 */
+  color: #ecf0f1; /* 浅色字体 */
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+
+/* 下拉菜单激活时 */
+.active-dropdown {
+  background-color: #44f27e; /* 激活状态时的背景色 */
+}
+
+/* 下拉菜单样式 */
+.dropdown {
+  margin-top: 50px;
+  background-color: #1b4228;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  list-style: none;
+  padding: 0;
+}
+
+.dropdown li {
+  padding: 15px 20px;
+  cursor: pointer;
+  color: #ace6c5;
+  font-size: 13px;
+}
+
+.dropdown li:hover {
+  background-color: #85eeb1;
+  color: #43b052;
+}
 .main-content {
   margin-top: 120px; /* 增加 margin-top 值，将内容向下移动 */
   flex: 1;
-  padding: 25px;
+  width:83%;
+  margin-left: 11%;
+  padding: 40px;
   background-color: rgba(255, 255, 255, 0.9);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -399,43 +498,50 @@
 h2 {
   font-size: 24px;
   color: #333;
+  margin-top:0px;
+  margin-bottom: 20px;
 }
   
 .item-list {
   list-style: none;
+  align-items: center; /* 垂直居中 */
   padding: 0;
-  margin: 0;
-  width: 100%; /* 确保列表占据可用的全宽度 */
+  margin-top: 10px;
+  width: 80vw;
+  display: flex; /* 启用 Flexbox 布局 */
+  flex-wrap: wrap; /* 允许换行 */
+  gap: 10px; /* 设置列和行之间的间距 */
 }
 
 .item-list li {
   display: flex; /* 让内容在同一行内对齐 */
   align-items: center; /* 垂直居中 */
-  width: 100%; /* 让每条数据条占满父容器宽度 */
+  width: calc(49% - 5px); /* 设置每条数据条占父容器宽度的50%，并减去一半的间距 */
   padding: 15px 20px; /* 增加内部间距，使条目显得更宽 */
   margin-bottom: 10px; /* 每条数据条之间的间距 */
-  background-color: #f8f9fa; /* 背景色，便于视觉区分 */
+  background-color: #ffffff; /* 背景色，便于视觉区分 */
   border-radius: 8px; /* 圆角效果 */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影 */
   box-sizing: border-box; /* 包含内边距和边框在内 */
 }
-  
-  .item {
-    background-color: #f4f5f6;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(153, 97, 97, 0.1);
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 80%; /* 设置宽度为父容器的 80% */
-    max-width: 600px; /* 设置最大宽度为 600px，防止过宽 */
-  }
 
+.assignment{
+  height:120px;
+}
+
+.item {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(153, 97, 97, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 50px; /* 设置宽度为父容器的 100%，使其适应 flex 布局 */
+}
   
   .item-details p {
-    margin: 0;
+    margin: 10px;
     color: #238d89;
   }
   
@@ -617,5 +723,5 @@ h2 {
     0% { opacity: 0; transform: translateY(20%); }
     100% { opacity: 1; transform: translateY(0); }
 }
-  </style>
+</style>
   
