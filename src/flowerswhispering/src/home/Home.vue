@@ -251,7 +251,7 @@ export default defineComponent({
   .user-info-list {
     position: absolute;
     top: 50px;
-    left: -125px;
+    left: -200px!important;
     background-color: rgba(255, 255, 255, 0.95);
     border: 2px solid #46b476;
     border-radius: 8px; 
