@@ -24,10 +24,7 @@
           <div v-if="currentUser.role !== 'guest'">
             <p>用户名: {{ currentUser.username }}</p>
             <p>邮箱: {{ currentUser.email }}</p>
-            <p>角色: {{ currentUser.role }}</p>
-          </div>
-          <div v-else>
-            <p class="login-prompt">点击登录</p>
+            <p>角色: {{ currentUser.userRole }}</p>
           </div>
         </div>
       </div>
@@ -108,7 +105,10 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapGetters(['currentUser', 'isAdmin','userAvatar']),
+    ...mapGetters({
+      currentUser: 'getUserInfo', // 获取当前用户信息
+      isAdmin: 'isAdmin',
+    }),
   },
   methods: {
     ...mapActions(['logout']),

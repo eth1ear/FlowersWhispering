@@ -75,113 +75,140 @@
   </div>
 </template>
 
-<script>
-import axios from 'axios';
-import { defineComponent } from 'vue';
-import { mapActions, mapGetters } from 'vuex';
-export default {
+<script lang="ts">
+import { defineComponent, ref ,computed} from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+
+export default defineComponent({
   name: 'Login',
-  data() {
-    return {
-      isLogin: true,
-      loginForm: {
-        usernameOrEmail: '',
-        password: '',
-      },
-      registerForm: {
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        touched: {
-          email: false,
-          password: false,
-          confirmPassword: false,
-        }
-      },
-    }
-  },
-  computed: {
-    ...mapGetters(['isAuthenticated', 'currentUser']),
-    isEmailValid() {
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+
+    const isLogin = ref(true);
+
+    const loginForm = ref({
+      usernameOrEmail: '',
+      password: ''
+    });
+
+    const registerForm = ref({
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      touched: {
+        email: false,
+        password: false,
+        confirmPassword: false
+      }
+    });
+
+    const isEmailValid = computed(() => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return this.registerForm.email ? emailRegex.test(this.registerForm.email) : false;
-    },
-    isPasswordValid() {
-      return this.registerForm.password ? this.registerForm.password.length >= 8 && this.registerForm.password.length <= 20 : false;
-    },
-    arePasswordsMatching() {
-      return this.registerForm.password && this.registerForm.confirmPassword ? this.registerForm.password === this.registerForm.confirmPassword : false;
-    }
-  },
-  methods: {
-    ...mapActions(['login', 'logout', 'register','guestLogin']),
-    handleInput(field) {
-      this.registerForm.touched[field] = true;
-    },
-    async performLogin() {
-      const { usernameOrEmail, password } = this.loginForm;
-      // 检查用户名或邮箱和密码是否为空
+      return emailRegex.test(registerForm.value.email);
+    });
+
+    const isPasswordValid = computed(() => {
+      const password = registerForm.value.password;
+      return password.length >= 8 && password.length <= 20;
+    });
+
+    const arePasswordsMatching = computed(() => {
+      return registerForm.value.password === registerForm.value.confirmPassword;
+    });
+
+    const handleInput = (field: keyof typeof registerForm.value.touched) => {
+      registerForm.value.touched[field] = true;
+    };
+
+    const performLogin = async () => {
+      const { usernameOrEmail, password } = loginForm.value;
+
       if (!usernameOrEmail.trim() || !password.trim()) {
         alert('用户名/邮箱和密码不能为空！');
         return;
       }
-      // 登录逻辑
-      const response = await this.login(this.loginForm);
-      if (response.success) {
-        this.$router.push('/home');
-      } else {
-        alert(response.message);
+
+      try {
+        const response = await store.dispatch('login', { usernameOrEmail, password });
+        if (response) {
+          router.push('/home');
+        }
+      } catch (error:any) {
+        alert(error.message || '登录失败');
       }
-    },
-    async performGuestLogin() {
-      const response = await this.guestLogin();
-      if (response.success) {
-        this.$router.push('/home');
-      } else {
+    };
+
+    const performGuestLogin = async () => {
+      try {
+        const response = await store.dispatch('guestLogin');
+        if (response) {
+          router.push('/home');
+        } else {
+          alert('游客登录失败，请稍后再试。');
+        }
+      } catch (error) {
         alert('游客登录失败，请稍后再试。');
       }
-    },
-    async performRegister() {
-      const { username, email, password, confirmPassword } = this.registerForm;
+    };
 
-      // 检查注册信息是否为空
+    const performRegister = async () => {
+      const { username, email, password, confirmPassword } = registerForm.value;
+
       if (!username.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
         alert('所有字段都必须填写，并且不能为空！');
         return;
       }
 
-      // 验证邮箱格式
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
+      if (!isEmailValid.value) {
         alert('请输入有效的邮箱地址！');
         return;
       }
 
-      // 验证密码长度
-      if (password.length < 8 || password.length > 20) {
+      if (!isPasswordValid.value) {
         alert('密码长度必须在8到20个字符之间！');
         return;
       }
 
-      // 检查两次输入的密码是否一致
-      if (password !== confirmPassword) {
+      if (!arePasswordsMatching.value) {
         alert('两次输入的密码不一致');
         return;
       }
-      const response = await this.register(this.registerForm);
-      if (!response.success) {
-        alert(response.message); // 显示错误消息
-      } else {
-        alert('注册成功!请登录');
-        this.isLogin = true;
-    }
-    },
-    handleInput(field) {
-      this.registerForm.touched[field] = true;
-    }
-  },
-}
+
+      try {
+        const response = await store.dispatch('register', {
+          username,
+          email,
+          password
+        });
+
+        if (response) {
+          alert('注册成功!请登录');
+          isLogin.value = true;
+        } else {
+          alert('注册失败');
+        }
+      } catch (error:any) {
+        alert(error.message || '注册失败');
+      }
+    };
+
+    return {
+      isLogin,
+      loginForm,
+      registerForm,
+      isEmailValid,
+      isPasswordValid,
+      arePasswordsMatching,
+      handleInput,
+      performLogin,
+      performGuestLogin,
+      performRegister
+    };
+  }
+});
 </script>
 
 

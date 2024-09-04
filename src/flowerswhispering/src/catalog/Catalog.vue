@@ -51,8 +51,6 @@
             <p class="user-name">{{userName}}</p>    <!--显示用户名-->
 
             <div class="tabs">              <!--显示选项卡-->
-                <button @click="GoToFavorites">我的收藏</button>
-                <button @click="GoToSubmissions">我的贡献</button>
                 <button @click="GoToHome">返回主页</button>
             </div> 
         </div>
@@ -115,6 +113,10 @@ export default {
       userName: 'Wuhuairline' // 默认用户名,后端接入用户姓名
     };
   },
+  mounted()
+      {
+        window.scrollTo(0,0);
+      },
   methods:
   {
      handleUserAvatarClick() {

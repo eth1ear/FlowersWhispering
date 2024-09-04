@@ -59,7 +59,7 @@ namespace FlowersWhisperingAPI.User.Mappers
 
         public UserInfo? GetUserByEmail(string email)
         {
-            string sql = "SELECT * FROM users WHERE email = :Email";
+            string sql = "SELECT * FROM USERS WHERE email = :Email";
             using var connection = new OracleConnection(_connectionString);
             connection.Open();
             using var command = new OracleCommand(sql, connection);
