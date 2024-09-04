@@ -216,7 +216,7 @@
       },//切换到分类页面
       GoToContributorsList()
       {
-
+        this.$router.push('/contributorsList');
       } ,//切换到贡献榜页面
       GoToHome()
       {

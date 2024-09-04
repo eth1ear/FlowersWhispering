@@ -62,22 +62,25 @@
             </button>
         </div>
     
-        <!--功能点按钮设置卡片效果-->
-      <div class="card-container1">                        
-        <div class="card" @click="GoToBook()">
-          <img src="./images/button1.png" alt="Card 1" />
-          <div class="card-info">我的帖子</div>
-        </div>
-        <div class="card" @click="GoToCultivation()">
-          <img src="./images/button2.png" alt="Card 2" />
-          <div class="card-info">我的评论</div>
-        </div>
-        <div class="card" @click="GoToRecognition()">
-          <img src="./images/button3.png" alt="Card 3" />
-          <div class="card-info">我的收藏</div>
-        </div>
-      </div>
-      <!--功能点按钮，设置卡片效果-->
+        <div class="contribution-list">
+    <h2>用户实时贡献榜</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>排名</th>
+          <th>用户名</th>
+          <th>贡献度</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(user, index) in sortedUsers" :key="user.id">
+          <td>{{ index + 1 }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.contribution }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
        
     
     </div>
@@ -95,13 +98,20 @@
     import { mapGetters, mapActions } from 'vuex';
     
     export default {
-      name: "Catalog",
+      name: "ContributorsList",
       data() {
         return {
           buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像
           userName: 'Wuhuairline', // 默认用户名,后端接入用户姓名
   
           isUserInfoVisible: false, // 控制用户信息列表的显示与隐藏
+
+          users: [
+        { id: 1, username: 'Alice', posts: 10, comments: 5 },
+        { id: 2, username: 'Bob', posts: 7, comments: 15 },
+        { id: 3, username: 'Charlie', posts: 12, comments: 10 },
+        // Add more users as needed
+      ]
         };
       },
       mounted() {
@@ -112,6 +122,17 @@
         currentUser: 'getUserInfo', // 获取当前用户信息
         isAdmin: 'isAdmin',
       }),
+
+      sortedUsers() {
+      // Calculate contribution for each user
+      return this.users.map(user => ({
+        ...user,
+        contribution: user.posts * 5 + user.comments * 1
+      }))
+      // Sort users by contribution in descending order
+      .sort((a, b) => b.contribution - a.contribution)
+    }
+  
     },
       methods:
       {
@@ -332,63 +353,56 @@
     display: block;
   }
     
-    /* 卡片按钮格式 */
-    .card-container1 
-    {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 80px; /* 卡片之间的间距 */
-      cursor: pointer; /*指针变化*/
-      margin-top: -50px; /* 调整距离顶部的距离 */
-    }
-    
-    .card {
-      position: relative;
-      left:5%;
-      width: 300px; /* 自定义卡片宽度 */
-      height: 300px; /* 自定义卡片高度 */
-      overflow: hidden; /* 隐藏超出边界的部分 */
-      border-radius: 10px; /* 圆角效果 */
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 卡片阴影 */
-      transition: transform 0.3s ease, box-shadow 0.3s ease; /* 动态平滑 */
-      border-radius: 12px; /* 圆角边框 */
-    }
-    
-    .card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; 
-      background-color: aliceblue;
-    }
-    
-    .card-info {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgb(28, 127, 13);
-      color: white; /* 文字颜色 */
-      font-size: 28px;
-      padding: 10px;
-      text-align: center;
-      transform: translateY(100%); /* 初始隐藏 */
-      transition: transform 0.3s ease; /* 动态平滑 */
-      font-family: '黑体','ZhiMangXing-Regular', sans-serif;
-    }
-    
-    
-    
-    .card:hover {
-      transform: scale(1.05); /* 卡片放大效果 */
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 卡片阴影放大效果 */
-    }
-    
-    .card:hover .card-info {
-      transform: translateY(0); /* 鼠标悬停时显示文字 */
-    }
-    
-    
-    
+
+
+  .contribution-list {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  background-color: rgba(255, 255, 255, 0.9); /* 背景色和透明度 */
+  border-radius: 10px; /* 圆角边框 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+  padding: 20px; /* 内边距 */
+  opacity: 0.9; /* 整体透明度 */
+}
+
+h2 {
+  text-align: center;
+  color: #0bbe3b; /* 文字颜色 */
+  margin-top: 0px; /* 距离上方的距离 */
+  margin-bottom: 20px; /* 距离下方的距离 */
+  font-size: 40px; /* 文字大小 */
+}
+.user-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.user-card:last-child {
+  border-bottom: none; /* 去掉最后一行的下边框 */
+}
+
+.user-card:nth-child(even) {
+  background-color: #61f196; /* 奇数行背景色 */
+}
+
+.user-card .rank {
+  font-weight: bold;
+}
+
+.user-card .username {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.user-card .contribution {
+  text-align: right;
+  font-weight: bold;
+}
+
     
     
     

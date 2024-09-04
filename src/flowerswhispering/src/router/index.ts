@@ -10,7 +10,7 @@ import Community from '../community/Community.vue';
 import Profile from '../userprofile/UserProfile.vue';
 import PostDetail from '../community/PostDetail.vue';
 import PersonalCenter from '../community/PersonalCenter.vue';
-
+import ContributorsList from '../community/ContributorsList.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -68,6 +68,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/personalCenter',
     name: 'PersonalCenter',
     component: PersonalCenter,
+    meta: { requiresAuth: true }  // 需要验证
+  },
+  {
+    path: '/contributorsList',
+    name: 'ContributorsList',
+    component: ContributorsList,
     meta: { requiresAuth: true }  // 需要验证
   },
   {
