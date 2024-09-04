@@ -20,5 +20,15 @@ namespace FlowersWhisperingAPI.Plants.Controllers
             }
             return Ok(plantId); // 返回 200 OK 和 plantId
         }
+        [HttpGet("findInfo")]
+        public IActionResult GetPlantInfo (string plantName)
+        {
+            var plantInfo = _plantFindService.GetPlantInfo(plantName);
+            if (plantInfo == null)
+            {
+                return NotFound(); // 返回 404 Not Found
+            }
+            return Ok(plantInfo); // 返回 200 OK 和 plantInfo
+        }
     }   
 }

@@ -12,6 +12,10 @@ namespace FlowersWhisperingAPI.Plants.Services
         {
             return _findMapper.GetPlantId(plantName);
         }
+        public Plant GetPlantInfo (string plantName)
+        {
+            return _findMapper.GetPlantInfo(plantName);
+        }
         
     }
 }

@@ -42,6 +42,50 @@ namespace FlowersWhisperingAPI.Plants.Mappers
             // 如果没有找到或发生错误，返回 -1
             return -1;
         }
+        public Plant GetPlantInfo(string plantName)
+        {
+            // SQL 查询字符串
+            string sql = "SELECT * FROM plant WHERE COMMON_NAME = :PlantName OR SCIENTIFIC_NAME = :PlantName";
+            
+            try
+            {
+                // 创建和打开数据库连接
+                using var connection = new OracleConnection(_connectionString);
+                connection.Open();
+                
+                // 创建 SQL 命令
+                using var command = new OracleCommand(sql, connection);
+                // 添加参数
+                command.Parameters.Add(":PlantName", OracleDbType.Varchar2).Value = plantName;
+                
+                // 执行命令并读取结果
+                using var reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    // 从数据库中读取数据
+                    int plantId = reader.GetInt32(reader.GetOrdinal("PLANT_ID"));
+                    string commonName = reader.GetString(reader.GetOrdinal("COMMON_NAME"));
+                    string scientificName = reader.GetString(reader.GetOrdinal("SCIENTIFIC_NAME"));
+                    string CATEGORY = reader.GetString(reader.GetOrdinal("CATEGORY"));
+                    string PORTRAYAL = reader.GetString(reader.GetOrdinal("PORTRAYAL"));
+                    string GROWTH_EN = reader.GetString(reader.GetOrdinal("GROWTH_ENVIRONMENT"));
+                    string care_con = reader.GetString(reader.GetOrdinal("CARE_CONDITIONS"));
+                    DateTime time = reader.GetDateTime(reader.GetOrdinal("UPDATE_TIME"));
+                    
+                    // 创建 Plant 对象并返回
+                    return new Plant(plantId, commonName, scientificName, CATEGORY, PORTRAYAL, GROWTH_EN, care_con, time);
+                }
+            }
+            catch (Exception ex)
+            {
+                // 捕获并处理异常
+                Console.WriteLine($"Error finding plant: {ex.Message}");
+            }
+            
+            // 如果没有找到或发生错误，返回 null
+            return null;
+            
+        }
         
     }
 
