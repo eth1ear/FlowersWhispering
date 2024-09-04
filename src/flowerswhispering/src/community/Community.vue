@@ -60,6 +60,8 @@
               <span class="tooltip">个人中心</span>
           </button>
       </div>
+
+      
   
        <!--功能点按钮设置卡片效果-->
        <div class="card-container">                        
@@ -67,7 +69,43 @@
               欢迎来到叶语花谣社区
             </div>
         </div>
-        <!--功能点按钮，设置卡片效果-->
+
+
+           
+    
+
+        <div class ="information-box1">    <!--搜索框，重要部分！！！-->
+             <input 
+              type="text" 
+              v-model="searchQuery"   
+              placeholder="搜索你喜欢的帖子！" 
+              class="information-input1" 
+             />
+            <button @click="searchDatabase" class="information-button1">搜索</button>
+           </div>
+  
+         
+       
+        <div class="carousel">
+    <ul class="slides">
+      <li v-for="(slide, index) in slides" :key="index" :class="{ active: currentIndex === index }">
+        <img :src="slide.image" alt="Slide Image">
+      </li>
+    </ul>
+    <div class="indicators">
+      <span
+        v-for="(slide, index) in slides"
+        :key="index"
+        :class="{ active: currentIndex === index }"
+        @click="goToSlide(index)"
+      ></span>
+    </div>
+  </div>
+
+  
+
+
+      
   
   </div>
   
@@ -84,23 +122,42 @@
   import { mapGetters, mapActions } from 'vuex';
   
   export default {
-    name: "Catalog",
+    name: "Community",
     data() {
       return {
         buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像
         userName: 'Wuhuairline', // 默认用户名,后端接入用户姓名
 
         isUserInfoVisible: false, // 控制用户信息列表的显示与隐藏
+
+        slides: [
+        [
+          { id: 1, image: '../home/images/community.png',},
+          { id: 2, image: '../home/images/book.png', title: 'Title 2', description: 'Description 2' },
+          { id: 3, image: 'https://via.placeholder.com/400x300?text=Image+3', title: 'Title 3', description: 'Description 3' },
+          { id: 4, image: 'https://via.placeholder.com/400x300?text=Image+4', title: 'Title 4', description: 'Description 4' },
+          { id: 5, image: 'https://via.placeholder.com/400x300?text=Image+5', title: 'Title 5', description: 'Description 5' },
+          { id: 6, image: 'https://via.placeholder.com/400x300?text=Image+6', title: 'Title 6', description: 'Description 6' }
+        ]
+      ],
+      currentIndex: 0
       };
     },
+    
     mounted() {
     window.scrollTo(0, 0);
+    this.startCarousel();
   },
     computed: {
     ...mapGetters({
       currentUser: 'getUserInfo', // 获取当前用户信息
       isAdmin: 'isAdmin',
     }),
+    visiblePosts() {
+      const prevIndex = (this.currentIndex - 1 + this.posts.length) % this.posts.length;
+      const nextIndex = (this.currentIndex + 1) % this.posts.length;
+      return [this.posts[prevIndex], this.posts[this.currentIndex], this.posts[nextIndex]];
+    }
   },
     methods:
     {
@@ -114,6 +171,24 @@
         this.goToUserProfile(); // 否则跳转到个人主页
       }
     },
+
+    goToDetail(id) {
+      // 使用 Vue Router 导航到帖子详情页
+      this.$router.push({ name: 'PostDetail', params: { id } });
+    
+    },
+   startCarousel() {
+      setInterval(this.nextSlide, 3000);
+    },
+    nextSlide() {
+      this.currentIndex = (this.currentIndex + 1) % this.slides.length;
+    },
+    goToSlide(index) {
+      this.currentIndex = index;
+    },
+
+
+  
       Gotouserpage()
       {
           this.$router.push('/userprofile');
@@ -148,14 +223,7 @@
           this.$router.push('/home');
       },//返回主页界面
       
-      GoToCultivation()
-      {
-  
-      }, //切换到养护，待实现-----
-      GoToRecognition()
-      {
-  
-      },//切换到识别工具，待实现------
+     
     }
   };
   </script>
@@ -376,10 +444,14 @@
     transform: translateY(0); /* 鼠标悬停时显示文字 */
   }
   
- 
+  @keyframes jianBian {
+    to {
+        background-position: -2000rem;
+    }
+}
   .love-time-title1 {
     position: absolute;
-    top: 20%;            /* 垂直居中 */
+    top: 15%;            /* 垂直居中 */
     left: 50%;           /* 水平居中 */
     transform: translate(-50%, -50%); /* 精确居中 */
     font-size: 4rem;
@@ -393,6 +465,96 @@
     animation: jianBian 60s linear infinite;
     width: 3000px; /* 根据需要调整宽度 */
    
+}
+
+   /*  搜索框   */
+
+   .information-box1 
+  {
+    display: flex;
+    justify-content: center; /* 水平居中对齐 */
+    
+    margin-top: -300px; /* 设置距离顶部的间距 */
+}
+
+.information-input1 
+{
+ 
+  width: 800px;
+  padding: 10px;
+  border: 2px solid rgb(28, 127, 13); /* 绿色边框 */
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  margin-right: 10px; /* 搜索框与按钮之间的间距 */
+  font-size:16px;
+}
+
+.information-input1:focus {
+  border-color: rgb(46, 131, 58); /* 聚焦时的边框颜色 */
+}
+
+.information-button1 {
+  padding: 5px 20px;
+  background-color: rgb(46, 131, 58); /* 按钮背景色 */
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size:16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.information-button1:hover {
+  background-color: rgb(28, 127, 13); /* 悬停时的按钮背景色 */
+  transform: scale(1.05); /* 悬停时放大效果 */
+}
+
+
+
+/* 轮播 */
+.carousel-container {
+  width: 50%;
+  height: 40%;
+  margin: 0 auto;
+}
+
+.my-carousel .carousel-slide {
+  display: flex;
+}
+
+
+.carousel-group {
+  display: flex;
+  width: 100%;
+}
+
+
+.carousel-item {
+  flex: 1;
+  padding: 10px;
+  cursor: pointer; /* Add cursor style to indicate clickable area */
+  width: 150px;  /* You can set a fixed width or use percentage */
+  height: 100px; /* You can set a fixed height or use percentage */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+}
+
+.carousel-item:hover .carousel-image {
+  opacity: 0.8; /* Optional: Add hover effect to images */
+}
+
+.carousel-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover; 
+}
+
+.carousel-item-description {
+  text-align: center;
+  margin-top: 10px;
 }
   
   /*  固有写法，显示用户*/ 

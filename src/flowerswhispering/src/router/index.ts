@@ -10,6 +10,8 @@ import Community from '../community/Community.vue';
 import Profile from '../userprofile/UserProfile.vue';
 import PostDetail from '../community/PostDetail.vue';
 import PersonalCenter from '../community/PersonalCenter.vue';
+
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
