@@ -4,6 +4,9 @@
   <div class="logo">Flowers Whispering</div>
   <div class="nav-user-container">
     <nav class="nav-links">
+       <nav v-if="currentUser.role === 'admin'">
+         <button @click="goToAdminPanel" class="nav-button">管理</button>
+      </nav>
       <button @click="goHome" class="nav-button">首页</button>
       <button @click="goToCommunity" class="nav-button">社区</button>
       <button @click="goToCatalog" class="nav-button">图鉴</button>
@@ -25,7 +28,11 @@
     </div>
   </div>
 </header>
-    <div class="background"></div>
+  <!-- 视频背景 -->
+  <video autoplay muted loop class="background-video">
+    <source src="@/assets/video/background.mp4" type="video/mp4">
+  </video>
+
     <div class="content-wrapper">
       <div class="left-panel">
         <div class="user-info-container">
@@ -90,9 +97,9 @@
           
         </div>
           <div class="logout-button-container">
-  <button class="logout-button" @click="performLogout">退出登录</button>
-</div>
-        </div>
+         <button class="logout-button" @click="performLogout">退出登录</button>
+         </div>
+         </div>
        
         <!-- 返回主页按钮 -->
       
@@ -122,7 +129,16 @@
         </div>
       </div>
     </div>
+     <!-- 底部备案号 -->
+     <footer class="footer">
+      <p class="left"><a href="contact.html">联系我们</a></p>
+     <div class="center">
+    <span>© 2024 Flowers Whisperin&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <a href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2024087175号-1</a>
   </div>
+      <div class="right"></div>
+    </footer>
+  </div> 
   <div v-else>
     加载中...
   </div>
@@ -212,6 +228,9 @@ export default {
     goToCommunity() {
       this.$router.push('/community');;
     },
+    goToAdminPanel() {
+      this.$router.push('/adminpanel');
+    },
     goHome() {
       this.$router.push('/home');
     },
@@ -227,6 +246,17 @@ export default {
 </script>
 
 <style scoped>
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  background-color: rgba(70, 180, 118, 0.8); /* 使用rgba设置透明度，0.8表示80%的不透明度 */
+  color: white;
+  z-index: 10; /* 提高 z-index，确保 header 在其他内容上层 */
+  position: relative;
+}
 .avatar-container {
   position: relative;
   display: flex;
@@ -282,16 +312,16 @@ export default {
   overflow: hidden;
 }
 
-.background {
+.background-video {
   position: absolute;
-  top: -1;
+  top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('./images/background.png') no-repeat center center;
-  background-size: cover;
-  z-index: 1;
+  object-fit: cover;
+  z-index: -1; 
 }
+
 
 .content-wrapper {
   position: relative;
@@ -315,8 +345,7 @@ export default {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   height: 80%;
   z-index: 2;
-  margin-top: 20px; /* 与 header 之间的距离 */
-  margin-bottom: 20px; /* 与底部之间的距离 */
+  margin-bottom: 80px; /* 与底部之间的距离 */
 }
 
 .user-details {
@@ -553,27 +582,13 @@ textarea {
 .validation-feedback.success {
   color: green; /* 成功信息颜色 */
 }
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 100px;
-    background-color: rgba(70, 180, 118, 0.8); /* 使用rgba设置透明度，0.8表示80%的不透明度 */
-    color: white;
-    z-index: 10; /* 提高 z-index，确保 header 在其他内容上层 */
-    position: relative;
-}
 
-.logo {
-    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
-    font-size: 28px;
-    font-weight: bold;
-}
 
 .user-info {
     display:table-column;
     align-items: center;
     gap: 10px;
+    position: relative;
 }
 
 .user-info img {
@@ -604,30 +619,6 @@ textarea {
     font-weight: bold;
 }
 
-.logout-button {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.logout-button:hover {
-    background-color: #ff1a1a;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  background-color: rgba(70, 180, 118, 0.8); /* 使用rgba设置透明度，0.8表示80%的不透明度 */
-  color: white;
-  z-index: 10; /* 提高 z-index，确保 header 在其他内容上层 */
-  position: relative;
-}
 .logo {
   font-family: 'Caveat-VariableFont', 'ZhiMangXing-Regular', sans-serif;
   font-size: 28px;
@@ -658,10 +649,6 @@ textarea {
   color: #ffcc00; /* 鼠标悬停时变色 */
 }
 
-.user-info {
-  position: relative;
-}
-
 .user-avatar {
   width: 40px;
   height: 40px;
@@ -681,4 +668,40 @@ textarea {
 .login-prompt:hover {
   text-decoration: underline;
 }
+
+.footer {
+  display: flex;
+  justify-content: space-between;  /* 左中右均匀分布 */
+  align-items: center;             /* 垂直居中对齐 */
+  background-color: rgba(70, 180, 118, 0.8);
+  color: white;
+  position: absolute;
+  width: 100%;                     /* 跨满页面 */
+  z-index: 10;
+}
+
+.footer .left {
+  text-align: left;
+  margin-left: 10px;               /* 左边距 */
+}
+
+.footer .center {
+  text-align: center;
+  flex: 1;                         /* 中间内容居中，并占据剩余空间 */
+}
+
+.footer .right {
+  text-align: right;
+  margin-right: 10px;              /* 右边距 */
+}
+
+.footer a {
+  color: white;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: rgb(24, 212, 209); /* 悬停下划线效果 */
+}
+
 </style>
