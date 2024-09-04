@@ -95,11 +95,11 @@
 
           <!--贡献词条部分-->
           <div v-if="activeTab === 'contribution'" class="favorite-plants-container">    
-            <h2 class="contribution-title">贡献词条</h2>
-            <ul class="contribution-list">
-            <li v-for="(item, index) in paginatedContributions" :key="index" class="contribution-item">
+            <h2 class="search-contribution-title">贡献词条</h2>
+            <ul class="search-contribution-list">
+            <li v-for="(item, index) in paginatedContributions" :key="index" class="search-contribution-item">
               <span 
-              class="contribution-plant-name"
+              class="search-contribution-plant-name"
               @click="item.status === '已通过' ? viewPlantDetail(item.Plantid,item.Plantname) : null"
               :class="{ clickable: item.status === '已通过'}">
               {{ item.Plantname }}</span>
@@ -114,8 +114,8 @@
             <button @click="nextContributionPage" :disabled="contributionPage === contributionTotalPages">下一页</button>
             </div>
                 <!-- 贡献页面按钮 -->
-            <div class="contribution-button-container">
-              <button class="contribution-button" @click="GoToContributionPage">我要贡献</button>
+            <div class="search-contribution-button-container">
+              <button class="search-contribution-button" @click="GoToContributionPage">我要贡献</button>
             </div>
           </div>
           <!--贡献词条部分-->
@@ -586,8 +586,7 @@
 .favorite-title
 {
   position:relative;
-  top:-5%;
-  left:42%;
+  top:0;
   font-size: 35PX;
   z-index:6;
   color:rgb(45, 198, 22);
@@ -673,7 +672,7 @@
 
 
 /* 贡献词条部分样式 */
-.contribution-container {
+.search-contribution-container {
   position:absolute;
   top:8%;
   left:20%;
@@ -686,22 +685,22 @@
   color:rgb(45, 198, 22);
 }
 
-.contribution-title {
+.search-contribution-title {
   position: relative;
-  top: -5%;
-  left: 42%;
+  top: 0;
   font-size: 35PX;
   z-index: 6;
   color: rgb(45, 198, 22);
   margin-bottom: 0;
 }
 
-.contribution-list {
+.search-contribution-list 
+{
   padding: 0;
   margin: 0;
 }
 
-.contribution-item {
+.search-contribution-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -713,12 +712,12 @@
   border-radius: 5px;
 }
 
-.contribution-plant-name {
+.search-contribution-plant-name {
   font-size: 22px!important;
   transition: color 0.3s ease;
 }
 
-.contribution-item:hover {
+.search-contribution-item:hover {
   transform: scale(1.05);
   color:rgb(17, 213, 244);
 }
@@ -744,13 +743,13 @@
   color: white;
 }
     
-.contribution-button-container {
+.search-contribution-button-container {
   display: flex;
   justify-content: center;
   margin-top: 20px;
 }
 
-.contribution-button {
+.search-contribution-button {
   padding: 10px 30px;
   font-size: 25px;
   color: white;
@@ -762,7 +761,7 @@
   transition: transform 0.3s ease; 
 }
 
-.contribution-button:hover {
+.search-contribution-button:hover {
   background-color: rgb(29, 180, 167);
   transform:scale(1.3);
 }
@@ -784,8 +783,7 @@
 
 .new-plants-title {
   position: relative;
-  top: -5%;
-  left: 42%;
+  top: 0;
   font-size: 35px;
   z-index: 6;
   color: rgb(45, 198, 22);
