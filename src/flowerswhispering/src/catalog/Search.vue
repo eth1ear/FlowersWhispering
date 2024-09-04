@@ -1,34 +1,7 @@
 <template>
 
     <!--大标题-->
-  <header class="header">
-  <div class="logo">Flowers Whispering</div>
-  <div class="nav-user-container">
-    <nav class="nav-links">
-        <nav v-if="currentUser.role === 'admin'">
-         <button @click="goToAdminPanel" class="nav-button">管理</button>
-      </nav>
-      <button @click="goHome" class="nav-button">首页</button>
-      <button @click="goToCommunity" class="nav-button">社区</button>
-      <button @click="goToCatalog" class="nav-button">图鉴</button>
-    </nav>
-    <div class="user-info">
-      <div class="user-avatar-wrapper">
-        <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
-        <div class="user-info-list" v-if="currentUser">
-          <div v-if="currentUser.role !== 'guest'">
-            <p>用户名: {{ currentUser.username }}</p>
-            <p>邮箱: {{ currentUser.email }}</p>
-            <p>角色: {{ currentUser.role }}</p>
-          </div>
-          <div v-else>
-            <p class="login-prompt" @click="goToLogin">点击登录</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
+
          <!--大标题-->
     
     

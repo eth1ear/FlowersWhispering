@@ -13,11 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FlowersWhisperingAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< HEAD
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7edf4fb80b717440936469be48bb9aa5a78c2b43")]
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6f7317cf7b0115c817e5ee6278e116c82ac46ffc")]
->>>>>>> 5cfb8347b655a1f030b826222b8eb8905514ab2a
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+83e2656b26c0f80d82fb2fd24e65576d875e15f0")]
 [assembly: System.Reflection.AssemblyProductAttribute("FlowersWhisperingAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FlowersWhisperingAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

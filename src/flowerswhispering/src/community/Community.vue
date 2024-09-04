@@ -75,7 +75,7 @@
   
 
   <div class="card-container1">                        
-        <div class="card" @click="GoToBook()">
+        <div class="card" @click="GotoPostDetil()">
           <img src="./images/button1.png" alt="Card 1" />
           <div class="card-info">我的帖子</div>
         </div>
@@ -124,17 +124,39 @@
           </div>
          <!--热帖部分-->
 
-  <!--热帖部分-->
+  <!--分类部分-->
   <div v-if="activeTab === 'HotPosts'">
         
 
       </div>
-     <!--热帖部分-->
+     <!--分类部分-->
 
+     
+  
+    
        
-       
+     
+<!-- 用户贡献榜部分 -->
+<div v-if="activeTab === 'ContributorsList'" class="contributors-container">
+    <h2 class="contributors-title">用户贡献榜</h2>
+    <ul class="contributors-list">
+      <li v-for="(user, index) in paginatedContributors" :key="index" class="contributor-item">
+        <span class="user-rank">{{ (currentPage - 1) * itemsPerPage + index + 1 }}</span>
+        <span class="user-name">{{ user.username }}</span>
+        <span class="user-contribution">贡献分数: {{ calculateContribution(user) }}</span>
+      </li>
+    </ul>
+    <div class="pagination">
+      <button @click="prevPage" :disabled="currentPage === 1">上一页</button>
+      <span>页码 {{ currentPage }} / {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages">下一页</button>
+    </div>
+  </div>
+<!-- 用户贡献榜部分 -->
 
 
+
+  
            
     
 
@@ -175,17 +197,28 @@
         activeTab:"Announcement",
         isUserInfoVisible: false, // 控制用户信息列表的显示与隐藏
 
-        slides: [
-        [
-          { id: 1, image: '../home/images/community.png',},
-          { id: 2, image: '../home/images/book.png', title: 'Title 2', description: 'Description 2' },
-          { id: 3, image: 'https://via.placeholder.com/400x300?text=Image+3', title: 'Title 3', description: 'Description 3' },
-          { id: 4, image: 'https://via.placeholder.com/400x300?text=Image+4', title: 'Title 4', description: 'Description 4' },
-          { id: 5, image: 'https://via.placeholder.com/400x300?text=Image+5', title: 'Title 5', description: 'Description 5' },
-          { id: 6, image: 'https://via.placeholder.com/400x300?text=Image+6', title: 'Title 6', description: 'Description 6' }
-        ]
-      ],
-      currentIndex: 0
+       
+      currentPage: 1,
+      
+      itemsPerPage: 5 ,// 每页显示的用户数
+      contributors: [
+      { username: 'Alice', posts: 10, comments: 20 },
+      { username: 'Bob', posts: 5, comments: 15 },
+      { username: 'Charlie', posts: 8, comments: 30 },
+      { username: 'David', posts: 7, comments: 12 },
+      { username: 'David1', posts: 7, comments: 12 },
+      { username: 'David2', posts: 7, comments: 12 },
+      { username: 'David3', posts: 7, comments: 12 },
+      { username: 'David4', posts: 7, comments: 12 },
+      { username: 'David5', posts: 7, comments: 12 },
+      { username: 'David6', posts: 7, comments: 12 },
+      { username: 'David7', posts: 7, comments: 12 },
+      { username: 'David8', posts: 7, comments: 12 },
+      // 添加更多测试数据
+    ],
+    
+        
+     
       };
     },
     
@@ -198,10 +231,26 @@
       currentUser: 'getUserInfo', // 获取当前用户信息
       isAdmin: 'isAdmin',
     }),
-    visiblePosts() {
-      const prevIndex = (this.currentIndex - 1 + this.posts.length) % this.posts.length;
-      const nextIndex = (this.currentIndex + 1) % this.posts.length;
-      return [this.posts[prevIndex], this.posts[this.currentIndex], this.posts[nextIndex]];
+    // 计算分页后的用户列表
+    paginatedContributors() {
+      // 计算总页数
+      const totalPages = Math.ceil(this.contributors.length / this.itemsPerPage);
+
+      // 计算当前页码的开始和结束索引
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+
+      // 对用户按贡献度排序
+      const sortedContributors = this.contributors.slice().sort((a, b) => {
+        return this.calculateContribution(b) - this.calculateContribution(a);
+      });
+
+      // 返回当前页的用户列表
+      return sortedContributors.slice(start, end);
+    },
+    // 计算总页数
+    totalPages() {
+      return Math.ceil(this.contributors.length / this.itemsPerPage);
     }
   },
     methods:
@@ -229,13 +278,23 @@
    startCarousel() {
       setInterval(this.nextSlide, 3000);
     },
-    nextSlide() {
-      this.currentIndex = (this.currentIndex + 1) % this.slides.length;
+    calculateContribution(user) {
+      // 计算贡献分数 = 发帖数 * 5 + 评论数
+      return (user.posts * 5) + user.comments;
     },
-    goToSlide(index) {
-      this.currentIndex = index;
+    // 前一页
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
     },
-
+    // 下一页
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
+  
 
   
       Gotouserpage()
@@ -243,23 +302,13 @@
           this.$router.push('/userprofile');
       }, //切换用户页面
       
-      GoToAnnouncement()
+      GotoPostDetil()
       {
-          
-      }, //切换到公告页面
+          this.$router.push('/postDetail');
+      }, //切换用户页面
   
-      GoToHotPosts()
-      {
-  
-      },//切换到热帖页面
-      GoToSentPost()
-      {
-
-      },//切换到发帖页面
-      GoToCategory()
-      {
-
-      },//切换到分类页面
+      
+      
       
       GoToHome()
       {
@@ -558,54 +607,85 @@
 
 
 
-/* 轮播 */
-.carousel-container {
-  width: 50%;
-  height: 40%;
-  margin: 0 auto;
-}
 
-.my-carousel .carousel-slide {
-  display: flex;
-}
-
-
-.carousel-group {
-  display: flex;
-  width: 100%;
-}
-
-
-.carousel-item {
-  flex: 1;
-  padding: 10px;
-  cursor: pointer; /* Add cursor style to indicate clickable area */
-  width: 150px;  /* You can set a fixed width or use percentage */
-  height: 100px; /* You can set a fixed height or use percentage */
-  display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center;     /* Center vertically */
-}
-
-.carousel-item:hover .carousel-image {
-  opacity: 0.8; /* Optional: Add hover effect to images */
-}
-
-.carousel-image {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover; 
-}
-
-.carousel-item-description {
-  text-align: center;
-  margin-top: 10px;
-}
   
 
 
 
+/* 用户贡献榜 */
+/* 用户贡献榜 */
+.contributors-container {
+ 
+  position: absolute;
+  top: 8%;
+  left: 20%;
+  width: 900px;
+  height: 600px;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgb(45, 198, 22);
+  color: rgb(45, 198, 22);
+  
+}
+
+.contributors-title {
+  text-align: center; /* 居中标题 */
+  position: relative;
+  top: 0;
+  font-size: 35px;
+  z-index: 6;
+  color: rgb(45, 198, 22);
+  margin-bottom: 0;
+}
+
+.contributors-list {
+  padding: 0;
+  margin: 0;
+  list-style-type: none; /* 移除默认的列表样式 */
+}
+
+.contributor-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  transition: transform 0.3s ease; /* 动态效果 */
+  cursor: pointer; /* 鼠标放在上面改变指针 */
+  background-color: #d2f0ed;
+  margin: 8px 0;
+  border-radius: 5px;
+}
+
+.contributor-item:hover {
+  transform: scale(1.05); /* 放大效果 */
+}
+
+.user-rank {
+  font-size: 22px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.user-name {
+  font-size: 22px;
+  transition: color 0.3s ease; /* 动态颜色变化效果 */
+}
+
+.user-name:hover {
+  color: rgb(37, 210, 226); /* 悬停时的文字颜色 */
+}
+
+.user-contribution {
+  font-size: 18px;
+}
+
+.pagination {
+    text-align: center; /* 水平居中对齐 */
+  }
+  .pagination button {
+    margin: 0 5px; /* 可选：按钮之间的间距 */
+  }
 
 
 
