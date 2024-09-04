@@ -10,6 +10,9 @@
   <div class="logo">Flowers Whispering</div>
   <div class="nav-user-container">
     <nav class="nav-links">
+      <nav v-if="currentUser.role === 'admin'">
+         <button @click="goToAdminPanel" class="nav-button">管理</button>
+      </nav>
       <button @click="goHome" class="nav-button">首页</button>
       <button @click="goToCommunity" class="nav-button">社区</button>
       <button @click="goToCatalog" class="nav-button">图鉴</button>
@@ -82,9 +85,13 @@
       </div>
     </main>
 
-    <footer class="footer">
+    <!-- 底部备案号 -->
+     <footer class="footer">
       <p class="left"><a href="contact.html">联系我们</a></p>
-      <p class="center">© 2024 Flowers Whispering</p>
+     <div class="center">
+    <span>© 2024 Flowers Whispering&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <a href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2024087175号-1</a>
+  </div>
       <div class="right"></div>
     </footer>
   </div>
@@ -595,27 +602,31 @@ export default defineComponent({
     transform: translateY(0);
   }
 
-  .footer {
+.footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0px 20px;
-  background-color: #46b476cc;
-  font-size: 15px;
+  justify-content: space-between;  /* 左中右均匀分布 */
+  align-items: center;             /* 垂直居中对齐 */
+  background-color: rgba(70, 180, 118, 0.8);
   color: white;
+  position: relative;
+  bottom: 0;
+  width: 100%;                     /* 跨满页面 */
+  z-index: 10;
 }
 
 .footer .left {
-  flex: 1; /* 左侧元素占用剩余空间 */
+  text-align: left;
+  margin-left: 10px;               /* 左边距 */
 }
 
 .footer .center {
-  flex: 1;
-  text-align: center; /* 居中对齐 */
+  text-align: center;
+  flex: 1;                         /* 中间内容居中，并占据剩余空间 */
 }
 
 .footer .right {
-  flex: 1; /* 右侧占位元素占用剩余空间,保持居中 */
+  text-align: right;
+  margin-right: 10px;              /* 右边距 */
 }
 
 .footer a {
@@ -624,7 +635,7 @@ export default defineComponent({
 }
 
 .footer a:hover {
-  text-decoration: underline;
+  color: rgb(24, 212, 209); /* 悬停下划线效果 */
 }
 
 </style>

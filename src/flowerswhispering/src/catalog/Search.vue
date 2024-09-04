@@ -1,22 +1,34 @@
 <template>
 
     <!--大标题-->
-    <header class="header">
-          <div class="logo">Flowers Whispering</div>
-          <div class="user-info" v-if="currentUser">
-            <span v-if="currentUser" class="username">{{ currentUser.username }}</span>
-            <div class="user-avatar-wrapper">
-              <img v-if="currentUser" src="../home/images/user-avatar.jpg" alt="User Avatar" @click="goToUserProfile()">
-              <!-- 用户详细信息列表 -->
-              <div class="user-info-list">
-                <p>用户名: {{ currentUser.username }}</p>
-                <p>邮箱: {{ currentUser.email }}</p>
-                <p>角色: {{ currentUser.role }}</p>
-              </div>
-            </div>
-            <button class="logout-button" @click="performLogout">{{ currentUser.role === 'guest' ? '登录' : '登出' }}</button>
+  <header class="header">
+  <div class="logo">Flowers Whispering</div>
+  <div class="nav-user-container">
+    <nav class="nav-links">
+        <nav v-if="currentUser.role === 'admin'">
+         <button @click="goToAdminPanel" class="nav-button">管理</button>
+      </nav>
+      <button @click="goHome" class="nav-button">首页</button>
+      <button @click="goToCommunity" class="nav-button">社区</button>
+      <button @click="goToCatalog" class="nav-button">图鉴</button>
+    </nav>
+    <div class="user-info">
+      <div class="user-avatar-wrapper">
+        <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
+        <div class="user-info-list" v-if="currentUser">
+          <div v-if="currentUser.role !== 'guest'">
+            <p>用户名: {{ currentUser.username }}</p>
+            <p>邮箱: {{ currentUser.email }}</p>
+            <p>角色: {{ currentUser.role }}</p>
           </div>
-        </header>
+          <div v-else>
+            <p class="login-prompt" @click="goToLogin">点击登录</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
          <!--大标题-->
     
     
@@ -140,19 +152,24 @@
           </div>
           <!--最新品种部分，待完成！-->
 
-    
     </div>
-    
-    
-    
+    <!-- 底部备案号 -->
+     <footer class="footer">
+      <p class="left"><a href="contact.html">联系我们</a></p>
+     <div class="center">
+    <span>© 2024 Flowers Whispering&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <a href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2024087175号-1</a>
+  </div>
+      <div class="right"></div>
+    </footer>
     </template>
     
     <script>
     import { useRouter } from 'vue-router';
     import { ref, onMounted } from 'vue';
-    
+    import { mapState, mapGetters, mapActions} from 'vuex';
     export default {
-      name: "Search",
+       name: "Search",
       data() {
         return {
           buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像
@@ -182,6 +199,11 @@
       },
 
       computed: {
+          ...mapState({
+         currentUser: state => state.currentUser , // 从Vuex store中获取 currentUser
+         userAvatar: state => state.userAvatar // 确保这里绑定了全局的 userAvatar
+        }),
+        ...mapGetters(['userAvatar']),  // 使用全局的userAvatar
       totalPages() {
       return Math.ceil(this.favoritePlants.length / this.itemsPerPage);
       },
@@ -210,18 +232,36 @@
          const end = start + this.newPlantsItemsPerPage;
          return this.newPlants.slice(start, end);
        },//最新品种页面计算
-
-       
-
-
       },  //页面计算功能
       methods:
       {
-        Gotouserpage()
+        toggleUserMenu() {
+            this.showUserMenu = !this.showUserMenu;
+        },
+        handleUserAvatarClick() {
+          if (this.currentUser.role === 'guest') {
+          this.$router.push('/login'); // 如果是guest用户，点击跳转到登录页面
+          } else {
+          this.goToUserProfile(); // 否则跳转到个人主页
+          }
+        },
+
+        goToUserProfile()
         {
             this.$router.push('/userprofile');
         }, //切换用户页面
-        
+         goToCommunity() {
+         this.$router.push('/community');
+        },
+        goToCatalog() {
+        this.$router.push('/catalog');
+        },
+        goHome() {
+          this.$router.push('/home');
+        },
+        goToAdminPanel() {
+          this.$router.push('/adminpanel');
+        },
         GoToHome()
         {
             this.$router.push('/catalog');
@@ -362,6 +402,16 @@
     
     
     <style scoped>
+    .header {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 0 20px;
+     background-color: rgba(70, 180, 118, 0.8); /* 使用rgba设置透明度，0.8表示80%的不透明度 */
+     color: white;
+     z-index: 10; /* 提高 z-index，确保 header 在其他内容上层 */
+     position: relative;
+    }
     .book-background 
     {
         display: flex;
@@ -428,6 +478,7 @@
         flex-direction: column;
         align-items: center;
         color: rgb(17, 213, 244); /* 设置文本颜色 */
+        z-index:20;
     }
     
     .user-name {
@@ -831,20 +882,12 @@
 .update-time {
   font-size: 18px;
   color: rgb(47, 162, 188);
-}
-
-
-    
-    
-    
-    
-    
-    
-    
+}    
     /*  固有写法，显示用户*/ 
     .user-avatar-wrapper {
         position: relative;
         display: inline-block;
+        z-index: 10; /* 提高头像的层级 */
       }
     
       .user-info-list {
@@ -905,20 +948,7 @@
         min-height: 800px;
         color: #333;
       }
-    
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 20px;
-        background-color: #46b476cc;
-        color: white;
-        z-index: 1;
-        position: relative;
-      }
-    
-    
-    
+  
       .logo {
         font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
         font-size: 28px;
@@ -953,5 +983,39 @@
     
       /*  固有写法，显示用户*/ 
     
-    
+   .footer {
+  display: flex;
+  justify-content: space-between;  /* 左中右均匀分布 */
+  align-items: center;             /* 垂直居中对齐 */
+  background-color: rgba(70, 180, 118, 0.8);
+  color: white;
+  position: relative;
+  width: 100%;                     /* 跨满页面 */
+  z-index: 10;
+}
+
+.footer .left {
+  text-align: left;
+  margin-left: 10px;               /* 左边距 */
+}
+
+.footer .center {
+  text-align: center;
+  flex: 1;                         /* 中间内容居中，并占据剩余空间 */
+}
+
+.footer .right {
+  text-align: right;
+  margin-right: 10px;              /* 右边距 */
+}
+
+.footer a {
+  color: white;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: rgb(24, 212, 209); /* 悬停下划线效果 */
+}
+ 
     </style>

@@ -7,6 +7,23 @@
         </video>
     </div>
   
+    <header class="header">
+      <div class="logo">Flowers Whispering</div>
+      <div class="user-info" v-if="currentUser">
+        <span v-if="currentUser" class="username">{{ currentUser.username }}</span>
+        <div class="user-avatar-wrapper">
+          <img v-if="currentUser" src="../home/images/user-avatar.jpg" alt="User Avatar" @click="goToUserProfile()">
+          <!-- 用户详细信息列表 -->
+          <div class="user-info-list">
+            <p>用户名: {{ currentUser.username }}</p>
+            <p>邮箱: {{ currentUser.email }}</p>
+            <p>角色: {{ currentUser.role }}</p>
+          </div>
+        </div>
+        <button class="logout-button" @click="performLogout">{{ currentUser.role === 'guest' ? '登录' : '登出' }}</button>
+      </div>
+    </header>
+  
     <main class="main-content">
       <div class="forum-content">
         <div class="top-bar">
