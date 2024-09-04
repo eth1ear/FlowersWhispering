@@ -45,7 +45,7 @@
     
                 <div class="tabs">              <!--显示选项卡-->
 
-                  <button :class="{ active: activeTab === 'Announcement' }" @click="setActiveTab('Announcement')">帖子搜索</button>
+                  <button :class="{ active: activeTab === 'Announcement' }" @click="setActiveTab('Announcement')">社区首页</button>
                   <button :class="{ active: activeTab === 'PersonalCenter' }" @click="setActiveTab('PersonalCenter')">个人中心</button>
       
                   <button :class="{ active: activeTab === 'HotPosts' }" @click="setActiveTab('HotPosts')">热门帖子</button>
@@ -72,11 +72,7 @@
         
   <!--功能点按钮设置卡片效果-->
 
-  <div class="card-container">                        
-            <div class="love-time-title1">
-              欢迎来到叶语花谣社区
-            </div>
-        </div>
+  
 
   <div class="card-container1">                        
         <div class="card" @click="GoToBook()">
@@ -246,10 +242,7 @@
       {
           this.$router.push('/userprofile');
       }, //切换用户页面
-      GotoPersonalCenter()
-      {
-        this.$router.push('/personalCenter');
-      },
+      
       GoToAnnouncement()
       {
           
@@ -267,10 +260,7 @@
       {
 
       },//切换到分类页面
-      GoToContributorsList()
-      {
-        this.$router.push('/contributorsList');
-      } ,//切换到贡献榜页面
+      
       GoToHome()
       {
           this.$router.push('/home');
@@ -375,6 +365,10 @@
       border-radius: 5px;
       transition: background-color 0.3s ease, color 0.3s ease;
   }
+  .tabs button.active {
+    background-color: rgba(19, 49, 169, 0.6); /* 选中时背景颜色 */
+     color: #18c574; /* 选中时文本颜色 */
+}
   
   .tabs button:hover {
       background-color: rgba(38, 77, 234, 0.289); /* 鼠标悬停效果 */
@@ -441,60 +435,59 @@
   display: block;
 }
   
-  /* 卡片按钮格式 */
-  .card-container 
-  {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 80px; /* 卡片之间的间距 */
-    cursor: pointer; /*指针变化*/
-  
-  }
-  
-  .card {
-    position: relative;
-    left:5%;
-    width: 300px; /* 自定义卡片宽度 */
-    height: 300px; /* 自定义卡片高度 */
-    overflow: hidden; /* 隐藏超出边界的部分 */
-    border-radius: 10px; /* 圆角效果 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 卡片阴影 */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* 动态平滑 */
-    border-radius: 12px; /* 圆角边框 */
-  }
-  
-  .card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
-    background-color: aliceblue;
-  }
-  
-  .card-info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgb(27, 198, 221);
-    color: white; /* 文字颜色 */
-    font-size: 28px;
-    padding: 10px;
-    text-align: center;
-    transform: translateY(100%); /* 初始隐藏 */
-    transition: transform 0.3s ease; /* 动态平滑 */
-    font-family: '黑体','ZhiMangXing-Regular', sans-serif;
-  }
-  
-  
-  
-  .card:hover {
-    transform: scale(1.05); /* 卡片放大效果 */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 卡片阴影放大效果 */
-  }
-  
-  .card:hover .card-info {
-    transform: translateY(0); /* 鼠标悬停时显示文字 */
-  }
+.card-container1 
+    {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 80px; /* 卡片之间的间距 */
+      cursor: pointer; /*指针变化*/
+      margin-top: -50px; /* 调整距离顶部的距离 */
+    }
+    
+    .card {
+      position: relative;
+      left:5%;
+      width: 300px; /* 自定义卡片宽度 */
+      height: 300px; /* 自定义卡片高度 */
+      overflow: hidden; /* 隐藏超出边界的部分 */
+      border-radius: 10px; /* 圆角效果 */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 卡片阴影 */
+      transition: transform 0.3s ease, box-shadow 0.3s ease; /* 动态平滑 */
+      border-radius: 12px; /* 圆角边框 */
+    }
+    
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; 
+      background-color: aliceblue;
+    }
+    
+    .card-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgb(28, 127, 13);
+      color: white; /* 文字颜色 */
+      font-size: 28px;
+      padding: 10px;
+      text-align: center;
+      transform: translateY(100%); /* 初始隐藏 */
+      transition: transform 0.3s ease; /* 动态平滑 */
+      font-family: '黑体','ZhiMangXing-Regular', sans-serif;
+    }
+    
+    
+    
+    .card:hover {
+      transform: scale(1.05); /* 卡片放大效果 */
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 卡片阴影放大效果 */
+    }
+    
+    .card:hover .card-info {
+      transform: translateY(0); /* 鼠标悬停时显示文字 */
+    }
   
   @keyframes jianBian {
     to {
@@ -527,7 +520,7 @@
     position:relative;
     left:5%;
 
-    margin-top: -300px; /* 设置距离顶部的间距 */
+    margin-top: -50px; /* 设置距离顶部的间距 */
 }
 
 .information-input1 
