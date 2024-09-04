@@ -38,21 +38,25 @@
        
       <!-- 用户操作界面容器 ，所有界面内的按钮，文本都在此改动-->
   <div class="user-interfacer">
-      <!-- 竖条图片容器 -->
-      <div class="side-bar">
-          <div class="user-info">
-              <p class="user-name">{{userName}}</p>    <!--显示用户名-->
-  
-              <div class="tabs">              <!--显示选项卡-->
-                  <button @click="GoToAnnouncement">公告</button>
-                  <button @click="GoToHotPosts">热帖</button>
-                  <button @click="GoToSentPost">发帖</button>
-                  <button @click="GoToCategory">分类</button>
-                  <button @click="GoToContributorsList">贡献榜</button>
-                  <button @click="GoToHome">返回主页</button>
-              </div> 
-          </div>
-      </div>
+     <!-- 竖条图片容器 -->
+     <div class="side-bar">
+            <div class="user-info">
+                <p class="user-name">{{userName}}</p>    <!--显示用户名-->
+    
+                <div class="tabs">              <!--显示选项卡-->
+
+                  <button :class="{ active: activeTab === 'Announcement' }" @click="setActiveTab('Announcement')">帖子搜索</button>
+                  <button :class="{ active: activeTab === 'PersonalCenter' }" @click="setActiveTab('PersonalCenter')">个人中心</button>
+      
+                  <button :class="{ active: activeTab === 'HotPosts' }" @click="setActiveTab('HotPosts')">热门帖子</button>
+                  <button :class="{ active: activeTab === 'SentPost' }" @click="setActiveTab('SentPost')">帖子发布</button>
+                  <button :class="{ active: activeTab === 'Category' }" @click="setActiveTab('Category')">帖子分类</button>
+                  <button :class="{ active: activeTab === 'ContributorsList' }" @click="setActiveTab('ContributorsList')">贡献榜单</button>
+                  <button :class="{ active: activeTab === 'home' }" @click="GoToHome">返回上步</button>
+
+                </div> 
+            </div>
+        </div>
   
       <div class="top-banner">
           <button class="user-button" @click="GotoPersonalCenter">   <!--用户头像-->
@@ -62,17 +66,45 @@
       </div>
 
       
-  
-       <!--功能点按钮设置卡片效果-->
-       <div class="card-container">                        
+
+      <!--个人中心部分-->
+      <div v-if="activeTab === 'PersonalCenter'">
+        
+  <!--功能点按钮设置卡片效果-->
+
+  <div class="card-container">                        
             <div class="love-time-title1">
               欢迎来到叶语花谣社区
             </div>
         </div>
 
+  <div class="card-container1">                        
+        <div class="card" @click="GoToBook()">
+          <img src="./images/button1.png" alt="Card 1" />
+          <div class="card-info">我的帖子</div>
+        </div>
+        <div class="card" @click="GoToCultivation()">
+          <img src="./images/button2.png" alt="Card 2" />
+          <div class="card-info">我的评论</div>
+        </div>
+        <div class="card" @click="GoToRecognition()">
+          <img src="./images/button3.png" alt="Card 3" />
+          <div class="card-info">我的收藏</div>
+        </div>
+      </div>
+      <!--功能点按钮，设置卡片效果-->
+      </div>
+     <!--个人中心部分-->
 
-           
-    
+
+
+      <!--公告部分-->
+      <div v-if="activeTab === 'Announcement'" class="card-container">
+        <div class="card-container">                        
+            <div class="love-time-title1">
+              欢迎来到叶语花谣社区
+            </div>
+        </div>
 
         <div class ="information-box1">    <!--搜索框，重要部分！！！-->
              <input 
@@ -84,28 +116,45 @@
             <button @click="searchDatabase" class="information-button1">搜索</button>
            </div>
   
+
+
+          </div>
+         <!--公告部分-->
+
+         <!--热帖部分-->
+      <div v-if="activeTab === 'HotPosts'">
+        
+
+          </div>
+         <!--热帖部分-->
+
+  <!--热帖部分-->
+  <div v-if="activeTab === 'HotPosts'">
+        
+
+      </div>
+     <!--热帖部分-->
+
+       
+       
+
+
+           
+    
+
+        
          
        
-        <div class="carousel">
-    <ul class="slides">
-      <li v-for="(slide, index) in slides" :key="index" :class="{ active: currentIndex === index }">
-        <img :src="slide.image" alt="Slide Image">
-      </li>
-    </ul>
-    <div class="indicators">
-      <span
-        v-for="(slide, index) in slides"
-        :key="index"
-        :class="{ active: currentIndex === index }"
-        @click="goToSlide(index)"
-      ></span>
-    </div>
-  </div>
+        
 
   
 
 
       
+
+
+
+
   
   </div>
   
@@ -127,7 +176,7 @@
       return {
         buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像
         userName: 'Wuhuairline', // 默认用户名,后端接入用户姓名
-
+        activeTab:"Announcement",
         isUserInfoVisible: false, // 控制用户信息列表的显示与隐藏
 
         slides: [
@@ -171,6 +220,10 @@
         this.goToUserProfile(); // 否则跳转到个人主页
       }
     },
+    setActiveTab(tabName)
+        {
+          this.activeTab=tabName;  
+        },  //设置选项卡
 
     goToDetail(id) {
       // 使用 Vue Router 导航到帖子详情页
@@ -231,7 +284,7 @@
   
   
   
-  <style>
+  <style scoped>
   .book-background 
   {
       display: flex;
@@ -254,26 +307,25 @@
   
     /* 操作界面*/ 
     .user-interfacer {
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    height: 90%;
-    background-image: url('./images/backgroundtry.png'); /* 背景图片路径 */
-    background-size: cover;
-    background-position: center;
-    z-index: 2; /* 层数要大于视频 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    color: white; /* 设置文本颜色，以便在深色背景上可见 */
-  
-    border: 5px solid rgb(28, 127, 13); /* 绿色边框 */
-    box-sizing: border-box; /* 确保边框包含在元素的宽度和高度内 */
-    border-radius: 10px; /* 添加圆角 */
-    opacity: 0.9;
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 90%;
+  background-image: url('./images/backgroundtry.png');
+  background-size: cover;
+  background-position: center; /* 确保背景图片居中 */
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
+  border: 5px solid rgb(36, 156, 172);
+  box-sizing: border-box;
+  border-radius: 10px;
+  opacity: 0.9;
   }
   
   
@@ -289,7 +341,7 @@
       flex-direction: column;
       align-items: center;
       z-index: 3; /* 确保竖条在其他内容之上 */
-      background-color: rgb(46, 131, 58); /* 背景颜色，使内容更显眼 */
+      background-color: rgb(73, 192, 206); /* 背景颜色，使内容更显眼 */
   }
   
   
@@ -325,8 +377,8 @@
   }
   
   .tabs button:hover {
-      background-color: rgba(38, 208, 234, 0.289); /* 鼠标悬停效果 */
-      color: #11c3e7; /* 鼠标悬停时文本颜色 */
+      background-color: rgba(38, 77, 234, 0.289); /* 鼠标悬停效果 */
+      color: #18c574; /* 鼠标悬停时文本颜色 */
   }
   
   
@@ -376,7 +428,7 @@
   left: 0;
   width: 100%; /* 宽度充满按钮 */
   min-height: 30px; /* 最小高度 */
-  background: #27b40b;
+  background: #1cacef;
   color: #fff;
   padding: 10px 0; /* 上下填充 */
   border-radius: 3px;
@@ -423,7 +475,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgb(28, 127, 13);
+    background: rgb(27, 198, 221);
     color: white; /* 文字颜色 */
     font-size: 28px;
     padding: 10px;
@@ -452,7 +504,7 @@
   .love-time-title1 {
     position: absolute;
     top: 15%;            /* 垂直居中 */
-    left: 50%;           /* 水平居中 */
+    left: 52%;           /* 水平居中 */
     transform: translate(-50%, -50%); /* 精确居中 */
     font-size: 4rem;
     font-weight: 600;
@@ -472,8 +524,9 @@
    .information-box1 
   {
     display: flex;
-    justify-content: center; /* 水平居中对齐 */
-    
+    position:relative;
+    left:5%;
+
     margin-top: -300px; /* 设置距离顶部的间距 */
 }
 
@@ -482,8 +535,8 @@
  
   width: 800px;
   padding: 10px;
-  border: 2px solid rgb(28, 127, 13); /* 绿色边框 */
-  border-radius: 5px;
+  border: 2px solid rgb(32, 197, 209); /* 绿色边框 */
+  border-radius: 45px;
   outline: none;
   transition: border-color 0.3s ease;
   margin-right: 10px; /* 搜索框与按钮之间的间距 */
@@ -491,16 +544,16 @@
 }
 
 .information-input1:focus {
-  border-color: rgb(46, 131, 58); /* 聚焦时的边框颜色 */
+  border-color: rgb(61, 173, 205); /* 聚焦时的边框颜色 */
 }
 
 .information-button1 {
   padding: 5px 20px;
-  background-color: rgb(46, 131, 58); /* 按钮背景色 */
+  background-color: rgb(61, 220, 228); /* 按钮背景色 */
   border: none;
-  border-radius: 5px;
+  border-radius: 45px;
   color: white;
-  font-size:16px;
+  font-size:20px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
@@ -557,6 +610,14 @@
   margin-top: 10px;
 }
   
+
+
+
+
+
+
+
+
   /*  固有写法，显示用户*/ 
   .user-avatar-wrapper {
     position: relative;

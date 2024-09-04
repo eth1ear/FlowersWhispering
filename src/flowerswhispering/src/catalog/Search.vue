@@ -176,6 +176,7 @@
       },
       mounted()
       {
+        window.scrollTo(0,0);
         this.loadFavorites();
         this.loadContributions();
         this.loadNewPlants();
