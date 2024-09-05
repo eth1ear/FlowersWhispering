@@ -16,7 +16,7 @@ namespace FlowersWhisperingAPI.Plants.Controllers
             var plantId = _plantFindService.GetPlantId(plantName);
             if (plantId == -1)
             {
-                return NotFound(); // 返回 404 Not Found
+                return BadRequest("未找到相关植物"); // 返回 400 Bad Request
             }
             return Ok(plantId); // 返回 200 OK 和 plantId
         }
@@ -26,7 +26,7 @@ namespace FlowersWhisperingAPI.Plants.Controllers
             var plantInfo = _plantFindService.GetPlantInfo(plantName);
             if (plantInfo == null)
             {
-                return NotFound(); // 返回 404 Not Found
+                return BadRequest("未找到相关植物"); // 返回 400 Bad Request
             }
             return Ok(plantInfo); // 返回 200 OK 和 plantInfo
         }

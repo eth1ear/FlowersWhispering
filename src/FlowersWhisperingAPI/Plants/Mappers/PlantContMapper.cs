@@ -5,23 +5,20 @@ using System;
 
 namespace FlowersWhisperingAPI.Plants.Mappers
 {
-    public class PlantFavorMapper(string connectionString)
+    public class PlantContMapper(string connectionString)
     {
-        public List<Plant> GetFavorPlants(int userId)
+        public List<Plant> GetContPlants(int userId)
         {
             List<Plant> plants = new List<Plant>();
-            
             try
             {
+                string sql = "SELECT * FROM Plant WHERE PLANT_ID IN (SELECT PLANT_ID FROM CARELOGS WHERE USER_ID = :userId)";
                 using (OracleConnection connection = new OracleConnection(connectionString))
                 {
                     connection.Open();
-                    string sql = "SELECT * FROM Plant WHERE PLANT_ID IN (SELECT PLANT_ID FROM Favorites WHERE USER_ID = :userId)";
-                    
                     using (OracleCommand command = new OracleCommand(sql, connection))
                     {
                         command.Parameters.Add(new OracleParameter("userId", userId));
-                        
                         using (OracleDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())

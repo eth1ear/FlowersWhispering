@@ -13,9 +13,11 @@ namespace FlowersWhisperingAPI.Plants
             services.AddSingleton(new PlantFindMapper(connectionString));
             services.AddSingleton(new PlantLatestMapper(connectionString));
             services.AddSingleton(new PlantFavorMapper(connectionString));
+            services.AddSingleton(new PlantContMapper(connectionString));
             services.AddScoped<IPlantFindService, PlantFindService>();
             services.AddScoped<IPlantLatestService, PlantLatestService>();
             services.AddScoped<IPlantFavorService, PlantFavorService>();
+            services.AddScoped<IPlantContService, PlantContService>();
             // 可以在这里继续注册其他服务
             
 

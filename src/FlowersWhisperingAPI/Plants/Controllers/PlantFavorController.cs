@@ -13,18 +13,14 @@ namespace FlowersWhisperingAPI.Plants.Controllers
         [HttpGet("findFavors")]
         public IActionResult GetFavorPlants (int userId)
         {
-            List<Plant> FavorPlants = _plantFavorService.GetFavorPlants(userId);
+            var FavorPlants = _plantFavorService.GetFavorPlants(userId);
             if (FavorPlants == null )
             {
-                return NotFound(); // 返回 404 Not Found
+                return BadRequest("获取失败"); // 返回 400 Bad Request
             }
             if (!FavorPlants.Any())
             {
-                var response = new
-                {
-                    Message = "No favorite plants found for the given user.",
-                };
-                return Ok(response);
+                return Ok("您还没有收藏任何植物"); // 返回 200 OK 和提示信息
             }
             return Ok(FavorPlants); // 返回 200 OK 和 latestPlants
         }

@@ -32,7 +32,7 @@ namespace FlowersWhisperingAPI.Plants.Mappers
                             string portrayal = reader.GetString(reader.GetOrdinal("PORTRAYAL"));
                             string growthEnvironment = reader.GetString(reader.GetOrdinal("GROWTH_ENVIRONMENT"));
                             string careConditions = reader.GetString(reader.GetOrdinal("CARE_CONDITIONS"));
-                            DateTime updateTime = reader.GetDateTime(reader.GetOrdinal("UPDATE_TIME"));
+                            DateTime updateTime = reader.GetDateTime(reader.GetOrdinal("UPDATETIME"));
 
                             // 创建 Plant 对象并添加到列表
                             var plant = new Plant(plantId, commonName, scientificName, category, portrayal, growthEnvironment, careConditions, updateTime);
