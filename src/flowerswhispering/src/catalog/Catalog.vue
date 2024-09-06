@@ -1,31 +1,7 @@
 <template>
 
 <!--大标题-->
-  <header class="header">
-  <div class="logo">Flowers Whispering</div>
-  <div class="nav-user-container">
-    <nav class="nav-links">
-      <nav v-if="currentUser.userRole === 'admin'">
-         <button @click="goToAdminPanel" class="nav-button">管理</button>
-      </nav>
-      <button @click="goHome" class="nav-button">首页</button>
-      <button @click="goToCommunity" class="nav-button">社区</button>
-      <button @click="goToCatalog" class="nav-button">图鉴</button>
-    </nav>
-    <div class="user-info">
-      <div class="user-avatar-wrapper">
-        <img :src="currentUser.avatar" alt="User Avatar" @click="handleUserAvatarClick">
-        <div class="user-info-list">
-          <div v-if="currentUser.userRole !== 'guest'">
-            <p>用户名: {{ currentUser.username }}</p>
-            <p>邮箱: {{ currentUser.email }}</p>
-            <p>角色: {{ currentUser.userRole }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
+<Header />
 
      <!--大标题-->
 
@@ -44,12 +20,8 @@
 <div class="user-interface">
     <!-- 竖条图片容器 -->
     <div class="side-bar">
-      <button class="user-avatar-button" @click="goToUserProfile"> <!--用户头像-->
-        <img :src="currentUser.avatar" alt="User Avatar" />   
-      </button>
-
         <div class="user-info">
-            <p class="user-name">{{currentUser.username}}</p>    <!--显示用户名-->
+            <p class="user-name">{{currentUser.username }}</p>    <!--显示用户名-->
 
             <div class="tabs">              <!--显示选项卡-->
                 <button @click="GoToHome">返回主页</button>
@@ -57,11 +29,21 @@
         </div>
     </div>
 
+    <div class="top-banner">
+        <button class="currentUser.avatar" @click="Gotouserpage">   <!--用户头像-->
+            <img :src="currentUser.avatar" alt="User" />   
+        </button>
+    </div>
+
     <!--功能点按钮设置卡片效果-->
     <div class="card-container">                        
       <div class="card" @click="GoToBook()">
         <img src="../catalog/images/plant_book.png" alt="Card 1" />
         <div class="card-info">搜寻植物信息</div>
+      </div>
+      <div class="card" @click="GoToCultivation()">
+        <img src="../catalog/images/planting.png" alt="Card 2" />
+        <div class="card-info">养护植物助手</div>
       </div>
       <div class="card" @click="GoToRecognition()">
         <img src="../catalog/images/plant_tool.png" alt="Card 3" />
@@ -72,30 +54,34 @@
 
 </div>
   <!-- 底部备案号 -->
-     <footer class="footer">
-      <p class="left"><a href="contact.html">联系我们</a></p>
-     <div class="center">
-    <span>© 2024 Flowers Whispering&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    <a href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2024087175号-1</a>
-  </div>
-      <div class="right"></div>
-    </footer>
+         <Footer />
 
 
 </template>
 
 <script>
 import { useRouter } from 'vue-router';
-import { ref, onMounted,defineComponent } from 'vue';
-import { mapGetters, mapActions ,mapState} from 'vuex';
+import { ref, onMounted } from 'vue';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
   name: "Catalog",
+  components: {
+    Header,
+    Footer,
+  },
    computed: {
-    ...mapGetters({
-      currentUser: 'getUserInfo', // 获取当前用户信息
-      isAdmin: 'isAdmin',
+    ...mapState({
+      currentUser: state => state.currentUser , // 从Vuex store中获取 currentUser
+      userAvatar: state => state.userAvatar // 确保这里绑定了全局的 userAvatar
     }),
+    ...mapGetters(['userAvatar'])  // 使用全局的userAvatar
+  },
+  data() {
+    return {
+      buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像
+      userName: 'Wuhuairline' // 默认用户名,后端接入用户姓名
+    };
   },
   mounted()
       {
@@ -129,6 +115,10 @@ export default {
     GoToHome() {
        this.$router.push('/home');
     },
+    GoToSubmissions()
+    {
+
+    },//切换到贡献页面
     goToAdminPanel() {
       this.$router.push('/adminpanel');
     },
@@ -139,7 +129,11 @@ export default {
     GoToBook()
     {
       this.$router.push('/search');
-    }, 
+    }, //切换到百科，待实现-----
+    GoToCultivation()
+    {
+
+    }, //切换到养护，待实现-----
     GoToRecognition()
     {
 
@@ -249,73 +243,68 @@ export default {
     color: #11c3e7; /* 鼠标悬停时文本颜色 */
 }
 
-/* 顶部横幅 */
+
+
+
+/* 横条图片格式*/ 
 .top-banner {
-  position: relative; /* 确保内部元素的相对定位 */
-  width: 100%;
-  height: 100px; /* 可根据需要调整 */
-}
-
-/* 用户头像按钮 */
-.user-avatar-button {
-  position: absolute; /* 使用绝对定位 */
-  top: -110px; /* 距离顶部，可根据需要调整 */
-  left: 10px; /* 距离左侧，可根据需要调整 */
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: pointer;
-  width: 50px; /* 头像的宽度 */
-  height: 50px; /* 头像的高度 */
-  border-radius: 50%; /* 圆形按钮 */
-  overflow: hidden; /* 隐藏溢出部分 */
-  z-index: 9999; /* 设置高的 z-index 值，确保处于最上层 */
-}
-
-/* 圆形头像图片 */
-.user-avatar-button img {
-  width: 100%; /* 图片填充按钮 */
-  height: 100%; /* 图片填充按钮 */
-  object-fit: cover; /* 保持图片比例并填充区域 */
-  border-radius: 50%; /* 圆形图片 */
-}
-
-/* 鼠标悬停时的效果 */
-.user-avatar-button img:hover {
-  transform: scale(1.1); /* 放大效果 */
-  transition: transform 0.3s ease; /* 平滑过渡 */
+  width: 100%; /* 横条图片容器宽度占据整个用户界面宽度 */
+  display: flex;
+  position: absolute;
+  top: 0; /* 将横条图片定位到容器顶部 */
+  left: 0; /* 从左侧开始对齐 */
+  z-index: 4; /* 确保横条图片在用户界面内容之上 */
 }
 
 
 
+
+.top-banner img {
+  width: 870px; /* 自定义横条宽度 */
+  height: 150px; /* 自定义高度 */
+}
+
+.user-button
+{
+   z-index: 4;
+  border: 5px solid rgb(4, 195, 202); /* 绿色边框 */
+  box-sizing: border-box; 
+  transition: transform 0.3s ease, background-color 0.3s ease;  /*动态平滑*/
+  cursor: pointer; /*指针变化*/
+}
+
+.user-button img {
+  width: 120px; /* 自定义按钮图片的宽度 */
+  height: 135px; /* 自定义按钮图片的高度 */
+}
+
+/* 鼠标悬停效果 */
+.user-button:hover {
+  transform: scale(1.1); /* 放大按钮 */
+}
 
 /* 卡片按钮格式 */
-.card-container 
-{
+.card-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 80px; /* 卡片之间的间距 */
-  cursor: pointer; /*指针变化*/
-
+  gap: 4vw;
+  cursor: pointer;
 }
 
 .card {
   position: relative;
-  left:5%;
-  width: 300px; /* 自定义卡片宽度 */
-  height: 300px; /* 自定义卡片高度 */
-  overflow: hidden; /* 隐藏超出边界的部分 */
-  border-radius: 10px; /* 圆角效果 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 卡片阴影 */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 动态平滑 */
-  border-radius: 12px; /* 圆角边框 */
+  width: 15vw;
+  height: 15vw;
+  overflow: hidden;
+  border-radius: 1vw;
+  box-shadow: 0 0.4vw 0.8vw rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card img {
   width: 100%;
   height: 100%;
-  object-fit: cover; 
-  background-color: aliceblue;
+  object-fit: cover;
 }
 
 .card-info {
@@ -324,24 +313,21 @@ export default {
   left: 0;
   right: 0;
   background: rgb(28, 127, 13);
-  color: white; /* 文字颜色 */
-  font-size: 28px;
-  padding: 10px;
+  color: white;
+  font-size: 1.5rem;
+  padding: 1vh;
   text-align: center;
-  transform: translateY(100%); /* 初始隐藏 */
-  transition: transform 0.3s ease; /* 动态平滑 */
-  font-family: '黑体','ZhiMangXing-Regular', sans-serif;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
 }
 
-
-
 .card:hover {
-  transform: scale(1.05); /* 卡片放大效果 */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 卡片阴影放大效果 */
+  transform: scale(1.05);
+  box-shadow: 0 0.6vw 1.2vw rgba(0, 0, 0, 0.3);
 }
 
 .card:hover .card-info {
-  transform: translateY(0); /* 鼠标悬停时显示文字 */
+  transform: translateY(0);
 }
 
 /*  固有写法，显示用户*/ 
@@ -409,16 +395,6 @@ export default {
     color: #333;
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    background-color: #46b476cc;
-    color: white;
-    z-index: 3;
-    position: relative;
-  }
 
   .logo {
     font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
@@ -454,39 +430,5 @@ export default {
 
   /*  固有写法，显示用户*/ 
     
-   .footer {
-  display: flex;
-  justify-content: space-between;  /* 左中右均匀分布 */
-  align-items: center;             /* 垂直居中对齐 */
-  background-color: rgba(70, 180, 118, 0.8);
-  color: white;
-  position: relative;
-  width: 100%;                     /* 跨满页面 */
-  z-index: 10;
-}
-
-.footer .left {
-  text-align: left;
-  margin-left: 10px;               /* 左边距 */
-}
-
-.footer .center {
-  text-align: center;
-  flex: 1;                         /* 中间内容居中，并占据剩余空间 */
-}
-
-.footer .right {
-  text-align: right;
-  margin-right: 10px;              /* 右边距 */
-}
-
-.footer a {
-  color: white;
-  text-decoration: none;
-}
-
-.footer a:hover {
-  color: rgb(24, 212, 209); /* 悬停下划线效果 */
-}
 
 </style>

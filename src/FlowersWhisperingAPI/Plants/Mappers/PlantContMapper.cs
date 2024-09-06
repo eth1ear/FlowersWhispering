@@ -12,7 +12,17 @@ namespace FlowersWhisperingAPI.Plants.Mappers
             List<Plant> plants = new List<Plant>();
             try
             {
-                string sql = "SELECT * FROM Plant WHERE PLANT_ID IN (SELECT PLANT_ID FROM CARELOGS WHERE USER_ID = :userId)";
+                string sql = @"
+                            select PLANT.PLANT_ID, COMMON_NAME, SCIENTIFIC_NAME, CATEGORY, 
+                                PORTRAYAL, GROWTH_ENVIRONMENT, CARE_CONDITIONS, 
+                                UPDATETIME, PLANTIMAGES.IMAGE_URL
+                            from PLANT 
+                            INNER JOIN PLANTIMAGES ON PLANT.PLANT_ID = PLANTIMAGES.PLANT_ID
+                            where PLANT.PLANT_ID IN(
+                                select PLANT_ID
+                                from REVIEWS
+                                where SUBMITTER_ID = :userId AND REVIEW_STATUS='审核通过')
+                            ";
                 using (OracleConnection connection = new OracleConnection(connectionString))
                 {
                     connection.Open();
@@ -31,8 +41,9 @@ namespace FlowersWhisperingAPI.Plants.Mappers
                                 string GROWTH_EN = reader.GetString(reader.GetOrdinal("GROWTH_ENVIRONMENT"));
                                 string care_con = reader.GetString(reader.GetOrdinal("CARE_CONDITIONS"));
                                 DateTime time = reader.GetDateTime(reader.GetOrdinal("UPDATETIME"));
-                                
+                                string ImageUrl = reader.GetString(reader.GetOrdinal("IMAGE_URL")); 
                                 var plant = new Plant(plantId, commonName, scientificName, CATEGORY, PORTRAYAL, GROWTH_EN, care_con, time);
+                                plant.ImageUrl = ImageUrl;
                                 plants.Add(plant);
                             }
                         }
@@ -43,7 +54,7 @@ namespace FlowersWhisperingAPI.Plants.Mappers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error retrieving favorite plants: {ex.Message}");
+                Console.WriteLine($"Error retrieving Contribute plants: {ex.Message}");
             }
             // 如果发生错误，返回 null
             return null!;

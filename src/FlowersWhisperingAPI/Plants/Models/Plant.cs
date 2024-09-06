@@ -12,5 +12,7 @@ namespace FlowersWhisperingAPI.Plants.Models
         public string GrowthEnvironment { get; set; } = growthEnvironment; // 生长环境
         public string CareConditions { get; set; } = careConditions; // 养护条件
         public DateTime UpdateTime { get; set; } = UpdateTime;
+
+        public string ImageUrl { get; set; } = ""; // 图片地址
     }
 }

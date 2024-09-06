@@ -19,6 +19,16 @@ namespace FlowersWhisperingAPI.Community.Mappers
             var result = command.ExecuteScalar();
             return result != null && result != DBNull.Value ? result.ToString(): null;                       
         }  
+        public string? GetArticleTitleById(int articleId)
+        {
+            string sql = "SELECT article_title FROM Articles WHERE article_id = :ArticleId";
+            using var connection = new OracleConnection(_connectionString);
+            connection.Open();
+            using var command = new OracleCommand(sql, connection);
+            command.Parameters.Add(":ArticleId", OracleDbType.Int32).Value = articleId;
+            var result = command.ExecuteScalar();
+            return result != null && result != DBNull.Value ? result.ToString(): null;                       
+        }  
         public void AddComment(CommentDTOi commentdto)
         {
             string sql = @"INSERT INTO Comments (user_id, article_id, comment_content 
@@ -84,10 +94,13 @@ namespace FlowersWhisperingAPI.Community.Mappers
                     string commentContent = reader.GetString(reader.GetOrdinal("comment_content"));
                     DateTime createdDate = reader.GetDateTime(reader.GetOrdinal("created_date"));
                     string? username = GetUsernameByUserId(userId);
+                    string? articletitle = GetArticleTitleById(articleId);
                     // 创建 Commenti 对象
                     Commenti comment = new Commenti(commentId, userId, articleId, commentContent, createdDate)
                     {
-                        Username = username ?? "Unknown"  // 处理空用户名
+                        Username = username ?? "Unknown",  // 处理空用户名
+                        ArticleTitle = articletitle ?? "Unknown"
+
                     };
                     comments.Add(comment);
                 }
@@ -120,10 +133,12 @@ namespace FlowersWhisperingAPI.Community.Mappers
                     string commentContent = reader.GetString(reader.GetOrdinal("comment_content"));
                     DateTime createdDate = reader.GetDateTime(reader.GetOrdinal("created_date"));
                     string? username = GetUsernameByUserId(userId);
+                    string? articletitle = GetArticleTitleById(articleId);
                     // 创建 Commenti 对象
                     Commenti comment = new Commenti(commentId, uId, articleId, commentContent, createdDate)
                     {
-                        Username = username ?? "Unknown"  // 处理空用户名
+                        Username = username ?? "Unknown",
+                        ArticleTitle = articletitle ?? "Unknown"  
                     };
                     comments.Add(comment);
                 }
