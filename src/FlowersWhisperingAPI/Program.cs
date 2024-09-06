@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Oracle.ManagedDataAccess.Client;
 using FlowersWhisperingAPI.User;
 using FlowersWhisperingAPI.Administrator;
-using FlowersWhisperingAPI.Plants;
+using FlowersWhisperingAPI.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,7 +68,7 @@ if(connectionString != null)
 {
     builder.Services.AddUserService(connectionString);
     builder.Services.AddAdminService(connectionString);
-    builder.Services.AddPlantService(connectionString);
+    builder.Services.AddCommunityService(connectionString);
 }
 
 var app = builder.Build();

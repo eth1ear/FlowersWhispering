@@ -12,6 +12,15 @@ namespace FlowersWhisperingAPI.Plants.Services
         {
             return _FavorMapper.GetFavorPlants(userId);
         }
+
+        public bool AddFavorPlant (int userId, int plantId)
+        {
+            return _FavorMapper.AddFavorPlant(userId, plantId);
+        }
         
+        public bool DeleteFavorPlant (int userId, int plantId)
+        {
+            return _FavorMapper.DeleteFavorPlant(userId, plantId);
+        }
     }
 }

@@ -28,7 +28,7 @@
 </template>
 
 
-<script>
+<script scoped>
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import Header from '@/home/Header.vue';

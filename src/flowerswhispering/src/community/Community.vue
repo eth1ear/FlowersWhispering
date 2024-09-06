@@ -24,12 +24,11 @@
     
                 <div class="tabs">              <!--显示选项卡-->
 
-                  <button :class="{ active: activeTab === 'Announcement' }" @click="setActiveTab('Announcement')">社区首页</button>
+                  <button :class="{ active: activeTab === 'HotPosts' }" @click="setActiveTab('HotPosts')">精选帖子</button>
                   <button :class="{ active: activeTab === 'PersonalCenter' }" @click="setActiveTab('PersonalCenter')">个人中心</button>
       
-                  <button :class="{ active: activeTab === 'HotPosts' }" @click="setActiveTab('HotPosts')">热门帖子</button>
+                  
                   <button :class="{ active: activeTab === 'SentPost' }" @click="setActiveTab('SentPost')">帖子发布</button>
-                  <button :class="{ active: activeTab === 'Category' }" @click="setActiveTab('Category')">帖子分类</button>
                   <button :class="{ active: activeTab === 'ContributorsList' }" @click="setActiveTab('ContributorsList')">贡献榜单</button>
                   <button :class="{ active: activeTab === 'home' }" @click="GoToHome">返回首页</button>
 
@@ -40,7 +39,7 @@
       <div class="top-banner">
           <button class="user-button" @click="Gotouserpage">   <!--用户头像-->
               <img src="./images/logo.png" alt="User" />   
-            
+              
           </button>
       </div>
 
@@ -50,7 +49,12 @@
       <div v-if="activeTab === 'PersonalCenter'">
         
   <!--功能点按钮设置卡片效果-->
-
+  <div class="card-container">                        
+            <div class="love-time-title1">
+              欢迎来到叶语花谣社区
+            </div>
+        </div>
+        
   
 
   <div class="card-container1">                        
@@ -58,11 +62,11 @@
           <img src="./images/button1.png" alt="Card 1" />
           <div class="card-info">我的帖子</div>
         </div>
-        <div class="card" @click="GoToCultivation()">
+        <div class="card" @click="GoToMycomment()">
           <img src="./images/button2.png" alt="Card 2" />
           <div class="card-info">我的评论</div>
         </div>
-        <div class="card" @click="GoToRecognition()">
+        <div class="card" @click="GotoMyfavourite()">
           <img src="./images/button3.png" alt="Card 3" />
           <div class="card-info">我的收藏</div>
         </div>
@@ -103,6 +107,9 @@
       发布帖子
     </div>
     <form @submit.prevent="submitPost">
+
+
+      
       <div class="form-group">
         <label for="title" class="form-label">标题:</label>
         <input type="text" id="title" v-model="title" class="form-input" required />
@@ -121,13 +128,65 @@
       </div>
       <!--发帖部分-->
 
-  <!--分类部分-->
+  <!--热帖部分-->
   <div v-if="activeTab === 'HotPosts'">
-        
+
+    <div class ="information-box1">    <!--搜索框，重要部分！！！-->
+             <input 
+              type="text" 
+              v-model="searchQuery"   
+              placeholder="搜索你喜欢的帖子！" 
+              class="information-input1" 
+             />
+            <button @click="searchDatabase" class="information-button1">搜索</button>
+           </div>
+
+
+    <div class="post-container1">
+  <h1 class="post-header1">帖子列表</h1>
+  <ul class="post-list1">
+    <li v-for="item in visiblePosts" :key="item.id" class="post-item1" @click="showPostDetails(item)">
+      <div>
+        <h2 class="post-title1">{{ item.title }}</h2>
+        <p class="post-summary1">{{ summarizeContent(item.content) }}</p>
+      </div>
+      <div class="post-info1">
+        <span class="post-author1">{{ item.author }}</span>
+        <span class="post-time1">{{ item.date }}</span>
+      </div>
+    </li>
+  </ul>
+  <div class="pagination-controls1">
+    <button @click="navigateToPrevious" :disabled="currentPage === 1">上一页</button>
+    <button @click="navigateToNext" :disabled="currentPage === totalPagesCount">下一页</button>
+  </div>
+  
+  <!-- Post Details Modal -->
+  <div v-if="showModal" class="modal-overlay" @click="closeModal">
+    <div class="modal-content" @click.stop>
+      <h2 class="modal-title">{{ selectedPost.title }}</h2>
+      <p class="modal-content">{{ selectedPost.content }}</p>
+      <div class="modal-comments">
+        <h3>评论：</h3>
+        <ul>
+          <li v-for="comment in selectedPost.comments" :key="comment.id">{{ comment.text }}</li>
+        </ul>
+      </div>
+      <br>
+      <div class="modal-new-comment">
+        <textarea v-model="newComment" placeholder="添加评论..."></textarea>
+        <button @click="addComment">提交评论</button>
+      </div>
+    
+      <button class="modal-close-button" @click="closeModal">关闭</button>
+    </div>
+  </div>
+</div>
+
     
 
       </div>
-     <!--分类部分-->
+     <!--热帖部分-->
 
      
   
@@ -139,7 +198,7 @@
     <h2 class="contributors-title">用户贡献榜</h2>
     <ul class="contributors-list">
       <li v-for="(user, index) in paginatedContributors" :key="index" class="contributor-item">
-        <span class="user-rank">{{ (currentPage - 1) * itemsPerPage + index + 1 }}</span>
+        <span class="user-rank">{{ (currentPage - 1) * UsersitemsPerPage + index + 1 }}</span>
         <span class="user-name">{{ user.username }}</span>
         <span class="user-contribution">贡献分数: {{ calculateContribution(user) }}</span>
       </li>
@@ -193,13 +252,13 @@
       return {
         buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像
         userName: 'Wuhuairline', // 默认用户名,后端接入用户姓名
-        activeTab:"Announcement",
+        activeTab:"HotPosts",
         isUserInfoVisible: false, // 控制用户信息列表的显示与隐藏
 
        
       currentPage: 1,
       
-      itemsPerPage: 5 ,// 每页显示的用户数
+      UsersitemsPerPage: 5 ,// 每页显示的用户数
       contributors: [
       { username: 'Alice', posts: 10, comments: 20 },
       { username: 'Bob', posts: 5, comments: 15 },
@@ -213,14 +272,24 @@
       { username: 'David6', posts: 7, comments: 12 },
       { username: 'David7', posts: 7, comments: 12 },
       { username: 'David8', posts: 7, comments: 12 },
+      { username: 'David8', posts: 7, comments: 12 },
+      { username: 'David8', posts: 7, comments: 12 },
       
      
     ],
      // 发帖
      title: '',
-      content: ''
-        
-     
+      content: '',
+      postsData: [], // 后端获取的帖子数据
+//帖子列表
+      showModal: false,
+      selectedPost: null,
+      newComment: '',
+      currentPage: 1,
+
+
+      itemsPerPage: 10,
+      showDeleteConfirm: false // 添加此行
       };
     },
     
@@ -235,12 +304,11 @@
     }),
     // 计算分页后的用户列表
     paginatedContributors() {
-      // 计算总页数
-      const totalPages = Math.ceil(this.contributors.length / this.itemsPerPage);
+     
 
       // 计算当前页码的开始和结束索引
-      const start = (this.currentPage - 1) * this.itemsPerPage;
-      const end = start + this.itemsPerPage;
+      const start = (this.currentPage - 1) * this.UsersitemsPerPage;
+      const end = start + this.UsersitemsPerPage;
 
       // 对用户按贡献度排序
       const sortedContributors = this.contributors.slice().sort((a, b) => {
@@ -250,9 +318,20 @@
       // 返回当前页的用户列表
       return sortedContributors.slice(start, end);
     },
+
+
     // 计算总页数
     totalPages() {
-      return Math.ceil(this.contributors.length / this.itemsPerPage);
+      return Math.ceil(this.contributors.length / this.UsersitemsPerPage);
+    },
+    //帖子列表
+    totalPagesCount() {
+      return Math.ceil(this.postsData.length / this.itemsPerPage);
+    },
+    visiblePosts() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      return this.postsData.slice(startIndex, endIndex);
     }
   },
     methods:
@@ -335,16 +414,84 @@
           this.$router.push('/postDetail');
       }, //切换用户页面
   
+      GoToMycomment()
+      {
+        this.$router.push('/myComment');
+      },
       
-      
-      
+      GotoMyfavourite()
+        {
+            this.$router.push('/myfavourite');
+        }, //切换用户页面
       GoToHome()
       {
           this.$router.push('/home');
       },//返回主页界面
       
-     
+      async fetchPostsData() {
+    // 模拟从后端获取数据
+      // this.postsData = await fetch('your-api-endpoint').then(response => response.json());
+    this.postsData = [
+      { id: 1, title: '帖子标题1', content: '这是帖子内容1...', author: '作者1', date: '2024-09-01' },
+      { id: 2, title: '帖子标题2', content: '这是帖子内容2...', author: '作者2', date: '2024-09-02' },
+      // 你可以添加更多的测试数据
+      { id: 3, title: '帖子标题3', content: '这是帖子内容3...', author: '作者3', date: '2024-09-03' },
+      { id: 4, title: '帖子标题4', content: '这是帖子内容4...', author: '作者4', date: '2024-09-04' },
+      // 确保数据量超过 itemsPerPage 以测试分页功能
+      { id: 5, title: '帖子标题5', content: '这是帖子内容5...', author: '作者5', date: '2024-09-05' },
+      { id: 6, title: '帖子标题6', content: '这是帖子内容6...', author: '作者6', date: '2024-09-06' },
+      { id: 7, title: '帖子标题7', content: '这是帖子内容7...', author: '作者7', date: '2024-09-07' },
+      { id: 8, title: '帖子标题8', content: '这是帖子内容8...', author: '作者8', date: '2024-09-08' },
+      { id: 9, title: '帖子标题9', content: '这是帖子内容9...', author: '作者9', date: '2024-09-09' },
+      { id: 10, title: '帖子标题10', content: '这是帖子内容10...', author: '作者10', date: '2024-09-10' },
+      { id: 11, title: '帖子标题11', content: '这是帖子内容11...', author: '作者11', date: '2024-09-11' },
+      // 添加更多测试数据以覆盖多个页面
+    ];
+  },
+      
+    summarizeContent(content) {
+      return content.length > 100 ? content.slice(0, 100) + '...' : content;
+    },
+    showPostDetails(post) {
+      this.selectedPost = post;
+      this.showModal = true;
+    },
+    closeModal() {
+      this.showModal = false;
+      this.selectedPost = null;
+    },
+    addComment() {
+      if (this.newComment.trim() === '') return;
+      this.selectedPost.comments.push({ id: Date.now(), text: this.newComment });
+      this.newComment = '';
+    },
+    deletePost() {
+    this.showDeleteConfirm = true; // 显示删除确认弹窗
+  },
+  confirmDelete() {
+    const index = this.visiblePosts.findIndex(post => post.id === this.selectedPost.id);
+    if (index !== -1) {
+      this.visiblePosts.splice(index, 1);
+      this.closeModal();
     }
+    this.showDeleteConfirm = false; // 关闭删除确认弹窗
+  },
+  cancelDelete() {
+    this.showDeleteConfirm = false; // 关闭删除确认弹窗
+  },
+    navigateToPrevious() {
+      if (this.currentPage > 1) this.currentPage--;
+    },
+    navigateToNext() {
+      if (this.currentPage < this.totalPagesCount) this.currentPage++;
+    }
+
+
+
+    },
+    created() {
+    this.fetchPostsData();
+  }
   };
   </script>
   
@@ -461,8 +608,8 @@
     display: flex;
     position: absolute;
     top: 0; /* 将横条图片定位到容器顶部 */
-    left: 0; /* 从左侧开始对齐 */
-    z-index: 4; /* 确保横条图片在用户界面内容之上 */
+    left: 0%; /* 从左侧开始对齐 */
+    z-index: 1; /* 确保横条图片在用户界面内容之上 */
   }
   
   
@@ -572,9 +719,9 @@
   {
     display: flex;
     position:relative;
-    left:5%;
-
-    margin-top: -50px; /* 设置距离顶部的间距 */
+    left:8%;
+    z-index:2;
+    margin-top: -350px; /* 设置距离顶部的间距 */
 }
 
 .information-input1 
@@ -610,12 +757,236 @@
   transform: scale(1.05); /* 悬停时放大效果 */
 }
 
+/* 帖子详情 */
+
+.post-container1 {
+  position: absolute;
+  top: 15%;
+  left: 20%;
+  width: 900px;
+  height: 600px;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgb(45, 198, 22);
+  color: rgb(45, 198, 22);
+}
+
+.post-header1 {
+  text-align: center;
+  font-size: 35px;
+  color: rgb(45, 198, 22);
+  margin-bottom: 0;
+}
 
 
+.post-list1 {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  max-height: 480px; /* 设置最大高度 */
+  overflow-y: auto; /* 启用垂直滚动条 */
+  overflow-x: hidden;
+}
 
+
+.post-item1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  background-color: #d2f0ed;
+  margin: 8px 0;
+  border-radius: 5px;
+}
+
+.post-item1:hover {
+  transform: scale(1.05);
+}
+
+.post-title1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.post-summary1 {
+  font-size: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.post-info1 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.post-author1, .post-time1 {
+  color: rgb(45, 198, 22);
+}
+
+.pagination-controls1 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.pagination-controls1 button {
+  margin: 0 5px;
+}
   
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal content */
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 800px;
+  width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Modal title */
+.modal-title {
+  margin-top: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Modal content text */
+.modal-content {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Modal comments */
+.modal-comments {
+  margin-top: 20px;
+}
+
+.modal-comments h3 {
+  margin-top: 0;
+}
+
+/* Comment list */
+.modal-comments ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.modal-comments li {
+  margin-bottom: 10px;
+}
+
+/* New comment section */
+.modal-new-comment {
+  margin-top: 20px;
+}
+
+.modal-new-comment textarea {
+  width: 100%;
+  height: 80px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.modal-new-comment button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-new-comment button:hover {
+  background-color: #0056b3;
+}
+
+/* Delete and Close buttons */
+.modal-delete-button, .modal-close-button {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.modal-delete-button:hover {
+  background-color: #c82333;
+}
+
+.modal-close-button {
+  background-color: #6c757d;
+}
+
+.modal-close-button:hover {
+  background-color: #5a6268;
+}
+
+/* Add margin between buttons */
+.modal-content button {
+  margin-right: 10px;
+}
+
+.modal-content button:last-child {
+  margin-right: 0;
+}
 
 
+.delete-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-confirm-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.delete-confirm-content h2 {
+  color: red;
+}
+
+.delete-confirm-content p {
+  color: red;
+}
 
 /* 用户贡献榜 */
 /* 用户贡献榜 */
@@ -781,7 +1152,6 @@
   background-color: rgb(37, 210, 226);
   color: #fff;
 }
-
 
 
 
