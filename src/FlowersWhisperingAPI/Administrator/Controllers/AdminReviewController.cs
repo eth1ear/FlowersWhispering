@@ -39,13 +39,13 @@ namespace FlowersWhisperingAPI.Administrator.Controllers
         }
 
         [HttpPut("plant/edit")]
-        public void UpdatePlant([FromBody] Plant plant)
+        public void UpdatePlant([FromBody] Models.Plant plant)
         {
             _adminReviewService.UpdatePlant(plant);
         }
 
         [HttpPost("plant/add")]
-        public void AddPlant([FromBody] Plant plant)
+        public void AddPlant([FromBody] Models.Plant plant)
         {
             _adminReviewService.AddPlant(plant);
         }

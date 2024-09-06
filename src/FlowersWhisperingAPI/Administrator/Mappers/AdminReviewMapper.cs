@@ -93,7 +93,7 @@ namespace FlowersWhisperingAPI.Administrator.Mappers
             command.ExecuteNonQuery();
         }
 
-        public Plant? SelectPlantById(int plantId)
+        public Models.Plant? SelectPlantById(int plantId)
         {
             string sql = "SELECT * FROM Plants WHERE plant_id = :PlantId";
             try
@@ -111,7 +111,7 @@ namespace FlowersWhisperingAPI.Administrator.Mappers
                     string portrayal = reader.GetString(4);
                     string growthEnvironment = reader.GetString(5);
                     string careConditions = reader.GetString(6); 
-                    return new Plant(plantId, commonName, scientificName, category, portrayal, growthEnvironment, careConditions);
+                    return new Models.Plant(plantId, commonName, scientificName, category, portrayal, growthEnvironment, careConditions);
                 }
             }
             catch (Exception ex)

@@ -53,6 +53,8 @@
                 </p>
               </div>
               <div class="item-actions">
+                <button v-if="isActive" @click="changeUserState" class="btn-edit my-animation-slide-bottom">封禁</button>
+                <button v-else @click="changeUserState" class="btn-edit my-animation-slide-bottom">解封</button>
                 <button v-if="!user.editing" @click="editUser(user)" class="btn-edit my-animation-slide-bottom">修改</button>
                 <button v-else @click="saveUser(user)" class="btn-submit my-animation-slide-bottom">保存</button>
               </div>
@@ -277,6 +279,12 @@
     methods: {
       ...mapActions(['addUser', 'deleteUser', 'updateUser', 'deletePost', 'deleteComment', 'deleteAnnouncement', 'addAnnouncement','updateAdmin']),
       
+      isActive(){
+        return this.user.active;
+      },
+      changeUserState(){
+        this.user.active = !this.user.active;
+      },
       toggleExpandAnnouncement(announcement) {
       if (this.expandedAnnouncement === announcement) {
         this.expandedAnnouncement = null;

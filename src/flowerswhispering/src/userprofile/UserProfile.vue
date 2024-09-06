@@ -13,12 +13,12 @@
     </nav>
     <div class="user-info">
       <div class="user-avatar-wrapper">
-        <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
+        <img :src="currentUser.avatar" alt="User Avatar" @click="handleUserAvatarClick">
         <div class="user-info-list">
           <div v-if="currentUser.role !== 'guest'">
             <p>用户名: {{ currentUser.username }}</p>
             <p>邮箱: {{ currentUser.email }}</p>
-            <p>角色: {{ currentUser.role }}</p>
+            <p>角色: {{ currentUser.userRole }}</p>
           </div>
           <div v-else>
             <p class="login-prompt">点击登录</p>
@@ -37,18 +37,67 @@
       <div class="left-panel">
         <div class="user-info-container">
           <div class="avatar-container" @click="openAvatarSelection">
-            <img :src="userAvatar" alt="用户头像" class="avatar" />
+            <img :src="currentUser.avatar" alt="用户头像" class="avatar" />
             <div class="avatar-overlay">更换头像</div>
+            <!-- 隐藏的文件输入框 -->
+            <input 
+              type="file" 
+              ref="fileInput" 
+              @change="handleFileUpload" 
+              accept="image/*" 
+              style="display: none;" 
+            />
           </div>
           <div class="user-details">
             <!-- 用户信息表单部分 -->
+            <div class="form-group">
+             <label for="username">邮&nbsp;箱：</label>
+               <div class="editable-field-container">
+                <span v-if="!editing">{{ currentUser.username }}</span>
+                <input 
+                v-if="editing" 
+                type="username" 
+                v-model="userTemp.username" 
+                @input="validateUsername" 
+                class="fixed-input" 
+                />
+                <!-- 错误信息显示在输入框下方 -->
+                <p v-if="usernameError" class="error-message">{{ usernameError }}</p> <!-- 报错信息显示在输入框下方 -->
+              </div>
+            </div>
+
            <div class="form-group">
-             <label for="username">用户名：</label>
-                <div class="editable-field-container">
-                 <span v-if="!editing">{{ currentUser.username }}</span>
-                 <input v-if="editing" type="text" v-model="userTemp.username" class="fixed-input" />
-                </div>
-           </div>
+            <label for="role">身&nbsp;份：</label>
+            <div class="editable-field-container">
+              <span>{{ currentUser.userRole=='user'?'普通用户':'管理员' }}</span> <!-- 只显示，不允许编辑 -->
+            </div>
+          </div>
+           <div class="form-group">
+              <label for="gender">性&nbsp;别：</label>
+              <div class="editable-field-container">
+                <!-- 编辑状态下显示当前性别的文本 -->
+                <span v-if="!editing">{{ currentUser.gender}}</span>
+                <!-- 编辑状态下显示下拉菜单，默认选中当前性别 -->
+                <select v-if="editing" v-model="userTemp.gender" class="fixed-input">
+                  <option value="男">男</option>
+                  <option value="女">女</option>
+                  <option value="不愿透露">不愿透露</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="language">语言偏好：</label>
+              <div class="editable-field-container">
+                <!-- 编辑状态下显示当前性别的文本 -->
+                <span v-if="!editing">{{ currentUser.languagePreference=="zh-CN"?'中文':'英文'}}</span>
+                <!-- 编辑状态下显示下拉菜单，默认选中当前性别 -->
+                <select v-if="editing" v-model="userTemp.languagePreference" class="fixed-input">
+                  <option value="zh-CN">中文</option>
+                  <option value="EN">英文</option>
+                </select>
+              </div>
+            </div>
 
            <div class="form-group">
              <label for="email">邮&nbsp;箱：</label>
@@ -68,11 +117,18 @@
             <div class="form-group">
               <label for="bio">简&nbsp;介：</label>
               <div class="editable-field-container">
-                <span v-if="!editing">{{ currentUser.bio ? currentUser.bio : '这家伙很懒，什么都没留下' }}</span>
+                <span v-if="!editing">{{ currentUser.bio}}</span>
                 <textarea v-if="editing" id="bio" v-model="userTemp.bio" class="fixed-input"></textarea>
               </div>
             </div>
           </div>
+          <div class="form-group">
+            <label for="registrationDate">注册时间：</label>
+            <div class="editable-field-container">
+              <span>{{ currentUser.registrationTime }}</span> <!-- 只显示，不允许编辑 -->
+            </div>
+          </div>
+
            <!-- 编辑个人信息按钮 -->
         <div class="edit-button-container">
           <button v-if="!editing" class="edit-button" @click="editUserInfo">编辑个人信息</button>
@@ -81,7 +137,6 @@
             <button 
               class="confirm-button" 
               @click="confirmEdit" 
-              :disabled="emailError"
             >确认</button>
             <button class="cancel-button" @click="cancelEdit">取消</button>
             
@@ -154,28 +209,30 @@
   </div>
 
 
-        <!-- 修改密码弹窗 -->
-<div v-if="showChangePasswordDialog" class="password-dialog-overlay">
-  <div class="password-dialog">
-    <h3>修改账户密码</h3>
-    <div class="form-group">
-      <label for="old-password">旧密码：</label>
-      <input type="password" id="old-password" v-model="oldPassword" />
-    </div>
-    <div class="form-group">
-      <label for="new-password">新密码：</label>
-      <input type="password" id="new-password" v-model="newPassword" />
-    </div>
-    <div class="form-group">
-      <label for="confirm-password">确认新密码：</label>
-      <input type="password" id="confirm-password" v-model="confirmPassword" />
-    </div>
-    <div class="dialog-actions">
-      <button class="confirm-button" @click="confirmChangePassword">确认</button>
-      <button class="cancel-button" @click="cancelChangePassword">取消</button>
+  <!-- 修改密码弹窗 -->
+  <div v-if="showChangePasswordDialog" class="password-dialog-overlay">
+    <div class="password-dialog">
+      <h3>修改账户密码</h3>
+      <div class="form-group">
+        <label for="old-password">旧密码：</label>
+        <input type="password" id="old-password" v-model="oldPassword" />
+      </div>
+      <div class="form-group">
+        <label for="new-password">新密码：</label>
+        <input type="password" id="new-password" v-model="newPassword" />
+      </div>
+      <div class="form-group">
+        <label for="confirm-password">确认新密码：</label>
+        <input type="password" id="confirm-password" v-model="confirmPassword" />
+      </div>
+      <!-- 错误信息 -->
+      <p v-if="passwordError" class="error-message">{{ passwordError }}</p>
+      <div class="dialog-actions">
+        <button class="confirm-button" @click="confirmChangePassword">确认</button>
+        <button class="cancel-button" @click="cancelChangePassword">取消</button>
+      </div>
     </div>
   </div>
-</div>
     <!-- 头像选择弹出框 -->
     <div v-if="showAvatarSelection" class="avatar-selection-overlay">
       <div class="avatar-selection-container">
@@ -211,15 +268,18 @@
   </div>
 </template>
 
+
 <script>
-import { mapState, mapGetters, mapActions} from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
+
 export default {
   computed: {
-    ...mapState({
-      currentUser: state => state.currentUser , // 从Vuex store中获取 currentUser
-      userAvatar: state => state.userAvatar // 确保这里绑定了全局的 userAvatar
-    }),
-    ...mapGetters(['userAvatar'])  // 使用全局的userAvatar
+    ...mapGetters({
+      currentUser: 'getUserInfo', // 获取当前用户信息
+      isAdmin: 'isAdmin', // 检查是否为管理员
+      userAvatar: 'userAvatar', // 使用 getter 获取头像
+      isAuthenticated: 'isAuthenticated' // 检查认证状态
+    })
   },
   data() {
     return {
@@ -290,6 +350,7 @@ export default {
         },
       ], // 帖子数据
       showChangePasswordDialog: false, // 控制弹出框显示
+      passwordError: '',
       oldPassword: '',
       newPassword: '',
       confirmPassword: '',
@@ -297,27 +358,34 @@ export default {
       showConfirmDialog: false, // 删除确认弹框
       selectedPost: null, // 当前选中的帖子
       comments: [] ,// 评论列表
+
+
       userTemp: {},
       editing: false,
-      showAvatarSelection: false,
-      selectedAvatar: null,
-      emailError: null,  // 用于存储邮箱格式错误信息
-      avatarOptions: [
-        require('@/userprofile/images/avatar1.jpg'),
-        require('@/userprofile/images/avatar2.jpg'),
-        require('@/userprofile/images/avatar3.jpg'),
-        require('@/userprofile/images/avatar4.jpg'),
-        require('@/userprofile/images/avatar5.jpg'),
-        require('@/userprofile/images/avatar6.jpg')
-      ]
+      emailError: null,
+      usernameError: null,
     };
   },
   methods: {
-     ...mapActions(['logout']),
+    ...mapActions({
+      logout: 'logout',
+      setAvatar: 'setAvatar',
+      updateUserInfo: 'updateUserInfo',
+    }),
     editUserInfo() {
-      this.userTemp = { ...this.currentUser };  // 创建 currentUser 的临时副本
+      this.userTemp = { ...this.currentUser };
       this.editing = true;
     },
+    // 验证用户名是否为邮箱格式
+    validateUsername() {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (emailPattern.test(this.userTemp.username)) {
+        this.usernameError = '用户名不能是邮箱格式';
+      } else {
+        this.usernameError = null;
+      }
+    },
+    // 验证邮箱格式
     validateEmail() {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(this.userTemp.email)) {
@@ -326,17 +394,27 @@ export default {
         this.emailError = null;
       }
     },
-    confirmEdit() {
-        //alert("Confirm button clicked"); // 调试：确认按钮点击后是否进入方法
-      if (!this.emailError) {
-        //alert("No email error, proceeding with update"); // 调试：确认邮箱格式正确，准备提交更新
-        this.$store.commit('UPDATE_USER', this.userTemp);
-        this.editing = false;
-        // alert("Edit successful!"); // 调试：确认提交成功后显示成功信息
-        } 
+    
+    async confirmEdit() {
+      if (!this.emailError && !this.usernameError && this.editing) {
+        try {
+          // 调用 Vuex 中的 action，发送更新的用户信息到后端
+          await this.updateUserInfo({username:this.userTemp.username, 
+                                    email:this.userTemp.email, 
+                                    password:this.userTemp.password ,
+                                    languagePreference:this.userTemp.languagePreference,
+                                    bio:this.userTemp.bio,
+                                    avatar:this.userTemp.avatar,
+                                    gender:this.userTemp.gender});
+          this.editing = false;
+        } catch (error) {
+          console.error('更新失败:', error);
+          alert('更新用户信息失败，请稍后重试。');
+        }
+      }
     },
-     toggleUserMenu() {
-    this.showUserMenu = !this.showUserMenu;
+    toggleUserMenu() {
+      this.showUserMenu = !this.showUserMenu;
     },
     handleUserAvatarClick() {
       if (this.currentUser.role === 'guest') {
@@ -347,21 +425,35 @@ export default {
     },
     cancelEdit() {
       this.editing = false;  // 恢复到原来的状态，不保存修改
-      this.emailError = '';  // 取消编辑时，清除错误信息
+      this.emailError = null;  // 取消编辑时，清除错误信息
     },
     openAvatarSelection() {
-      this.showAvatarSelection = true;
-      this.selectedAvatar = this.userAvatar;  // 使用全局的userAvatar
+      this.$refs.fileInput.click(); // 点击头像区域时，打开文件选择器
     },
-    selectAvatar(avatar) {
-      this.selectedAvatar = avatar;
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.selectedAvatar = e.target.result; // 将Base64数据存储在selectedAvatar
+          this.updateUserAvatar(); // 调用方法更新头像
+        };
+        reader.readAsDataURL(file); // 将文件读取为Base64格式
+      }
     },
-    confirmAvatar() {
-      this.$store.dispatch('setAvatar', this.selectedAvatar);  // 使用action更新全局头像
-      this.showAvatarSelection = false;
-    },
-    cancelAvatarSelection() {
-      this.showAvatarSelection = false;
+    async updateUserAvatar() {
+      try {
+        await this.updateUserInfo({username:this.currentUser.username, 
+                                    email:this.currentUser.email, 
+                                    password:this.currentUser.password ,
+                                    languagePreference:this.currentUser.languagePreference,
+                                    bio:this.currentUser.bio,
+                                    avatar:this.selectedAvatar,
+                                    gender:this.currentUser.gender});
+      } catch (error) {
+        console.error('更新头像失败:', error);
+        alert('更新头像失败，请稍后再试。');
+      }
     },
     goToCatalog() {
       this.$router.push('/catalog');
@@ -420,28 +512,61 @@ export default {
       this.showPostDialog = false;
       this.selectedPost = null;
     },
-     // 确认修改密码
-    confirmChangePassword() {
-      if (this.newPassword === this.confirmPassword) {
-        // 在这里处理修改密码的逻辑
-        console.log('旧密码:', this.oldPassword);
-        console.log('新密码:', this.newPassword);
+    async confirmChangePassword() {
+      // 清除之前的错误提示
+      this.passwordError = '';
+
+      // 确保新密码和确认密码相同
+      if (this.newPassword !== this.confirmPassword) {
+        this.passwordError = '新密码与确认密码不匹配';
+        return;
+      }
+      // 验证旧密码是否正确
+      if (this.oldPassword !== this.currentUser.password) {
+        this.passwordError = '旧密码不正确';
+        return;
+      }
+
+      // 确保新密码与旧密码不同
+      if (this.newPassword === this.oldPassword) {
+        this.passwordError = '新密码不能与旧密码相同';
+        return;
+      }
+
+      
+      // 确保新密码长度在 8 到 20 位之间
+      if (this.newPassword.length < 8 || this.newPassword.length > 20) {
+        this.passwordError = '新密码长度应为 8 到 20 位';
+        return;
+      }
+      // 向后端发送请求更新密码
+      try {
+        await this.updateUserInfo({username:this.currentUser.username, 
+                                    email:this.currentUser.email, 
+                                    password:this.newPassword ,
+                                    languagePreference:this.currentUser.languagePreference,
+                                    bio:this.currentUser.bio,
+                                    avatar:this.currentUser.avatar,
+                                    gender:this.currentUser.gender});
         alert('密码修改成功');
-        this.showChangePasswordDialog = false; // 关闭弹框
-      } else {
-        alert('新密码和确认密码不匹配');
+        this.cancelChangePassword(); // 关闭弹框并清空数据
+      } catch (error) {
+        console.error('更新密码失败:', error);
+        alert('更新密码失败，请稍后再试');
       }
     },
-    // 取消修改密码
     cancelChangePassword() {
-      this.showChangePasswordDialog = false; // 关闭弹框
+      this.showChangePasswordDialog = false; // 关闭弹窗
       this.oldPassword = '';
       this.newPassword = '';
       this.confirmPassword = '';
-    }
+      this.passwordError = '';
+    },
   }
 };
 </script>
+
+
 
 <style scoped>
 
@@ -902,7 +1027,7 @@ textarea {
   align-items: center;             /* 垂直居中对齐 */
   background-color: rgba(70, 180, 118, 0.8);
   color: white;
-  position: absolute;
+  position:relative;
   width: 100%;                     /* 跨满页面 */
   z-index: 10;
 }
