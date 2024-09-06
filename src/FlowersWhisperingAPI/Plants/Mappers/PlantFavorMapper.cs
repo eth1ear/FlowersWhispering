@@ -78,6 +78,40 @@ namespace FlowersWhisperingAPI.Plants.Mappers
             }
             return false;
         }
+
+        public bool DeleteFavorPlant(int userId, int plantId)
+        {
+            try
+            {
+                using (OracleConnection connection = new OracleConnection(connectionString))
+                {
+                    connection.Open();
+                    string sql = "DELETE FROM Favorites WHERE USER_ID = :userId AND PLANT_ID = :plantId";
+                    
+                    using (OracleCommand command = new OracleCommand(sql, connection))
+                    {
+                        command.Parameters.Add(new OracleParameter("userId", userId));
+                        command.Parameters.Add(new OracleParameter("plantId", plantId));
+                        
+                        int rowsAffected = command.ExecuteNonQuery();
+                        
+                        if (rowsAffected > 0)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting favorite plant: {ex.Message}");
+                return false;
+            }
+        }
     }
 
 }
