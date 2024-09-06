@@ -11,7 +11,8 @@ import Contribution from '../catalog/Contribution.vue';
 import Community from '../community/Community.vue';
 import Profile from '../userprofile/UserProfile.vue';
 import PostDetail from '../community/PostDetail.vue';
-
+import Mycomment from '../community/Mycomment.vue';
+import Myfavourite from '../community/Myfavourite.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -69,6 +70,18 @@ const routes: Array<RouteRecordRaw> = [
     path: '/postDetail',
     name: 'PostDetail',
     component: PostDetail,
+    meta: { requiresAuth: true }  // 需要验证
+  },
+  {
+    path: '/mycomment',
+    name: 'Mycomment',
+    component: Mycomment,
+    meta: { requiresAuth: true }  // 需要验证
+  },
+  {
+    path: '/myfavourite',
+    name: 'Myfavourite',
+    component: Myfavourite,
     meta: { requiresAuth: true }  // 需要验证
   },
   {

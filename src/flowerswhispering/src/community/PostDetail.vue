@@ -46,8 +46,8 @@
                 <div class="tabs">              <!--显示选项卡-->
 
                   <button :class="{ active: activeTab === 'Mypost' }" @click="setActiveTab('Mypost')">我的帖子</button>
-                  <button :class="{ active: activeTab === 'Mycomment' }" @click="setActiveTab('Mycomment')">我的评论</button>
-      
+                  <button :class="{ active: activeTab === 'Mycomment' }" @click="GoToMycomment()">我的评论</button>
+                  <button :class="{ active: activeTab === 'Myfavourite' }" @click="GotoMyfavourite">我的收藏</button>
                   <button :class="{ active: activeTab === 'home' }" @click="goToCommunity">返回上步</button>
 
                 </div> 
@@ -63,25 +63,56 @@
 
       
       <div class="post-container1">
-    <h1 class="post-header1">帖子列表</h1>
-    <ul class="post-list1">
-      <li v-for="item in visiblePosts" :key="item.id" class="post-item1">
-        <div>
-          <h2 class="post-title1">{{ item.title }}</h2>
-          <p class="post-summar1y">{{ summarizeContent(item.content) }}</p>
-        </div>
-        <div class="post-info1">
-          <span class="post-author1">{{ item.author }}</span>
-          <span class="post-time1">{{ item.date }}</span>
-        </div>
-      </li>
-    </ul>
-    <div class="pagination-controls1">
-      <button @click="navigateToPrevious" :disabled="currentPage === 1">上一页</button>
-      <button @click="navigateToNext" :disabled="currentPage === totalPagesCount">下一页</button>
+  <h1 class="post-header1">我的帖子</h1>
+  <ul class="post-list1">
+    <li v-for="item in visiblePosts" :key="item.id" class="post-item1" @click="showPostDetails(item)">
+      <div>
+        <h2 class="post-title1">{{ item.title }}</h2>
+        <p class="post-summary1">{{ summarizeContent(item.content) }}</p>
+      </div>
+      <div class="post-info1">
+        <span class="post-author1">{{ item.author }}</span>
+        <span class="post-time1">{{ item.date }}</span>
+      </div>
+    </li>
+  </ul>
+  <div class="pagination-controls1">
+    <button @click="navigateToPrevious" :disabled="currentPage === 1">上一页</button>
+    <button @click="navigateToNext" :disabled="currentPage === totalPagesCount">下一页</button>
+  </div>
+  
+  <!-- Post Details Modal -->
+  <div v-if="showModal" class="modal-overlay" @click="closeModal">
+    <div class="modal-content" @click.stop>
+      <h2 class="modal-title">{{ selectedPost.title }}</h2>
+      <p class="modal-content">{{ selectedPost.content }}</p>
+      <div class="modal-comments">
+        <h3>评论：</h3>
+        <ul>
+          <li v-for="comment in selectedPost.comments" :key="comment.id">{{ comment.text }}</li>
+        </ul>
+      </div>
+      <br>
+      <div class="modal-new-comment">
+        <textarea v-model="newComment" placeholder="添加评论..."></textarea>
+        <button @click="addComment">提交评论</button>
+      </div>
+      <button class="modal-delete-button" @click="deletePost">删除帖子</button>
+      <button class="modal-close-button" @click="closeModal">关闭</button>
     </div>
   </div>
-     
+</div>
+
+    <!-- 删除确认弹窗 -->
+<div v-if="showDeleteConfirm" class="delete-confirm-overlay" @click="cancelDelete">
+  <div class="delete-confirm-content" @click.stop>
+    <h2>确认删除</h2>
+    <p>您确定要删除此帖子吗？</p>
+    <button @click="confirmDelete">确认</button>
+    <button @click="cancelDelete">取消</button>
+  </div>
+</div>
+
 
 
       
@@ -124,9 +155,16 @@
        
       
       // 添加更多测试数据
+      showModal: false,
+      selectedPost: null,
+      newComment: '',
+      currentPage: 1,
+
+
+      itemsPerPage: 10,
+      showDeleteConfirm: false // 添加此行
     
-    
-        
+     
      
       };
     },
@@ -140,6 +178,10 @@
       currentUser: 'getUserInfo', // 获取当前用户信息
       isAdmin: 'isAdmin',
     }),
+    // 计算总页数
+    totalPages() {
+      return Math.ceil(this.contributors.length / this.UsersitemsPerPage);
+    },
     //帖子列表
     totalPagesCount() {
       return Math.ceil(this.postsData.length / this.itemsPerPage);
@@ -148,7 +190,8 @@
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
       return this.postsData.slice(startIndex, endIndex);
-    },
+    }
+    
   },
     methods:
     {
@@ -167,7 +210,48 @@
           this.activeTab=tabName;  
         },  //设置选项卡
 
-        async fetchPostsData1() {
+        
+    summarizeContent(content) {
+      return content.length > 100 ? content.slice(0, 100) + '...' : content;
+    },
+    navigateToPrevious() {
+      if (this.currentPage > 1) this.currentPage--;
+    },
+    navigateToNext() {
+      if (this.currentPage < this.totalPagesCount) this.currentPage++;
+    },
+    
+  
+    GotoMyfavourite()
+        {
+            this.$router.push('/myfavourite');
+        }, //切换用户页面
+    GoToMycomment()
+      {
+        this.$router.push('/myComment');
+      },
+  
+      Gotouserpage()
+      {
+          this.$router.push('/userprofile');
+      }, //切换用户页面
+      
+      GotoPostDetil()
+      {
+          this.$router.push('/postDetail');
+      }, //切换用户页面
+  
+      goToCommunity()
+      {
+          this.$router.push('/community');
+      }, //切换用户页面
+      
+      
+      GoToHome()
+      {
+          this.$router.push('/home');
+      },//返回主页界面
+      async fetchPostsData() {
     // 模拟从后端获取数据
       // this.postsData = await fetch('your-api-endpoint').then(response => response.json());
     this.postsData = [
@@ -191,41 +275,45 @@
     summarizeContent(content) {
       return content.length > 100 ? content.slice(0, 100) + '...' : content;
     },
+    showPostDetails(post) {
+      this.selectedPost = post;
+      this.showModal = true;
+    },
+    closeModal() {
+      this.showModal = false;
+      this.selectedPost = null;
+    },
+    addComment() {
+      if (this.newComment.trim() === '') return;
+      this.selectedPost.comments.push({ id: Date.now(), text: this.newComment });
+      this.newComment = '';
+    },
+    deletePost() {
+    this.showDeleteConfirm = true; // 显示删除确认弹窗
+  },
+  confirmDelete() {
+    const index = this.visiblePosts.findIndex(post => post.id === this.selectedPost.id);
+    if (index !== -1) {
+      this.visiblePosts.splice(index, 1);
+      this.closeModal();
+    }
+    this.showDeleteConfirm = false; // 关闭删除确认弹窗
+  },
+  cancelDelete() {
+    this.showDeleteConfirm = false; // 关闭删除确认弹窗
+  },
     navigateToPrevious() {
       if (this.currentPage > 1) this.currentPage--;
     },
     navigateToNext() {
       if (this.currentPage < this.totalPagesCount) this.currentPage++;
-    },
-    
-  
+    }
 
-  
-      Gotouserpage()
-      {
-          this.$router.push('/userprofile');
-      }, //切换用户页面
-      
-      GotoPostDetil()
-      {
-          this.$router.push('/postDetail');
-      }, //切换用户页面
-  
-      goToCommunity()
-      {
-          this.$router.push('/community');
-      }, //切换用户页面
-      
-      
-      GoToHome()
-      {
-          this.$router.push('/home');
-      },//返回主页界面
-      
      
     },
+    
     created() {
-    this.fetchPostsData1();
+    this.fetchPostsData();
   }
   };
   </script>
@@ -394,11 +482,6 @@
   display: block;
 }
   
-
-
-  
-/* 帖子详情 */
-
 .post-container1 {
   position: absolute;
   top: 8%;
@@ -426,6 +509,7 @@
   list-style-type: none;
   max-height: 480px; /* 设置最大高度 */
   overflow-y: auto; /* 启用垂直滚动条 */
+  overflow-x:hidden; /* 启用垂直滚动条 */
 }
 
 
@@ -463,7 +547,12 @@
   font-size: 16px;
 }
 
-.post-author1, .post-time1 {
+.post-author1 {
+  color: rgb(45, 198, 22);
+  margin-right: 20px; /* 调整为所需的间距 */
+}
+
+.post-time1 {
   color: rgb(45, 198, 22);
 }
 
@@ -475,8 +564,159 @@
 .pagination-controls1 button {
   margin: 0 5px;
 }
+  
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal content */
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 800px;
+  width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Modal title */
+.modal-title {
+  margin-top: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Modal content text */
+.modal-content {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Modal comments */
+.modal-comments {
+  margin-top: 20px;
+}
+
+.modal-comments h3 {
+  margin-top: 0;
+}
+
+/* Comment list */
+.modal-comments ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.modal-comments li {
+  margin-bottom: 10px;
+}
+
+/* New comment section */
+.modal-new-comment {
+  margin-top: 20px;
+}
+
+.modal-new-comment textarea {
+  width: 100%;
+  height: 80px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.modal-new-comment button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-new-comment button:hover {
+  background-color: #0056b3;
+}
+
+/* Delete and Close buttons */
+.modal-delete-button, .modal-close-button {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.modal-delete-button:hover {
+  background-color: #c82333;
+}
+
+.modal-close-button {
+  background-color: #6c757d;
+}
+
+.modal-close-button:hover {
+  background-color: #5a6268;
+}
+
+/* Add margin between buttons */
+.modal-content button {
+  margin-right: 10px;
+}
+
+.modal-content button:last-child {
+  margin-right: 0;
+}
 
 
+.delete-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-confirm-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.delete-confirm-content h2 {
+  color: red;
+}
+
+.delete-confirm-content p {
+  color: red;
+}
+
+
+  
 
 
 
