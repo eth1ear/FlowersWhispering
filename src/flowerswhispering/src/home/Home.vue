@@ -10,7 +10,7 @@
   <div class="logo">Flowers Whispering</div>
   <div class="nav-user-container">
     <nav class="nav-links">
-      <nav v-if="currentUser.role === 'admin'">
+      <nav v-if="currentUser.userRole === 'admin'">
          <button @click="goToAdminPanel" class="nav-button">管理</button>
       </nav>
       <button @click="goHome" class="nav-button">首页</button>
@@ -24,7 +24,7 @@
           <div v-if="currentUser.userRole !== 'guest'">
             <p>用户名: {{ currentUser.username }}</p>
             <p>邮箱: {{ currentUser.email }}</p>
-            <p>角色: {{ currentUser.role }}</p>
+            <p>角色: {{ currentUser.userRole }}</p>
           </div>
           <div v-else>
             <p class="login-prompt">点击登录</p>
