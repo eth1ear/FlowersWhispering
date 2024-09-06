@@ -1,7 +1,7 @@
 <template>
 
     <!--大标题-->
-    
+    <Header />
          <!--大标题-->
     
     
@@ -125,15 +125,21 @@
     <button @click="submitForm" class="contribution-button">发布贡献</button>
     <button @click="goBack" class="return-button">放弃编辑</button>
   </div>
+  <Footer />
 </template>
     
     
 <script>
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
-    
+import Header from '@/home/Header.vue';
+import Footer from '@/home/Footer.vue';
 export default {
   name: 'Contribution',
+  components: {
+    Header,
+    Footer,
+  },
   data() {
     return {
       currentUser: null,

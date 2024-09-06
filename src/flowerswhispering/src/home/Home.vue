@@ -6,34 +6,7 @@
           <source src="../assets/video/background.mp4" type="video/mp4">
         </video>
       </div>
-  <header class="header">
-  <div class="logo">Flowers Whispering</div>
-  <div class="nav-user-container">
-    <nav class="nav-links">
-      <nav v-if="currentUser.role === 'admin'">
-         <button @click="goToAdminPanel" class="nav-button">管理</button>
-      </nav>
-      <button @click="goHome" class="nav-button">首页</button>
-      <button @click="goToCommunity" class="nav-button">社区</button>
-      <button @click="goToCatalog" class="nav-button">图鉴</button>
-    </nav>
-    <div class="user-info">
-      <div class="user-avatar-wrapper">
-        <img :src="currentUser.avatar" alt="User Avatar" @click="handleUserAvatarClick">
-        <div class="user-info-list">
-          <div v-if="currentUser.userRole !== 'guest'">
-            <p>用户名: {{ currentUser.username }}</p>
-            <p>邮箱: {{ currentUser.email }}</p>
-            <p>角色: {{ currentUser.role }}</p>
-          </div>
-          <div v-else>
-            <p class="login-prompt">点击登录</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
+  <Header />
 
 
     <main class="main-content">
@@ -86,22 +59,21 @@
     </main>
 
     <!-- 底部备案号 -->
-     <footer class="footer">
-      <p class="left"><a href="contact.html">联系我们</a></p>
-     <div class="center">
-    <span>© 2024 Flowers Whispering&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    <a href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2024087175号-1</a>
-  </div>
-      <div class="right"></div>
-    </footer>
+    <Footer />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapGetters, mapActions ,mapState} from 'vuex';
+import { mapGetters, mapActions, mapState } from 'vuex';
+import Header from '@/home/Header.vue';
+import Footer from '@/home/Footer.vue';
 export default defineComponent({
   name: 'Home',
+  components: {
+    Header,
+    Footer,
+  },
   data() {
     return {
       isUserInfoVisible: false, // 控制用户信息列表的显示与隐藏

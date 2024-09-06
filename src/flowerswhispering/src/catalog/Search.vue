@@ -1,7 +1,7 @@
 <template>
 
     <!--大标题-->
-
+<Header />
          <!--大标题-->
     
     
@@ -127,22 +127,21 @@
 
     </div>
     <!-- 底部备案号 -->
-     <footer class="footer">
-      <p class="left"><a href="contact.html">联系我们</a></p>
-     <div class="center">
-    <span>© 2024 Flowers Whispering&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    <a href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2024087175号-1</a>
-  </div>
-      <div class="right"></div>
-    </footer>
+   <Footer />
     </template>
     
     <script>
     import { useRouter } from 'vue-router';
     import { ref, onMounted } from 'vue';
-    import { mapState, mapGetters, mapActions} from 'vuex';
+    import { mapState, mapGetters, mapActions } from 'vuex';
+    import Header from '@/home/Header.vue';
+import Footer from '@/home/Footer.vue';
     export default {
-       name: "Search",
+      name: "Search",
+      components: {
+       Header,
+       Footer,
+      },
       data() {
         return {
           buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像

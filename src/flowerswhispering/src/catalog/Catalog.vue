@@ -1,31 +1,7 @@
 <template>
 
 <!--大标题-->
-  <header class="header">
-  <div class="logo">Flowers Whispering</div>
-  <div class="nav-user-container">
-    <nav class="nav-links">
-      <nav v-if="currentUser.userRole === 'admin'">
-         <button @click="goToAdminPanel" class="nav-button">管理</button>
-      </nav>
-      <button @click="goHome" class="nav-button">首页</button>
-      <button @click="goToCommunity" class="nav-button">社区</button>
-      <button @click="goToCatalog" class="nav-button">图鉴</button>
-    </nav>
-    <div class="user-info">
-      <div class="user-avatar-wrapper">
-        <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
-        <div class="user-info-list">
-          <div v-if="currentUser.userRole !== 'guest'">
-            <p>用户名: {{ currentUser.username }}</p>
-            <p>邮箱: {{ currentUser.email }}</p>
-            <p>角色: {{ currentUser.userRole }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
+<Header />
 
      <!--大标题-->
 
@@ -45,7 +21,7 @@
     <!-- 竖条图片容器 -->
     <div class="side-bar">
         <div class="user-info">
-            <p class="user-name">{{userName}}</p>    <!--显示用户名-->
+            <p class="user-name">{{currentUser.username }}</p>    <!--显示用户名-->
 
             <div class="tabs">              <!--显示选项卡-->
                 <button @click="GoToHome">返回主页</button>
@@ -54,7 +30,7 @@
     </div>
 
     <div class="top-banner">
-        <button class="user-button" @click="Gotouserpage">   <!--用户头像-->
+        <button class="user-button" @click="goToUserProfile">   <!--用户头像-->
             <img src="../catalog/images/user_example.png" alt="User" />   
         </button>
     </div>
@@ -78,14 +54,7 @@
 
 </div>
   <!-- 底部备案号 -->
-     <footer class="footer">
-      <p class="left"><a href="contact.html">联系我们</a></p>
-     <div class="center">
-    <span>© 2024 Flowers Whispering&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    <a href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2024087175号-1</a>
-  </div>
-      <div class="right"></div>
-    </footer>
+         <Footer />
 
 
 </template>
@@ -94,20 +63,23 @@
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { mapState, mapGetters, mapActions } from 'vuex';
-
+import Header from '@/home/Header.vue';
+import Footer from '@/home/Footer.vue';
 export default {
   name: "Catalog",
+  components: {
+    Header,
+    Footer,
+  },
    computed: {
-    ...mapState({
-      currentUser: state => state.currentUser , // 从Vuex store中获取 currentUser
-      userAvatar: state => state.userAvatar // 确保这里绑定了全局的 userAvatar
+    ...mapGetters({
+      currentUser: 'getUserInfo', // 获取当前用户信息
+      isAdmin: 'isAdmin',
+      userAvatar: 'userAvatar',
     }),
-    ...mapGetters(['userAvatar'])  // 使用全局的userAvatar
   },
   data() {
     return {
-      buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像
-      userName: 'Wuhuairline' // 默认用户名,后端接入用户姓名
     };
   },
   mounted()
@@ -430,16 +402,6 @@ export default {
     color: #333;
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    background-color: #46b476cc;
-    color: white;
-    z-index: 3;
-    position: relative;
-  }
 
   .logo {
     font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
@@ -475,39 +437,5 @@ export default {
 
   /*  固有写法，显示用户*/ 
     
-   .footer {
-  display: flex;
-  justify-content: space-between;  /* 左中右均匀分布 */
-  align-items: center;             /* 垂直居中对齐 */
-  background-color: rgba(70, 180, 118, 0.8);
-  color: white;
-  position: relative;
-  width: 100%;                     /* 跨满页面 */
-  z-index: 10;
-}
-
-.footer .left {
-  text-align: left;
-  margin-left: 10px;               /* 左边距 */
-}
-
-.footer .center {
-  text-align: center;
-  flex: 1;                         /* 中间内容居中，并占据剩余空间 */
-}
-
-.footer .right {
-  text-align: right;
-  margin-right: 10px;              /* 右边距 */
-}
-
-.footer a {
-  color: white;
-  text-decoration: none;
-}
-
-.footer a:hover {
-  color: rgb(24, 212, 209); /* 悬停下划线效果 */
-}
 
 </style>

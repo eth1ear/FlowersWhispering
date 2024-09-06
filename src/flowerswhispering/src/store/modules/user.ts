@@ -35,15 +35,15 @@ const userModule: Module<UserState, any> = {
           return true;
         }
         return false;
-      } catch (error:any) {
+      } catch (error: any) {
         console.error('登陆失败:', error.response?.data || error.message);
-        throw new Error(error.response?.data|| '登录失败');
+        throw new Error(error.response?.data || '登录失败');
       }
     },
-    async register({ commit }, { username, email, password, avatar}) {
+    async register({ commit }, { username, email, password, avatar }) {
       const languagePreference = "zh-CN";
       const bio = "这家伙很懒，什么都没留下"
-      const gender="不愿透露";
+      const gender = "不愿透露";
       try {
         const response = await apiClient.post('/api/UserAccount/register', {
           username, email, password, languagePreference, bio, avatar, gender
@@ -62,7 +62,7 @@ const userModule: Module<UserState, any> = {
     async guestLogin({ commit }) {
       // 创建默认的游客用户信息
       const guestUserInfo = {
-        userId: '-1', 
+        userId: '-1',
         username: '游客',
         email: 'guest@example.com',
         languagePreference: 'zh-CN',
@@ -76,14 +76,14 @@ const userModule: Module<UserState, any> = {
     logout({ commit }) {
       commit('CLEAR_USER_INFO');
     },
-    async updateUserInfo({ commit, state }, { username, email, password,languagePreference,bio,avatar,gender }) {
+    async updateUserInfo({ commit, state }, { username, email, password, languagePreference, bio, avatar, gender }) {
       if (!state.userInfo) {
         throw new Error('用户未登录');
       }
       try {
-        const response = await apiClient.put('/api/UserAccount/edit/user',{ username, password,email,languagePreference,bio,avatar,gender,userId:state.userInfo.userId});
+        const response = await apiClient.put('/api/UserAccount/edit/user', { username, password, email, languagePreference, bio, avatar, gender, userId: state.userInfo.userId });
         if (response.status === 200) {
-          commit('UPDATE_USER_INFO', { username, email, password,languagePreference,bio,avatar,gender });
+          commit('UPDATE_USER_INFO', { username, email, password, languagePreference, bio, avatar, gender });
           return true;
         } else {
           console.error('用户信息更新失败:', response.data);

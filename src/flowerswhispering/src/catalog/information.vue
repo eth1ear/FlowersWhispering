@@ -1,7 +1,7 @@
 <template>
 
     <!--大标题-->
-  
+<Header />  
          <!--大标题-->
     
     
@@ -86,15 +86,21 @@
 
 
   </div>
+<Footer />  
 </template>
 
 
 <script>
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
-
+import Header from '@/home/Header.vue';
+import Footer from '@/home/Footer.vue';
 export default {
   name: "Information",
+  components: {
+    Header,
+    Footer,
+  },
   data() {
   return {
     searchQuery: '',  // 对应输入框的内容
@@ -552,18 +558,6 @@ mounted() {
     color: #333;
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    background-color: #46b476cc;
-    color: white;
-    z-index: 1;
-    position: relative;
-  }
-
-
 
   .logo {
     font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
@@ -598,6 +592,5 @@ mounted() {
 
 
   /*  固有写法，显示用户*/ 
-
 
 </style>
