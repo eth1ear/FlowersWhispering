@@ -1,33 +1,6 @@
 <template>
+    <Header />
   <div class="container" v-if="currentUser">
-      <header class="header">
-  <div class="logo">Flowers Whispering</div>
-  <div class="nav-user-container">
-    <nav class="nav-links">
-       <nav v-if="currentUser.role === 'admin'">
-         <button @click="goToAdminPanel" class="nav-button">管理</button>
-      </nav>
-      <button @click="goHome" class="nav-button">首页</button>
-      <button @click="goToCommunity" class="nav-button">社区</button>
-      <button @click="goToCatalog" class="nav-button">图鉴</button>
-    </nav>
-    <div class="user-info">
-      <div class="user-avatar-wrapper">
-        <img :src="currentUser.avatar" alt="User Avatar" @click="handleUserAvatarClick">
-        <div class="user-info-list">
-          <div v-if="currentUser.role !== 'guest'">
-            <p>用户名: {{ currentUser.username }}</p>
-            <p>邮箱: {{ currentUser.email }}</p>
-            <p>角色: {{ currentUser.userRole }}</p>
-          </div>
-          <div v-else>
-            <p class="login-prompt">点击登录</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
   <!-- 视频背景 -->
   <video autoplay muted loop class="background-video">
     <source src="@/assets/video/background.mp4" type="video/mp4">
@@ -51,7 +24,7 @@
           <div class="user-details">
             <!-- 用户信息表单部分 -->
             <div class="form-group">
-             <label for="username">邮&nbsp;箱：</label>
+             <label for="username">用户名：</label>
                <div class="editable-field-container">
                 <span v-if="!editing">{{ currentUser.username }}</span>
                 <input 
@@ -87,7 +60,7 @@
             </div>
             
             <div class="form-group">
-              <label for="language">语言偏好：</label>
+              <label for="language">语&nbsp;言：</label>
               <div class="editable-field-container">
                 <!-- 编辑状态下显示当前性别的文本 -->
                 <span v-if="!editing">{{ currentUser.languagePreference=="zh-CN"?'中文':'英文'}}</span>
@@ -148,15 +121,38 @@
          <button class="logout-button" @click="performLogout">退出登录</button>
          </div>
          </div>
-        <!-- 返回主页按钮 -->
       
 
 
 
       </div>
+
+
       <div class="right-panel">
         <!-- 右侧框架的内容，例如其他信息 -->
      <!-- 使用 v-for 遍历从后端获取的帖子列表 -->
+
+     <!-- 带三角形的文字选择栏 -->
+  <div class="dropdown-container">
+    <div class="dropdown-text" @click="toggleDropdown">
+      {{ selectedText }}
+      <span :class="{'triangle': true, 'triangle-rotate': showDropdown}">&#9662;</span>
+    </div>
+
+    <!-- 下拉菜单，点击三角形后显示 -->
+    <ul v-if="showDropdown" class="dropdown-menu">
+      <li @click="selectOption('我的帖子')">我的帖子</li>
+      <li @click="selectOption('我的收藏')">我的收藏</li>
+      <li @click="selectOption('我的评论')">我的评论</li>
+    </ul>
+  </div>
+
+   <!-- 分割线 -->
+   <hr class="divider">
+
+
+   <!-- 根据选择展示内容 -->
+    <div v-if="selectedText === '我的帖子'" class="selectedoption">
   <!-- 帖子列表 -->
   <div 
     v-for="post in posts" 
@@ -174,17 +170,47 @@
     <!-- 确保删除按钮使用 @click.stop 来防止冒泡 -->
     <button class="delete-button" @click.stop="confirmDelete(post)">删除</button>
   </div>
+  </div>
+  
+   
+   <!-- 收藏列表 -->
+    <div v-if="selectedText === '我的收藏'" class="selectedoption">
 
-  <!-- 删除确认弹框 -->
-  <div v-if="showConfirmDialog" class="confirm-dialog">
-    <div class="confirm-dialog-content">
-      <p>确定要删除该帖子吗？</p>
-      <button @click="deletePost(selectedPost)">确认</button>
-      <button @click="cancelDelete">取消</button>
+    <!-- 收藏列表 -->
+<div v-for="favorite in favorites"
+ :key="favorite.favorite_id" 
+ class="post" 
+ @click="openFavoriteDialog(favorite)"
+ >
+  <h3 class="post-title">{{ favorite.article_title }}</h3>
+  <p class="post-content">{{ favorite.article_content }}</p>
+  <p class="post-meta">发布日期: {{ favorite.published_date }}</p>
+  <!-- 改为取消收藏按钮 -->
+  <button class="cancelFavorite-button" @click.stop="confirmCancelFavorite(favorite)">取消收藏</button>
+  </div>
+  </div>
+
+<!-- 评论列表 -->
+<div v-if="selectedText === '我的评论'" class="selectedoption">
+  <div v-for="comment in comments" :key="comment.commentId" class="post">
+    <h3 class="comment-title">{{comment.content }}</h3>
+
+
+    <!-- 评论底部信息：评论者和时间在左下角，帖子标题在右下角 -->
+    <div class="comment-meta">
+      <div class="comment-left">
+        <span>{{ comment.username }}</span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>{{ comment.createdDate }}</span>
+      </div>
+      <div class="comment-right">
+        <span>{{ comment.title }}</span>
+      </div>
     </div>
   </div>
- 
-      </div>
+</div>
+
+
     </div>
 
      
@@ -207,6 +233,24 @@
       </div>
     </div>
   </div>
+
+   <!-- 删除确认弹框 -->
+  <div v-if="showConfirmDialog" class="confirm-dialog">
+    <div class="confirm-dialog-content">
+      <p>确定要删除该帖子吗？</p>
+      <button @click="deletePost(selectedPost)">确认</button>
+      <button @click="cancelDelete">取消</button>
+    </div>
+  </div>
+  
+<!-- 取消收藏确认弹框 -->
+  <div v-if="showConfirmFavoriteDialog" class="confirm-dialog">
+  <div class="confirm-dialog-content">
+    <p>确定要取消收藏该帖子吗？</p>
+    <button @click="cancelFavorite(selectedFavorite)">确认</button>
+    <button @click="cancelDialog">取消</button>
+  </div>
+</div>
 
 
   <!-- 修改密码弹窗 -->
@@ -254,15 +298,11 @@
       </div>
     </div>
      <!-- 底部备案号 -->
-     <footer class="footer">
-      <p class="left"><a href="contact.html">联系我们</a></p>
-     <div class="center">
-    <span>© 2024 Flowers Whisperin&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    <a href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2024087175号-1</a>
+    <Footer />
+    </div> 
+
+     
   </div>
-      <div class="right"></div>
-    </footer>
-  </div> 
   <div v-else>
     加载中...
   </div>
@@ -271,8 +311,13 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-
+import Header from '@/home/Header.vue';
+import Footer from '@/home/Footer.vue';
 export default {
+  components: {
+    Header,
+    Footer,
+  },
   computed: {
     ...mapGetters({
       currentUser: 'getUserInfo', // 获取当前用户信息
@@ -286,7 +331,7 @@ export default {
       posts: [{
           article_id: 1,
           article_title: "示例帖子1",
-          article_content: "这是第一个示例帖子的内容,展示数据库",
+          article_content: "这是第一个示例帖子的内容这是第一",
           publisher_id: 1,
           published_date: "2024-09-04",
           article_type: "article"
@@ -294,7 +339,7 @@ export default {
         {
           article_id: 2,
           article_title: "示例公告",
-          article_content: "这是一个公告类型的帖子，展示如何处理公告。",
+          article_content: "这是一个公告类型的帖子，展示如何处理公告这是一个公告类型的帖子，展示如何处理公告这是一个公告类型的帖子，展示如何处理公告这是一个公告类型的帖子，展示如何处理公告这是一个公告类型的帖子，展示如何处理公告这是一个公告类型的帖子，展示如何处理公告这是一个公告类型的帖子，展示如何处理公告这是一个公告类型的帖子，展示如何处理公告这是一个公告类型的帖子，展示如何处理公告。",
           publisher_id: 2,
           published_date: "2024-09-03",
           article_type: "announcement"
@@ -348,24 +393,69 @@ export default {
           published_date: "2024-09-04",
           article_type: "article"
         },
-      ], // 帖子数据
+      ],
+      favorites: [{
+        favorite_id: 1,
+        article_id: 101,
+        article_title: "收藏的帖子1",
+        article_content: "这是第一个示例帖子的内容,展示数据库。这是第一个示例帖子的内容,展示数据库。这是第一个示例帖子的内容,展示数据库。这是第一个示例帖子的内容,展示数据库。这是第一个示例帖子的内容,展示数据库。这是第一个示例帖子的内容,展示数据库。这是第一个示例帖子的内容,展示数据库。这是第一个示例帖子的内容,展示数据库。这是第一个示例帖子的内容,展示数据库。这是第一个示例帖子的内容,展示数据库。这是第一个示例帖子的内容,展示数据库。这是第一个示例帖子的内容,展示数据库。",
+        published_date: "2024-09-06"
+      },
+      {
+        favorite_id: 2,
+        article_id: 102,
+        article_title: "收藏的帖子2",
+        article_content: "这是第二篇收藏的帖子内容。",
+        published_date: "2024-09-05"
+      }
+      ],
+      comments: [{
+        commentId: 1,
+        userId: 101,
+        articleId: 201,
+        content: "这是对文章的评论内容。这是对文章的评论内容。这是对文章的评论内容。这是对文章的评论内容。这是对文章的评论内容。这是对文章的评论内容。这是对文章的评论内容。这是对文章的评论内容。这是对文章的评论内容。这是对文章的评论内容。这是对文章的评论内容。这是对文章的评论内容。这是对文章的评论内容。这是对文章的评论内容。",
+        createdDate: "2024-09-07",
+        username: "张三",
+        title: "如何学习 Vue.js"
+      },
+      {
+        commentId: 2,
+        userId: 102,
+        articleId: 202,
+        content: "这篇文章写得很好！",
+        createdDate: "2024-09-06",
+        username: "李四",
+        title: "JavaScript 的基本概念"
+      }
+      ],
+      // 帖子数据
+      //post:[/* 帖子数据，从后端获取或初始化 */ ],
       showChangePasswordDialog: false, // 控制弹出框显示
       passwordError: '',
       oldPassword: '',
       newPassword: '',
       confirmPassword: '',
+
       showPostDialog: false, // 控制帖子详情弹框是否显示
+      
       showConfirmDialog: false, // 删除确认弹框
       selectedPost: null, // 当前选中的帖子
-      comments: [] ,// 评论列表
-
-
+      //三角形选择框
+      showDropdown: false, // 控制下拉菜单的显示与隐藏
+      selectedText: '我的帖子', // 默认选择
+      
+      //收藏帖子部分
+     //favorites: [ /* 收藏帖子数据，从后端获取或初始化 */ ],
+      showConfirmFavoriteDialog: false, // 控制收藏删除确认弹框
+      selectedFavorite: null, // 当前选中的收藏
+  
       userTemp: {},
       editing: false,
       emailError: null,
       usernameError: null,
     };
   },
+  //comments: [/*从后端获取*/ ],  // 存储用户的评论信息
   methods: {
     ...mapActions({
       logout: 'logout',
@@ -562,6 +652,38 @@ export default {
       this.confirmPassword = '';
       this.passwordError = '';
     },
+ // 打开收藏的帖子详情，使用与帖子相同的弹框
+  openFavoriteDialog(favorite) {
+    this.selectedPost = favorite; // 将选中的收藏帖子数据传递给 selectedPost
+    this.comments = [ /* 模拟或者获取实际的评论数据 */ ];
+    this.showPostDialog = true; // 显示弹框
+  },
+  // 确认取消收藏操作
+  confirmCancelFavorite(favorite) {
+    this.selectedFavorite = favorite;
+    this.showConfirmFavoriteDialog = true;
+  },
+  
+  // 取消收藏操作
+  cancelFavorite(favorite) {
+    this.favorites = this.favorites.filter(fav => fav.favorite_id !== favorite.favorite_id); // 移除收藏
+    this.showConfirmFavoriteDialog = false;
+    this.selectedFavorite = null;
+  },
+  
+  // 关闭弹框
+  cancelDialog() {
+    this.showConfirmFavoriteDialog = false;
+    this.selectedFavorite = null;
+  },
+  //选择框
+  toggleDropdown() {
+    this.showDropdown = !this.showDropdown; // 切换下拉菜单的显示状态
+  },
+  selectOption(option) {
+    this.selectedText = option; // 设置选中的选项
+    this.showDropdown = false; // 选择后隐藏下拉菜单
+  }, 
   }
 };
 </script>
@@ -569,17 +691,6 @@ export default {
 
 
 <style scoped>
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  background-color: rgba(70, 180, 118, 0.8); /* 使用rgba设置透明度，0.8表示80%的不透明度 */
-  color: white;
-  z-index: 10; /* 提高 z-index，确保 header 在其他内容上层 */
-  position: relative;
-}
 .avatar-container {
   position: relative;
   display: flex;
@@ -655,6 +766,7 @@ export default {
   height: 100%;
   margin: 0 auto;
   z-index: 2;
+  margin-top:40px;
 }
 
 .left-panel{
@@ -668,6 +780,7 @@ export default {
   height: 80%;
   z-index: 2;
   margin-bottom: 80px; /* 与底部之间的距离 */
+
 }
 
 .right-panel {
@@ -680,10 +793,8 @@ export default {
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   height: 80%;              /* 固定高度 */
-  overflow-y: auto;          /* 当内容溢出时显示滚动条 */
   margin-bottom: 80px;
   z-index: 2;
-  width: 100%;
 }
 
 .user-details {
@@ -970,37 +1081,6 @@ textarea {
     font-size: 28px;
     font-weight: bold;
 }
-
-.logo {
-  font-family: 'Caveat-VariableFont', 'ZhiMangXing-Regular', sans-serif;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.nav-user-container {
-  display: flex;
-  align-items: center;
-  gap: 20px; /* 按钮与头像之间的间距 */
-}
-
-.nav-links {
-  display: flex;
-  gap: 20px; /* 按钮之间的间距 */
-}
-
-.nav-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 18px;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.nav-button:hover {
-  color: #ffcc00; /* 鼠标悬停时变色 */
-}
-
 .user-avatar {
   width: 40px;
   height: 40px;
@@ -1022,38 +1102,7 @@ textarea {
 }
 
 .footer {
-  display: flex;
-  justify-content: space-between;  /* 左中右均匀分布 */
-  align-items: center;             /* 垂直居中对齐 */
-  background-color: rgba(70, 180, 118, 0.8);
-  color: white;
-  position:relative;
-  width: 100%;                     /* 跨满页面 */
-  z-index: 10;
-}
-
-.footer .left {
-  text-align: left;
-  margin-left: 10px;               /* 左边距 */
-}
-
-.footer .center {
-  text-align: center;
-  flex: 1;                         /* 中间内容居中，并占据剩余空间 */
-}
-
-.footer .right {
-  text-align: right;
-  margin-right: 10px;              /* 右边距 */
-}
-
-.footer a {
-  color: white;
-  text-decoration: none;
-}
-
-.footer a:hover {
-  color: rgb(24, 212, 209); /* 悬停下划线效果 */
+  position:absolute;
 }
 
 
@@ -1065,19 +1114,22 @@ textarea {
   margin-bottom: 5px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  max-width:94%;
   max-height: 150px;
   box-sizing: border-box;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
   z-index:3;
+  margin-left:16px;
+  margin-top:10px;
 }
 
 .post:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
+
 .post-title {
   font-size: 18px;
   font-weight: bold;
@@ -1088,17 +1140,35 @@ textarea {
   font-size: 14px;
   color: #333;
   margin-bottom: 10px;
-  overflow: hidden;          /* 如果内容过多，隐藏超出的部分 */
-  white-space: nowrap;       /* 防止内容换行 */
-  text-overflow: ellipsis;   /* 超出部分用省略号显示 */
+  max-height: 80px;          /* 限制最大高度 */
+  overflow: hidden;          /* 隐藏超出的内容 */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;     /* 限制行数为3，超出部分显示省略号 */
+  white-space: normal;       /* 允许换行 */
 }
+
 
 .post-meta {
   font-size: 12px;
   color: #666;
   text-align: right;
 }
+
+.comment-title{
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 20px;
+  max-height: 80px;          /* 限制最大高度 */
+  overflow: hidden;          /* 隐藏超出的内容 */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;     /* 限制行数为3，超出部分显示省略号 */
+  overflow-y: auto;
+  white-space: normal;       /* 允许换行 */
+}
 /* 删除按钮样式 */
+.cancelFavorite-button,
 .delete-button {
   position: absolute;
   right: 20px;
@@ -1110,6 +1180,10 @@ textarea {
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
+}
+
+.cancelFavorite-button{
+  background-color: #ffc107;
 }
 
 .delete-button:hover {
@@ -1337,4 +1411,92 @@ textarea {
   background-color: #c82333;
 }
 
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.5); /* 透明背景 */
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: right;
+  z-index: 4;
+  margin-left:16px;
+}
+
+.dropdown-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.triangle {
+  margin-left: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.triangle-rotate {
+  transform: rotate(180deg); /* 点击后旋转三角形 */
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  z-index: 1;
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+  z-index:5;
+}
+
+.dropdown-menu li {
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f0f0f0;
+}
+
+.selectedoption {
+  width:100%;
+  margin-left:1px;
+  overflow-y: auto;          /* 当内容溢出时显示滚动条 */
+  overflow-x: hidden;         /* 当内容溢出时显示滚动条 */
+}
+
+.divider {
+  border: none;
+  min-height: 3px;
+  width:100%;
+  background-color: #45c789; /* 天蓝色 */
+  z-index:3;
+}
+
+.comment-meta {
+  display: flex;
+  justify-content: space-between;  /* 左右分布 */
+  font-size: 12px;
+  color: #666;
+}
+
+.comment-left {
+  display: flex;
+}
+.comment-right {
+  text-align: right;
+  font-weight: bold;
+}
+.footer{
+  position:fixed;
+  left:0;
+}
 </style>

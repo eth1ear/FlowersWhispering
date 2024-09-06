@@ -1,28 +1,7 @@
 <template>
 
   <!--大标题-->
-  <header class="header">
-  <div class="logo">Flowers Whispering</div>
-  <div class="nav-user-container">
-    <nav class="nav-links">
-      <button @click="goToHome" class="nav-button">首页</button>
-      <button @click="goToCommunity" class="nav-button">社区</button>
-      <button @click="goToCatalog" class="nav-button">图鉴</button>
-    </nav>
-    <div class="user-info">
-      <div class="user-avatar-wrapper">
-        <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
-        <div class="user-info-list">
-          <div v-if="currentUser.role !== 'guest'">
-            <p>用户名: {{ currentUser.username }}</p>
-            <p>邮箱: {{ currentUser.email }}</p>
-            <p>角色: {{ currentUser.userRole }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
+<Header />
        <!--大标题-->
   
   
@@ -131,20 +110,21 @@
   
   </div>
   
-  <footer class="footer">
-      <p class="left"><a href="contact.html">联系我们</a></p>
-      <p class="center">© 2024 Flowers Whispering</p>
-      <div class="right"></div>
-    </footer>
+<Footer />
   
   </template>
   
   <script>
   import { defineComponent } from 'vue';
   import { mapGetters, mapActions } from 'vuex';
-  
+  import Header from '@/home/Header.vue';
+import Footer from '@/home/Footer.vue';
   export default {
     name: "Community",
+    components: {
+    Header,
+    Footer,
+  },
     data() {
       return {
         buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像
