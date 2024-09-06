@@ -17,8 +17,17 @@ namespace FlowersWhisperingAPI.Plants.Mappers
                 using (var connection = new OracleConnection(_connectionString))
                 {
                     connection.Open();
-                    string sql = "SELECT * FROM ( SELECT * FROM PLANT ORDER BY PLANT_ID DESC ) WHERE ROWNUM <= 8";
-
+                    string sql = @"
+                            SELECT * 
+                            FROM (
+                                SELECT PLANT.PLANT_ID, COMMON_NAME, SCIENTIFIC_NAME, CATEGORY, 
+                                    PORTRAYAL, GROWTH_ENVIRONMENT, CARE_CONDITIONS, 
+                                    UPDATETIME, PLANTIMAGES.IMAGE_URL
+                                FROM PLANT
+                                INNER JOIN PLANTIMAGES ON PLANT.PLANT_ID = PLANTIMAGES.PLANT_ID
+                                ORDER BY PLANT.PLANT_ID DESC
+                            ) WHERE ROWNUM <= 8
+                            ";
                     using (var command = new OracleCommand(sql, connection))
                     using (var reader = command.ExecuteReader())
                     {
@@ -28,15 +37,16 @@ namespace FlowersWhisperingAPI.Plants.Mappers
                             int plantId = reader.GetInt32(reader.GetOrdinal("PLANT_ID"));
                             string commonName = reader.GetString(reader.GetOrdinal("COMMON_NAME"));
                             string scientificName = reader.GetString(reader.GetOrdinal("SCIENTIFIC_NAME"));
-                            string category = reader.GetString(reader.GetOrdinal("CATEGORY"));
-                            string portrayal = reader.GetString(reader.GetOrdinal("PORTRAYAL"));
-                            string growthEnvironment = reader.GetString(reader.GetOrdinal("GROWTH_ENVIRONMENT"));
-                            string careConditions = reader.GetString(reader.GetOrdinal("CARE_CONDITIONS"));
-                            DateTime updateTime = reader.GetDateTime(reader.GetOrdinal("UPDATETIME"));
-
-                            // 创建 Plant 对象并添加到列表
-                            var plant = new Plant(plantId, commonName, scientificName, category, portrayal, growthEnvironment, careConditions, updateTime);
+                            string CATEGORY = reader.GetString(reader.GetOrdinal("CATEGORY"));
+                            string PORTRAYAL = reader.GetString(reader.GetOrdinal("PORTRAYAL"));
+                            string GROWTH_EN = reader.GetString(reader.GetOrdinal("GROWTH_ENVIRONMENT"));
+                            string care_con = reader.GetString(reader.GetOrdinal("CARE_CONDITIONS"));
+                            DateTime time = reader.GetDateTime(reader.GetOrdinal("UPDATETIME"));
+                            string ImageUrl = reader.GetString(reader.GetOrdinal("IMAGE_URL")); 
+                            var plant = new Plant(plantId, commonName, scientificName, CATEGORY, PORTRAYAL, GROWTH_EN, care_con, time);
+                            plant.ImageUrl = ImageUrl;
                             plants.Add(plant);
+
                         }
                     }
                 }

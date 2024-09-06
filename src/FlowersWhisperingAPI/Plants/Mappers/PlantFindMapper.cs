@@ -44,8 +44,14 @@ namespace FlowersWhisperingAPI.Plants.Mappers
         public Plant GetPlantInfo(string plantName)
         {
             // SQL 查询字符串
-            string sql = "SELECT * FROM plant WHERE COMMON_NAME = :PlantName OR SCIENTIFIC_NAME = :PlantName";
-            
+            string sql = @"
+                            select PLANT.PLANT_ID, COMMON_NAME, SCIENTIFIC_NAME, CATEGORY, 
+                                PORTRAYAL, GROWTH_ENVIRONMENT, CARE_CONDITIONS, 
+                                UPDATETIME, PLANTIMAGES.IMAGE_URL
+                            from PLANT 
+                            INNER JOIN PLANTIMAGES ON PLANT.PLANT_ID = PLANTIMAGES.PLANT_ID
+                            where COMMON_NAME = :PlantName OR SCIENTIFIC_NAME = :PlantName
+                            ";
             try
             {
                 // 创建和打开数据库连接
@@ -69,8 +75,10 @@ namespace FlowersWhisperingAPI.Plants.Mappers
                     string GROWTH_EN = reader.GetString(reader.GetOrdinal("GROWTH_ENVIRONMENT"));
                     string care_con = reader.GetString(reader.GetOrdinal("CARE_CONDITIONS"));
                     DateTime time = reader.GetDateTime(reader.GetOrdinal("UPDATETIME"));
-                    // 创建 Plant 对象并返回
-                    return new Plant(plantId, commonName, scientificName, CATEGORY, PORTRAYAL, GROWTH_EN, care_con, time);
+                    string ImageUrl = reader.GetString(reader.GetOrdinal("IMAGE_URL")); 
+                    var plant = new Plant(plantId, commonName, scientificName, CATEGORY, PORTRAYAL, GROWTH_EN, care_con, time);
+                    plant.ImageUrl = ImageUrl;
+                    return plant;
                 }
             }
             catch (Exception ex)
