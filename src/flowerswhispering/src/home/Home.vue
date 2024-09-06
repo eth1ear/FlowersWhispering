@@ -16,12 +16,15 @@
     </nav>
     <div class="user-info">
       <div class="user-avatar-wrapper">
-        <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
+        <img :src="currentUser.avatar" alt="User Avatar" @click="handleUserAvatarClick">
         <div class="user-info-list">
-          <div v-if="currentUser.role !== 'guest'">
+          <div v-if="currentUser.userRole !== 'guest'">
             <p>用户名: {{ currentUser.username }}</p>
             <p>邮箱: {{ currentUser.email }}</p>
             <p>角色: {{ currentUser.userRole }}</p>
+          </div>
+          <div v-else>
+            <p class="login-prompt">点击登录</p>
           </div>
         </div>
       </div>
@@ -89,7 +92,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions ,mapState} from 'vuex';
 export default defineComponent({
   name: 'Home',
   data() {
@@ -101,6 +104,7 @@ export default defineComponent({
     ...mapGetters({
       currentUser: 'getUserInfo', // 获取当前用户信息
       isAdmin: 'isAdmin',
+      userAvatar: 'userAvatar',
     }),
   },
   methods: {
@@ -149,7 +153,7 @@ export default defineComponent({
       }
     },
     handleUserAvatarClick() {
-      if (this.currentUser.role === 'guest') {
+      if (this.currentUser.userRole === 'guest') {
         this.$router.push('/login'); // 如果是guest用户，点击跳转到登录页面
       } else {
         this.goToUserProfile(); // 否则跳转到个人主页
