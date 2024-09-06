@@ -1,7 +1,31 @@
 <template>
 
 <!--大标题-->
-
+  <header class="header">
+  <div class="logo">Flowers Whispering</div>
+  <div class="nav-user-container">
+    <nav class="nav-links">
+      <nav v-if="currentUser.userRole === 'admin'">
+         <button @click="goToAdminPanel" class="nav-button">管理</button>
+      </nav>
+      <button @click="goHome" class="nav-button">首页</button>
+      <button @click="goToCommunity" class="nav-button">社区</button>
+      <button @click="goToCatalog" class="nav-button">图鉴</button>
+    </nav>
+    <div class="user-info">
+      <div class="user-avatar-wrapper">
+        <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
+        <div class="user-info-list">
+          <div v-if="currentUser.userRole !== 'guest'">
+            <p>用户名: {{ currentUser.username }}</p>
+            <p>邮箱: {{ currentUser.email }}</p>
+            <p>角色: {{ currentUser.userRole }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
 
      <!--大标题-->
 
@@ -144,10 +168,10 @@ export default {
 <style>
 .book-background 
 {
-    display: flex;
-   flex-direction: column;
-   min-height: 100vh;
-   position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
 }
   
   /* 设置背景图像 */

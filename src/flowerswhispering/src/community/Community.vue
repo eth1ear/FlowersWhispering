@@ -5,7 +5,10 @@
   <div class="logo">Flowers Whispering</div>
   <div class="nav-user-container">
     <nav class="nav-links">
-      <button @click="goToHome" class="nav-button">首页</button>
+      <nav v-if="currentUser.userRole === 'admin'">
+         <button @click="goToAdminPanel" class="nav-button">管理</button>
+      </nav>
+      <button @click="goHome" class="nav-button">首页</button>
       <button @click="goToCommunity" class="nav-button">社区</button>
       <button @click="goToCatalog" class="nav-button">图鉴</button>
     </nav>
@@ -13,7 +16,7 @@
       <div class="user-avatar-wrapper">
         <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
         <div class="user-info-list">
-          <div v-if="currentUser.role !== 'guest'">
+          <div v-if="currentUser.userRole !== 'guest'">
             <p>用户名: {{ currentUser.username }}</p>
             <p>邮箱: {{ currentUser.email }}</p>
             <p>角色: {{ currentUser.userRole }}</p>
