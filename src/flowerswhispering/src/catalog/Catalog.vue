@@ -287,32 +287,27 @@ export default {
 }
 
 /* 卡片按钮格式 */
-.card-container 
-{
+.card-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 80px; /* 卡片之间的间距 */
-  cursor: pointer; /*指针变化*/
-
+  gap: 4vw;
+  cursor: pointer;
 }
 
 .card {
   position: relative;
-  left:5%;
-  width: 300px; /* 自定义卡片宽度 */
-  height: 300px; /* 自定义卡片高度 */
-  overflow: hidden; /* 隐藏超出边界的部分 */
-  border-radius: 10px; /* 圆角效果 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 卡片阴影 */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 动态平滑 */
-  border-radius: 12px; /* 圆角边框 */
+  width: 15vw;
+  height: 15vw;
+  overflow: hidden;
+  border-radius: 1vw;
+  box-shadow: 0 0.4vw 0.8vw rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card img {
   width: 100%;
   height: 100%;
-  object-fit: cover; 
-  background-color: aliceblue;
+  object-fit: cover;
 }
 
 .card-info {
@@ -321,24 +316,21 @@ export default {
   left: 0;
   right: 0;
   background: rgb(28, 127, 13);
-  color: white; /* 文字颜色 */
-  font-size: 28px;
-  padding: 10px;
+  color: white;
+  font-size: 1.5rem;
+  padding: 1vh;
   text-align: center;
-  transform: translateY(100%); /* 初始隐藏 */
-  transition: transform 0.3s ease; /* 动态平滑 */
-  font-family: '黑体','ZhiMangXing-Regular', sans-serif;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
 }
 
-
-
 .card:hover {
-  transform: scale(1.05); /* 卡片放大效果 */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 卡片阴影放大效果 */
+  transform: scale(1.05);
+  box-shadow: 0 0.6vw 1.2vw rgba(0, 0, 0, 0.3);
 }
 
 .card:hover .card-info {
-  transform: translateY(0); /* 鼠标悬停时显示文字 */
+  transform: translateY(0);
 }
 
 /*  固有写法，显示用户*/ 

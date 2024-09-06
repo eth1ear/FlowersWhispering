@@ -190,6 +190,9 @@ export default {
 
 
             //调试部分，看数据是否成功接入，后端成功接入后可删除
+
+
+            
           // 输出每个输入框中的信息到控制台
       console.log('植物名字:', this.plantData.name);
       console.log('界:', this.plantData.kingdom);
