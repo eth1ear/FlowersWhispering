@@ -250,7 +250,7 @@
         {
           console.log(`Searching for: ${this.searchQuery}`);
         }, //从搜索框搜索的后端逻辑，重要部分！！！, 从数据库遍历名字与 searchQuery 配对
-
+        
         setActiveTab(tabName)
         {
           this.activeTab=tabName;  
@@ -532,64 +532,123 @@
     
    
     
-    /* 搜索引擎LOGO */
-    .search-logo
-    {
-      position: absolute;
-      top: 5%;
-      left: 42%;
-      background-image: url(../catalog/images/search_logo.png);
-      z-index: 5;
-      background-size: cover;
-      background-position: center;
-      width:300px;
-      height:300px;
-    }
+/* 搜索引擎LOGO */
+.search-logo {
+  position: absolute;
+  top: 5%;
+  left: 42%;
+  background-image: url(../catalog/images/search_logo.png);
+  z-index: 5;
+  background-size: cover;
+  background-position: center;
+  width: 300px;
+  height: 300px;
+}
 
-    /*  搜索框   */
-
-  .search-box 
-  {
-  position:absolute;
-  left:20%; /* 控制左边距离*/
-  top:45%;
+/* 搜索框 */
+.search-box {
+  position: absolute;
+  left: 20%;
+  top: 45%;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 5;
-   }
+}
 
-.search-input 
-{
- 
+.search-input {
   width: 800px;
   padding: 10px;
-  border: 2px solid rgb(28, 127, 13); /* 绿色边框 */
+  border: 2px solid rgb(28, 127, 13);
   border-radius: 5px;
   outline: none;
   transition: border-color 0.3s ease;
-  margin-right: 10px; /* 搜索框与按钮之间的间距 */
-  font-size:20px;
+  margin-right: 10px;
+  font-size: 20px;
 }
 
 .search-input:focus {
-  border-color: rgb(46, 131, 58); /* 聚焦时的边框颜色 */
+  border-color: rgb(46, 131, 58);
 }
 
 .search-button {
   padding: 10px 20px;
-  background-color: rgb(46, 131, 58); /* 按钮背景色 */
+  background-color: rgb(46, 131, 58);
   border: none;
   border-radius: 5px;
   color: white;
-  font-size:20px;
+  font-size: 20px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .search-button:hover {
-  background-color: rgb(28, 127, 13); /* 悬停时的按钮背景色 */
-  transform: scale(1.05); /* 悬停时放大效果 */
+  background-color: rgb(28, 127, 13);
+  transform: scale(1.05);
+}
+
+/* 针对不同屏幕尺寸的调整 */
+@media (max-width: 1200px) {
+  .search-logo {
+    left: 40%;
+    width: 250px;
+    height: 250px;
+  }
+
+  .search-box {
+    left: 15%;
+  }
+
+  .search-input {
+    width: 600px;
+    font-size: 18px;
+  }
+
+  .search-button {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .search-logo {
+    left: 35%;
+    width: 200px;
+    height: 200px;
+  }
+
+  .search-box {
+    left: 10%;
+  }
+
+  .search-input {
+    width: 400px;
+    font-size: 16px;
+  }
+
+  .search-button {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-logo {
+    left: 30%;
+    width: 150px;
+    height: 150px;
+  }
+
+  .search-box {
+    left: 5%;
+  }
+
+  .search-input {
+    width: 300px;
+    font-size: 14px;
+  }
+
+  .search-button {
+    font-size: 14px;
+  }
 }
 
 
@@ -990,4 +1049,83 @@
   color: rgb(24, 212, 209); /* 悬停下划线效果 */
 }
  
+
+
+/* 添加媒体查询，根据不同屏幕大小自适应 */
+@media (max-width: 1200px) {
+  /* 在屏幕宽度小于1200px时，对布局进行微调 */
+  .search-interface {
+    width: 90%;
+    height: 85%;
+  }
+
+  .side-bar {
+    width: 120px;
+  }
+
+  .search-input {
+    width: 600px;
+  }
+}
+
+@media (max-width: 992px) {
+  /* 在屏幕宽度小于992px时，调整内容的布局 */
+  .search-interface {
+    width: 85%;
+    height: 80%;
+  }
+
+  .search-input {
+    width: 500px;
+  }
+
+  .favorite-plants-container, .search-contribution-container, .new-plants-container {
+    width: 80%;
+  }
+}
+
+@media (max-width: 768px) {
+  /* 在屏幕宽度小于768px时，对更小屏幕进行适配 */
+  .search-interface {
+    width: 100%;
+    height: 75%;
+  }
+
+  .side-bar {
+    display: none; /* 隐藏侧边栏，使得页面更简洁 */
+  }
+
+  .favorite-plants-container, .search-contribution-container, .new-plants-container {
+    width: 90%;
+  }
+
+  .search-input {
+    width: 400px;
+  }
+
+  .search-logo {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* 在屏幕宽度小于480px时，适配手机端 */
+  .search-interface {
+    width: 95%;
+    height: 70%;
+  }
+
+  .search-input {
+    width: 280px;
+  }
+
+  .search-button {
+    font-size: 14px;
+  }
+
+  .favorite-title, .search-contribution-title, .new-plants-title {
+    font-size: 28px;
+  }
+}
     </style>
