@@ -52,16 +52,16 @@
                   <button :class="{ active: activeTab === 'SentPost' }" @click="setActiveTab('SentPost')">帖子发布</button>
                   <button :class="{ active: activeTab === 'Category' }" @click="setActiveTab('Category')">帖子分类</button>
                   <button :class="{ active: activeTab === 'ContributorsList' }" @click="setActiveTab('ContributorsList')">贡献榜单</button>
-                  <button :class="{ active: activeTab === 'home' }" @click="GoToHome">返回上步</button>
+                  <button :class="{ active: activeTab === 'home' }" @click="GoToHome">返回首页</button>
 
                 </div> 
             </div>
         </div>
   
       <div class="top-banner">
-          <button class="user-button" @click="GotoPersonalCenter">   <!--用户头像-->
+          <button class="user-button" @click="Gotouserpage">   <!--用户头像-->
               <img src="./images/logo.png" alt="User" />   
-              <span class="tooltip">个人中心</span>
+            
           </button>
       </div>
 
@@ -117,16 +117,35 @@
           </div>
          <!--公告部分-->
 
-         <!--热帖部分-->
-      <div v-if="activeTab === 'HotPosts'">
-        
+         <!--发帖部分-->
+      <div v-if="activeTab === 'SentPost'">
+        <div class="post-container">
+    <div class="post-title">
+      发布帖子
+    </div>
+    <form @submit.prevent="submitPost">
+      <div class="form-group">
+        <label for="title" class="form-label">标题:</label>
+        <input type="text" id="title" v-model="title" class="form-input" required />
+      </div>
+      <div class="form-group">
+        <label for="content" class="form-label">内容:</label>
+        <textarea id="content" v-model="content" class="form-textarea" rows="5" required></textarea>
+      </div>
+      <div class="form-buttons">
+        <button type="submit" class="btn-submit">发布</button>
+        <button type="button" @click="discard" class="btn-cancel">放弃</button>
+      </div>
+    </form>
+  </div>
 
-          </div>
-         <!--热帖部分-->
+      </div>
+      <!--发帖部分-->
 
   <!--分类部分-->
   <div v-if="activeTab === 'HotPosts'">
         
+    
 
       </div>
      <!--分类部分-->
@@ -214,9 +233,12 @@
       { username: 'David6', posts: 7, comments: 12 },
       { username: 'David7', posts: 7, comments: 12 },
       { username: 'David8', posts: 7, comments: 12 },
-      // 添加更多测试数据
+      
+     
     ],
-    
+     // 发帖
+     title: '',
+      content: ''
         
      
       };
@@ -295,7 +317,33 @@
       }
     },
   
-
+    async submitPost() {
+      // 提交到后端逻辑
+      try {
+        await fetch('https://your-backend-api.com/posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: this.title,
+            content: this.content
+          })
+        });
+        alert('帖子已发布成功!');
+        this.clearForm();
+      } catch (error) {
+        console.error('发布失败:', error);
+        alert('发布失败，请稍后再试。');
+      }
+    },
+    discard() {
+      this.clearForm();
+    },
+    clearForm() {
+      this.title = '';
+      this.content = '';
+    },
   
       Gotouserpage()
       {
@@ -459,30 +507,7 @@
     height: 135px; /* 自定义按钮图片的高度 */
   }
   
-  /* 鼠标悬停效果 */
-  .user-button:hover {
-    transform: scale(1.1); /* 放大按钮 */
-  }
 
-  .user-button .tooltip {
-  display: none;
-  position: absolute;
-  bottom: 0%; /* 在按钮上方显示 */
-  left: 0;
-  width: 100%; /* 宽度充满按钮 */
-  min-height: 30px; /* 最小高度 */
-  background: #1cacef;
-  color: #fff;
-  padding: 10px 0; /* 上下填充 */
-  border-radius: 3px;
-  text-align: center; /* 文本居中 */
-  box-sizing: border-box; /* 包括 padding 和 border 在内 */
-  font-size: 18px; /* 设置文本大小 */
-}
-
-.user-button:hover .tooltip {
-  display: block;
-}
   
 .card-container1 
     {
@@ -686,6 +711,96 @@
   .pagination button {
     margin: 0 5px; /* 可选：按钮之间的间距 */
   }
+
+   /* 帖子发布 */
+   .post-container {
+  position: absolute;
+  top: 8%;
+  left: 20%;
+  width: 900px;
+  height: 600px;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgb(45, 198, 22);
+  color: rgb(45, 198, 22);
+  display: flex;
+  flex-direction: column;
+}
+
+.post-title {
+  text-align: center;
+  font-size: 35px;
+  color: rgb(45, 198, 22);
+  margin-bottom: 20px;
+}
+
+.form-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.form-input, .form-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.form-input {
+  font-size: 16px;
+}
+
+.form-textarea {
+  font-size: 16px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 240px;
+}
+
+.btn-submit, .btn-cancel {
+  font-size: 18px;
+  padding: 10px 20px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-submit {
+  background-color: rgb(45, 198, 22);
+  color: #fff;
+}
+
+.btn-submit:hover {
+  background-color: rgb(37, 210, 226);
+}
+
+.btn-cancel {
+  background-color: #d2f0ed;
+  color: rgb(45, 198, 22);
+}
+
+.btn-cancel:hover {
+  background-color: rgb(37, 210, 226);
+  color: #fff;
+}
 
 
 
