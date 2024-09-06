@@ -123,7 +123,14 @@ export default {
   };
 },
 
+mounted()
+{
+   console.log(this.$route.query.outputName);//检测名字能否传输
+   this.getPlantData();//获取植物信息
+},
+
 methods: {
+    //获取植物信息的函数
     async getPlantData() {
       try {
         const response = await axios.get('/api/PlantFind/findFavors'); // 替换为实际的 API 地址
