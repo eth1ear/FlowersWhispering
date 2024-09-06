@@ -1,11 +1,11 @@
 <template>
 
 <!--大标题-->
-<header class="header">
+  <header class="header">
   <div class="logo">Flowers Whispering</div>
   <div class="nav-user-container">
     <nav class="nav-links">
-        <nav v-if="currentUser.role === 'admin'">
+      <nav v-if="currentUser.userRole === 'admin'">
          <button @click="goToAdminPanel" class="nav-button">管理</button>
       </nav>
       <button @click="goHome" class="nav-button">首页</button>
@@ -15,14 +15,11 @@
     <div class="user-info">
       <div class="user-avatar-wrapper">
         <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
-        <div class="user-info-list" v-if="currentUser">
-          <div v-if="currentUser.role !== 'guest'">
+        <div class="user-info-list">
+          <div v-if="currentUser.userRole !== 'guest'">
             <p>用户名: {{ currentUser.username }}</p>
             <p>邮箱: {{ currentUser.email }}</p>
-            <p>角色: {{ currentUser.role }}</p>
-          </div>
-          <div v-else>
-            <p class="login-prompt" @click="goToLogin">点击登录</p>
+            <p>角色: {{ currentUser.userRole }}</p>
           </div>
         </div>
       </div>
@@ -178,10 +175,10 @@ export default {
 <style>
 .book-background 
 {
-    display: flex;
-   flex-direction: column;
-   min-height: 100vh;
-   position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
 }
   
   /* 设置背景图像 */

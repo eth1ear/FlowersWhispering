@@ -51,7 +51,7 @@
            </div>
 
            <div class="form-group">
-             <label for="email">邮&nbsp;&nbsp;&nbsp;&nbsp;箱：</label>
+             <label for="email">邮&nbsp;箱：</label>
                <div class="editable-field-container">
                 <span v-if="!editing">{{ currentUser.email }}</span>
                 <input 
@@ -65,27 +65,18 @@
                 <p v-if="emailError" class="error-message">{{ emailError }}</p> <!-- 报错信息显示在输入框下方 -->
               </div>
             </div>
-            <div class="form-group gender-group">
-              <label class="gender-label">性&nbsp;&nbsp;&nbsp;&nbsp;别：</label>
-              <div class="gender-display" v-if="!editing">{{ currentUser.gender === 'male' ? '男' : currentUser.gender === 'female' ? '女' : '不愿透露' }}</div>
-              <div class="gender-options" v-if="editing">
-                <label><input type="radio" value="male" v-model="userTemp.gender" /> 男</label>
-                <label><input type="radio" value="female" v-model="userTemp.gender" /> 女</label>
-                <label><input type="radio" value="other" v-model="userTemp.gender" /> 不愿透露</label>
-              </div>
-            </div>
-
             <div class="form-group">
-              <label for="bio">简&nbsp;&nbsp;&nbsp;&nbsp;介：</label>
+              <label for="bio">简&nbsp;介：</label>
               <div class="editable-field-container">
                 <span v-if="!editing">{{ currentUser.bio ? currentUser.bio : '这家伙很懒，什么都没留下' }}</span>
-                <textarea v-if="editing" id="bio" v-model="userTemp.bio" maxlength="60" class="fixed-input"></textarea>
+                <textarea v-if="editing" id="bio" v-model="userTemp.bio" class="fixed-input"></textarea>
               </div>
             </div>
           </div>
            <!-- 编辑个人信息按钮 -->
         <div class="edit-button-container">
           <button v-if="!editing" class="edit-button" @click="editUserInfo">编辑个人信息</button>
+          
           <div v-if="editing" class="edit-actions">
             <button 
               class="confirm-button" 
@@ -93,22 +84,98 @@
               :disabled="emailError"
             >确认</button>
             <button class="cancel-button" @click="cancelEdit">取消</button>
+            
           </div>
           
         </div>
+        <button class="change-password-button" @click="showChangePasswordDialog = true">修改账户密码</button>
           <div class="logout-button-container">
          <button class="logout-button" @click="performLogout">退出登录</button>
          </div>
          </div>
-       
         <!-- 返回主页按钮 -->
       
+
+
+
       </div>
       <div class="right-panel">
         <!-- 右侧框架的内容，例如其他信息 -->
+     <!-- 使用 v-for 遍历从后端获取的帖子列表 -->
+  <!-- 帖子列表 -->
+  <div 
+    v-for="post in posts" 
+    :key="post.article_id" 
+    class="post"
+    @click="openPostDialog(post)"
+  >
+    <h3 class="post-title">{{ post.article_title }}</h3>
+    <p class="post-content">{{ post.article_content }}</p>
+    <p class="post-meta">
+      发布日期: {{ post.published_date }} 
+      <span v-if="post.article_type === 'announcement'"> | 类型: 公告</span>
+      <span v-else> | 类型: 文章</span>
+    </p>
+    <!-- 确保删除按钮使用 @click.stop 来防止冒泡 -->
+    <button class="delete-button" @click.stop="confirmDelete(post)">删除</button>
+  </div>
+
+  <!-- 删除确认弹框 -->
+  <div v-if="showConfirmDialog" class="confirm-dialog">
+    <div class="confirm-dialog-content">
+      <p>确定要删除该帖子吗？</p>
+      <button @click="deletePost(selectedPost)">确认</button>
+      <button @click="cancelDelete">取消</button>
+    </div>
+  </div>
+ 
       </div>
     </div>
 
+     
+   <!-- 帖子详情弹框 -->
+  <div v-if="showPostDialog" class="post-dialog">
+    <div class="post-dialog-content">
+      <div class="post-dialog-header">
+        <h3>{{ selectedPost.article_title }}</h3>
+        <!-- 使用 Unicode 或者字体图标实现叉叉 -->
+        <button @click="closePostDialog" class="close-button">&times;</button>
+      </div>
+      <div class="post-dialog-body">
+        <p>{{ selectedPost.article_content }}</p>
+      </div>
+      <div class="post-dialog-footer">
+        <p>评论区：</p>
+        <ul>
+          <li v-for="comment in comments" :key="comment.id">{{ comment.text }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+        <!-- 修改密码弹窗 -->
+<div v-if="showChangePasswordDialog" class="password-dialog-overlay">
+  <div class="password-dialog">
+    <h3>修改账户密码</h3>
+    <div class="form-group">
+      <label for="old-password">旧密码：</label>
+      <input type="password" id="old-password" v-model="oldPassword" />
+    </div>
+    <div class="form-group">
+      <label for="new-password">新密码：</label>
+      <input type="password" id="new-password" v-model="newPassword" />
+    </div>
+    <div class="form-group">
+      <label for="confirm-password">确认新密码：</label>
+      <input type="password" id="confirm-password" v-model="confirmPassword" />
+    </div>
+    <div class="dialog-actions">
+      <button class="confirm-button" @click="confirmChangePassword">确认</button>
+      <button class="cancel-button" @click="cancelChangePassword">取消</button>
+    </div>
+  </div>
+</div>
     <!-- 头像选择弹出框 -->
     <div v-if="showAvatarSelection" class="avatar-selection-overlay">
       <div class="avatar-selection-container">
@@ -156,6 +223,80 @@ export default {
   },
   data() {
     return {
+      posts: [{
+          article_id: 1,
+          article_title: "示例帖子1",
+          article_content: "这是第一个示例帖子的内容,展示数据库",
+          publisher_id: 1,
+          published_date: "2024-09-04",
+          article_type: "article"
+        },
+        {
+          article_id: 2,
+          article_title: "示例公告",
+          article_content: "这是一个公告类型的帖子，展示如何处理公告。",
+          publisher_id: 2,
+          published_date: "2024-09-03",
+          article_type: "announcement"
+        },{
+          article_id: 1,
+          article_title: "示例帖子1",
+          article_content: "这是第一个示例帖子的内容,展示数据库",
+          publisher_id: 1,
+          published_date: "2024-09-04",
+          article_type: "article"
+        },{
+          article_id: 1,
+          article_title: "示例帖子1",
+          article_content: "这是第一个示例帖子的内容,展示数据库",
+          publisher_id: 1,
+          published_date: "2024-09-04",
+          article_type: "article"
+        },{
+          article_id: 1,
+          article_title: "示例帖子1",
+          article_content: "这是第一个示例帖子的内容,展示数据库",
+          publisher_id: 1,
+          published_date: "2024-09-04",
+          article_type: "article"
+        },{
+          article_id: 1,
+          article_title: "示例帖子1",
+          article_content: "这是第一个示例帖子的内容,展示数据库",
+          publisher_id: 1,
+          published_date: "2024-09-04",
+          article_type: "article"
+        },{
+          article_id: 1,
+          article_title: "示例帖子1",
+          article_content: "这是第一个示例帖子的内容,展示数据库",
+          publisher_id: 1,
+          published_date: "2024-09-04",
+          article_type: "article"
+        },{
+          article_id: 1,
+          article_title: "示例帖子1",
+          article_content: "这是第一个示例帖子的内容,展示数据库",
+          publisher_id: 1,
+          published_date: "2024-09-04",
+          article_type: "article"
+        },{
+          article_id: 1,
+          article_title: "示例帖子1",
+          article_content: "这是第一个示例帖子的内容,展示数据库",
+          publisher_id: 1,
+          published_date: "2024-09-04",
+          article_type: "article"
+        },
+      ], // 帖子数据
+      showChangePasswordDialog: false, // 控制弹出框显示
+      oldPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+      showPostDialog: false, // 控制帖子详情弹框是否显示
+      showConfirmDialog: false, // 删除确认弹框
+      selectedPost: null, // 当前选中的帖子
+      comments: [] ,// 评论列表
       userTemp: {},
       editing: false,
       showAvatarSelection: false,
@@ -241,6 +382,63 @@ export default {
      goToUserProfile() {
       this.$router.push('/userprofile');;
     },
+
+    //刪除帖子部分
+ // 点击删除按钮时，显示确认弹框
+    confirmDelete(post) {
+      this.selectedPost = post; // 保存要删除的帖子
+      this.showConfirmDialog = true; // 显示确认弹框
+    },
+    // 确认删除操作
+    deletePost(post) {
+      // 实际删除操作应通过API调用来删除帖子
+      this.posts = this.posts.filter(p => p.article_id !== post.article_id); // 从列表中移除帖子
+      this.showConfirmDialog = false; // 关闭弹框
+      this.selectedPost = null; // 重置选择的帖子
+    },
+    // 取消删除操作
+    cancelDelete() {
+      this.showConfirmDialog = false; // 关闭弹框
+      this.selectedPost = null; // 重置选择的帖子
+    },
+     // 打开帖子详情弹框
+    openPostDialog(post) {
+      this.selectedPost = post;
+      this.comments = [ // 模拟评论数据
+        { id: 1, text: "这是第一条评论！" },
+        { id: 2, text: "非常有趣的帖子，期待更多！" },
+        { id: 2, text: "非常有趣的帖子，期待更多！" },
+        { id: 2, text: "非常有趣的帖子，期待更多！" },
+        { id: 2, text: "非常有趣的帖子，期待更多！" },
+        { id: 2, text: "非常有趣的帖子，期待更多！" },
+        { id: 2, text: "非常有趣的帖子，期待更多！" },
+      ];
+      this.showPostDialog = true;
+    },
+    // 关闭帖子详情弹框
+    closePostDialog() {
+      this.showPostDialog = false;
+      this.selectedPost = null;
+    },
+     // 确认修改密码
+    confirmChangePassword() {
+      if (this.newPassword === this.confirmPassword) {
+        // 在这里处理修改密码的逻辑
+        console.log('旧密码:', this.oldPassword);
+        console.log('新密码:', this.newPassword);
+        alert('密码修改成功');
+        this.showChangePasswordDialog = false; // 关闭弹框
+      } else {
+        alert('新密码和确认密码不匹配');
+      }
+    },
+    // 取消修改密码
+    cancelChangePassword() {
+      this.showChangePasswordDialog = false; // 关闭弹框
+      this.oldPassword = '';
+      this.newPassword = '';
+      this.confirmPassword = '';
+    }
   }
 };
 </script>
@@ -334,8 +532,7 @@ export default {
   z-index: 2;
 }
 
-.left-panel,
-.right-panel {
+.left-panel{
   flex: 1;
   display: flex;
   justify-content: center;
@@ -348,6 +545,22 @@ export default {
   margin-bottom: 80px; /* 与底部之间的距离 */
 }
 
+.right-panel {
+  flex: 1;
+  display: flex;
+  background-color: rgba(211, 211, 211, 0.7);
+  flex-direction: column;   /* 将帖子垂直排列 */
+  align-items: flex-start;
+  justify-content: flex-start; /* 让内容从顶部开始对齐 */
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  height: 80%;              /* 固定高度 */
+  overflow-y: auto;          /* 当内容溢出时显示滚动条 */
+  margin-bottom: 80px;
+  z-index: 2;
+  width: 100%;
+}
+
 .user-details {
   width: 100%;
   max-width: 400px;
@@ -358,8 +571,9 @@ export default {
   align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 20px;
-  font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+  font-family: '宋体','ZhiMangXing-Regular', sans-serif;
   font-size: 16px;
+  max-width:290px;
 }
 .form-group label {
   min-width: 80px; /* 设置一个最小宽度确保标签在同一行 */
@@ -404,6 +618,19 @@ textarea {
   background-color: rgba(255, 255, 255, 0.7);
 }
 
+input[type="text"], textarea {
+  width: 100%; /* 设置宽度为父容器的100% */
+  max-width: 300px; /* 设置最大宽度，确保不会变大 */
+  height: 30px; /* 固定高度 */
+  box-sizing: border-box; /* 包括内边距和边框在内计算宽度 */
+  padding: 5px;
+  font-size: 14px;
+}
+
+textarea {
+  height: 100px; /* 设置多行文本框的固定高度 */
+  resize: none; /* 禁用手动调整大小 */
+}
 .confirm-button,
 .cancel-button {
   width: 120px; /* 调整宽度为长方形 */
@@ -702,6 +929,287 @@ textarea {
 
 .footer a:hover {
   color: rgb(24, 212, 209); /* 悬停下划线效果 */
+}
+
+
+/*帖子*/
+/* 帖子悬停变大效果 */
+.post {
+  background-color: white;
+  padding: 15px;
+  margin-bottom: 5px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-height: 150px;
+  box-sizing: border-box;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  z-index:3;
+}
+
+.post:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+.post-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.post-content {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 10px;
+  overflow: hidden;          /* 如果内容过多，隐藏超出的部分 */
+  white-space: nowrap;       /* 防止内容换行 */
+  text-overflow: ellipsis;   /* 超出部分用省略号显示 */
+}
+
+.post-meta {
+  font-size: 12px;
+  color: #666;
+  text-align: right;
+}
+/* 删除按钮样式 */
+.delete-button {
+  position: absolute;
+  right: 20px;
+  top: 25%;
+  transform: translateY(-50%);
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: darkred;
+}
+
+/* 删除确认弹框样式 */
+.confirm-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.confirm-dialog-content {
+  text-align: center;
+}
+
+.confirm-dialog-content button {
+  margin: 10px;
+  padding: 5px 15px;
+  cursor: pointer;
+}
+
+.confirm-dialog-content button {
+  margin: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.confirm-dialog-content button {
+  background-color: #4CAF50; /* 确认按钮的绿色 */
+  color: white;
+}
+
+.confirm-dialog-content button:hover {
+  background-color: #45a049;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.confirm-dialog-content button:last-child {
+  background-color: #f44336; /* 取消按钮的红色 */
+  color: white;
+}
+
+.confirm-dialog-content button:last-child:hover {
+  background-color: #e53935;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 帖子详情弹框样式 */
+.post-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  width: 60%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow: hidden; /* 不显示外部滚动条 */
+}
+
+.post-dialog-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-dialog-header {
+  display: flex;
+  justify-content: space-between; /* 标题和按钮在同一行 */
+  align-items: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.post-dialog-header h3 {
+  font-size: 20px;
+  color: #00aaff;
+}
+
+.close-button {
+  padding: 5px 10px;
+  font-size: 40px; /* 设置字体大小，让叉叉明显 */
+  background-color: transparent; /* 去掉背景色 */
+  color: #007bff; /* 设置叉叉的颜色 */
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: #0056b3; /* 悬停时变成深蓝色 */
+}
+
+/* 中间内容部分：固定高度，支持滚动 */
+.post-dialog-body {
+  flex: 1;
+  max-height: 250px; /* 固定内容区域高度 */
+  overflow-y: auto; /* 内容超出时显示滚动条 */
+  margin-bottom: 20px;
+}
+
+/* 评论区：固定高度，支持滚动 */
+.post-dialog-footer {
+  font-size: 14px;
+  max-height: 150px; /* 固定评论区域高度 */
+  overflow-y: auto; /* 评论超出时显示滚动条 */
+  background-color: #f1f1f1;
+  padding: 10px;
+  border-radius: 5px;
+}
+/* 修改个人信息和修改密码按钮 */
+.edit-button, .change-password-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+.edit-button {
+  background-color: orange;
+  color: white;
+}
+
+.change-password-button {
+  background-color: #007bff; /* 蓝色按钮 */
+  color: white;
+}
+
+.change-password-button:hover {
+  background-color: #0056b3; /* 悬停时颜色变深 */
+}
+/* 修改密码弹窗背景 */
+.password-dialog-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3; /* 确保弹窗显示在最上层 */
+}
+
+/* 修改密码弹窗 */
+.password-dialog {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width:300px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.password-dialog h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #007bff;
+}
+
+.password-dialog .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.password-dialog .form-group label {
+  margin-bottom: 5px;
+}
+
+.password-dialog .form-group input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width:100%;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.confirm-button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.confirm-button:hover {
+  background-color: #218838;
+}
+
+.cancel-button {
+  background-color: #dc3545;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.cancel-button:hover {
+  background-color: #c82333;
 }
 
 </style>

@@ -24,7 +24,7 @@
           <div v-if="currentUser.role !== 'guest'">
             <p>用户名: {{ currentUser.username }}</p>
             <p>邮箱: {{ currentUser.email }}</p>
-            <p>角色: {{ currentUser.userRole }}</p>
+            <p>角色: {{ currentUser.role }}</p>
           </div>
         </div>
       </div>
