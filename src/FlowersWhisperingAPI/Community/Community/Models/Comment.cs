@@ -1,7 +1,7 @@
 namespace FlowersWhisperingAPI.Community.Models
 {
     
-    public partial class Comment(int commentid , int userid , int articleid , string content, DateTime createdDate)
+    public class Commenti(int commentid , int userid , int articleid , string content, DateTime createdDate)
     {
         public int CommentId { get; set; } = commentid;
         public int UserId { get; set; } = userid;

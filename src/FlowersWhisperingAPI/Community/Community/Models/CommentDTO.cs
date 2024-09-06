@@ -1,6 +1,6 @@
 namespace FlowersWhisperingAPI.Community.Models{
-
-    public class CommentDTO
+  
+    public class CommentDTOi
     {
         public int UserId { get; set; } = 0;
         public int ArticleId { get; set; } = 0;

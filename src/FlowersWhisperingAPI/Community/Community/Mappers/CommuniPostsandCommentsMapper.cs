@@ -19,9 +19,9 @@ namespace FlowersWhisperingAPI.Community.Mappers
             var result = command.ExecuteScalar();
             return result != null && result != DBNull.Value ? result.ToString(): null;                       
         }  
-        public void AddComment(CommentDTO commentdto)
+        public void AddComment(CommentDTOi commentdto)
         {
-            string sql = @"INSERT INTO Comments (user_id, article_id, comment_content, 
+            string sql = @"INSERT INTO Comments (user_id, article_id, comment_content 
             ) VALUES (:UserId, :ArticleId, :Contentd)";
             using var connection = new OracleConnection(_connectionString);
             connection.Open();
@@ -64,40 +64,79 @@ namespace FlowersWhisperingAPI.Community.Mappers
             command.ExecuteNonQuery();  
 
         }
-        public List<Comment> GetAllComments(int postId)
+        //帖子的所有评论
+        public List<Commenti> GetAllComments(int postId)
         {
-            List<Comment> comments = [];
-            string sql = "SELECT * FROM Comments WHERE article_id = :postId";
+            List<Commenti> comments = [];
+            string sql = "SELECT * FROM Comments WHERE article_id = :PostId";
             try
             {
                 using var connection = new OracleConnection(_connectionString);
                 connection.Open();
                 using var command = new OracleCommand(sql, connection);
-                command.Parameters.Add(":postId", OracleDbType.Int32).Value = postId;
+                command.Parameters.Add(":PostId", OracleDbType.Int32).Value = postId;
                 using var reader = command.ExecuteReader();
                 while (reader.Read())
-                {                  
-                    int cid = reader.GetInt32(0);
-                    int uid = reader.GetInt32(1);
-                    string content = reader.GetString(3);
-                    DateTime date = reader.GetDateTime(4);
-                    string? username = GetUsernameByUserId(uid);
-                    if (username == null)
+                {
+                    int commentId = reader.GetInt32(reader.GetOrdinal("comment_id"));
+                    int userId = reader.GetInt32(reader.GetOrdinal("user_id"));
+                    int articleId = reader.GetInt32(reader.GetOrdinal("article_id"));
+                    string commentContent = reader.GetString(reader.GetOrdinal("comment_content"));
+                    DateTime createdDate = reader.GetDateTime(reader.GetOrdinal("created_date"));
+                    string? username = GetUsernameByUserId(userId);
+                    // 创建 Commenti 对象
+                    Commenti comment = new Commenti(commentId, userId, articleId, commentContent, createdDate)
                     {
-                        throw new Exception($"Username not found for userId: {uid}");
-                    }
-                    comments.Add(new Comment(cid, uid, postId, content, date){ Username = username });
+                        Username = username ?? "Unknown"  // 处理空用户名
+                    };
+                    comments.Add(comment);
                 }
                 return comments;
             }
             catch(Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine($"Error occurred: {e.Message}");
                 return [];
             }
           
         }
-        
+        //用户的所有评论
+        public List<Commenti> GetAllCommentsByUserId(int userId)
+        {
+            List<Commenti> comments = [];
+            string sql = "SELECT * FROM Comments WHERE user_id = :UserId";
+            try
+            {
+                using var connection = new OracleConnection(_connectionString);
+                connection.Open();
+                using var command = new OracleCommand(sql, connection);
+                command.Parameters.Add(":UserId", OracleDbType.Int32).Value = userId;
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    int commentId = reader.GetInt32(reader.GetOrdinal("comment_id"));
+                    int uId = reader.GetInt32(reader.GetOrdinal("user_id"));
+                    int articleId = reader.GetInt32(reader.GetOrdinal("article_id"));
+                    string commentContent = reader.GetString(reader.GetOrdinal("comment_content"));
+                    DateTime createdDate = reader.GetDateTime(reader.GetOrdinal("created_date"));
+                    string? username = GetUsernameByUserId(userId);
+                    // 创建 Commenti 对象
+                    Commenti comment = new Commenti(commentId, uId, articleId, commentContent, createdDate)
+                    {
+                        Username = username ?? "Unknown"  // 处理空用户名
+                    };
+                    comments.Add(comment);
+                }
+                return comments;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error occurred: {e.Message}");
+                return [];
+            }
+
+        }
+
         public List<Article> GetAllPosts()
         {
             List<Article> posts = [];
@@ -118,7 +157,7 @@ namespace FlowersWhisperingAPI.Community.Mappers
                     string? username = GetUsernameByUserId(pid);
                     if (username == null)
                     {
-                        throw new Exception($"Username not found for userId: {pid}");
+                       throw new Exception($"Username not found for userId: {pid}");
                     }
                     posts.Add(new Article(id, title, content, pid, date){ Username = username });
                 }
@@ -162,13 +201,14 @@ namespace FlowersWhisperingAPI.Community.Mappers
         public List<Article> GetAllPostsByTitleOrContent(string text)
         {
             List<Article> posts = [];
-            string sql = "SELECT * FROM Articles WHERE article_title like '%:text%' OR article_content like '%:text%'";
+            string sql = "SELECT * FROM Articles WHERE article_title LIKE :text OR article_content LIKE :text";
             try
             {
                 using var connection = new OracleConnection(_connectionString);
                 connection.Open();
                 using var command = new OracleCommand(sql, connection);
-                command.Parameters.Add(":text", OracleDbType.Int32).Value = text;
+                // 绑定字符串参数，并添加模糊搜索的通配符
+                command.Parameters.Add(":text", OracleDbType.Varchar2).Value = $"%{text}%";
                 using var reader = command.ExecuteReader();
                 while (reader.Read())
                 {                  
@@ -195,7 +235,7 @@ namespace FlowersWhisperingAPI.Community.Mappers
         }
         public void UpdatePost(Article post)
         {
-            string sql = "UPDATE article SET article_title = :Title, article_content = :Content , published_date = SYSDATE WHERE article_id = :ArticleId";
+            string sql = "UPDATE Articles SET article_title = :Title, article_content = :Content , published_date = SYSDATE WHERE article_id = :ArticleId";
             using var connection = new OracleConnection(_connectionString);
             connection.Open();
             using var command = new OracleCommand(sql, connection);
