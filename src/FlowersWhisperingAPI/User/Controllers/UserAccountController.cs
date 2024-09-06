@@ -24,10 +24,22 @@ namespace FlowersWhisperingAPI.User.Controllers
                         return BadRequest("未查到此账户，请先注册");
                     if(userInfo.UserStatus == "banned")
                         return BadRequest("账户已被封禁");
-                    return Ok(new { message = "登录成功",userId = id, username = loginDTO.Username, 
-                        email = userInfo.Email, password = userInfo.Password,
-                        languagePreference = userInfo.LanguagePreference,                     
-                        userState = userInfo.UserStatus, userRole = userInfo.UserRole});                       
+                    DateTime registrationTime = _userAccountService.GetRegistrationTimeById(id);
+                    return Ok(new
+                    {
+                        message = "登录成功",
+                        userId = id,
+                        username = loginDTO.Username,
+                        email = userInfo.Email,
+                        password = userInfo.Password,
+                        languagePreference = userInfo.LanguagePreference,
+                        userState = userInfo.UserStatus,
+                        userRole = userInfo.UserRole,
+                        bio = userInfo.Bio,
+                        gender = userInfo.Gender,
+                        avatar = userInfo.Avatar,
+                        registrationTime,
+                    });
                 }
                 else
                     return Unauthorized("密码错误");
@@ -41,10 +53,21 @@ namespace FlowersWhisperingAPI.User.Controllers
                         return BadRequest("未查到此账户，请先注册");
                     if(userInfo.UserStatus == "banned")
                         return BadRequest("账户已被封禁");
-                    return Ok(new { message = "登录成功",userId = id, username = loginDTO.Username, 
-                        email = userInfo.Email, password = userInfo.Password,
-                        languagePreference = userInfo.LanguagePreference,                     
-                        userState = userInfo.UserStatus, userRole = userInfo.UserRole});      
+                    DateTime registrationTime = _userAccountService.GetRegistrationTimeById(id);
+                    return Ok(new
+                    {
+                        message = "登录成功",
+                        userId = id,
+                        username = loginDTO.Username,
+                        email = userInfo.Email,
+                        password = userInfo.Password,
+                        languagePreference = userInfo.LanguagePreference,
+                        userState = userInfo.UserStatus,
+                        userRole = userInfo.UserRole,
+                        bio = userInfo.Bio,
+                        gender = userInfo.Gender,
+                        registrationTime,
+                    });      
                 }                    
                 else
                     return Unauthorized("密码错误");
@@ -64,7 +87,10 @@ namespace FlowersWhisperingAPI.User.Controllers
             string password = userDTO.Password;
             string email = userDTO.Email;
             string languagePreference = userDTO.LanguagePreference;
-            UserInfo userRegister = new UserInfo(username, password, email, languagePreference);
+            string bio = userDTO.Bio;
+            string avatar = userDTO.Avatar;
+            string gender = userDTO.Gender;
+            UserInfo userRegister = new UserInfo(username, password, email, languagePreference,bio,avatar,gender);
             bool result = _userAccountService.Register(userRegister);
             if (result)
                 return Ok("注册成功");

@@ -98,5 +98,10 @@ namespace FlowersWhisperingAPI.User.Services
         {
             return _accountMapper.GetUserById(id);
         }
+
+        public DateTime GetRegistrationTimeById(int id)
+        {
+            return _accountMapper.GetRegistrationTimeById(id);
+        }
     }
 }

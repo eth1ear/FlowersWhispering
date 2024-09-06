@@ -1,7 +1,31 @@
 <template>
 
 <!--大标题-->
-
+  <header class="header">
+  <div class="logo">Flowers Whispering</div>
+  <div class="nav-user-container">
+    <nav class="nav-links">
+      <nav v-if="currentUser.userRole === 'admin'">
+         <button @click="goToAdminPanel" class="nav-button">管理</button>
+      </nav>
+      <button @click="goHome" class="nav-button">首页</button>
+      <button @click="goToCommunity" class="nav-button">社区</button>
+      <button @click="goToCatalog" class="nav-button">图鉴</button>
+    </nav>
+    <div class="user-info">
+      <div class="user-avatar-wrapper">
+        <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
+        <div class="user-info-list">
+          <div v-if="currentUser.userRole !== 'guest'">
+            <p>用户名: {{ currentUser.username }}</p>
+            <p>邮箱: {{ currentUser.email }}</p>
+            <p>角色: {{ currentUser.userRole }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
 
      <!--大标题-->
 
@@ -30,8 +54,8 @@
     </div>
 
     <div class="top-banner">
-        <button class="user-button" @click="Gotouserpage">   <!--用户头像-->
-            <img src="../catalog/images/user_example.png" alt="User" />   
+        <button class="currentUser.avatar" @click="Gotouserpage">   <!--用户头像-->
+            <img :src="currentUser.avatar" alt="User" />   
         </button>
     </div>
 
@@ -68,23 +92,16 @@
 
 <script>
 import { useRouter } from 'vue-router';
-import { ref, onMounted } from 'vue';
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { ref, onMounted,defineComponent } from 'vue';
+import { mapGetters, mapActions ,mapState} from 'vuex';
 
 export default {
   name: "Catalog",
    computed: {
-    ...mapState({
-      currentUser: state => state.currentUser , // 从Vuex store中获取 currentUser
-      userAvatar: state => state.userAvatar // 确保这里绑定了全局的 userAvatar
+    ...mapGetters({
+      currentUser: 'getUserInfo', // 获取当前用户信息
+      isAdmin: 'isAdmin',
     }),
-    ...mapGetters(['userAvatar'])  // 使用全局的userAvatar
-  },
-  data() {
-    return {
-      buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像
-      userName: 'Wuhuairline' // 默认用户名,后端接入用户姓名
-    };
   },
   mounted()
       {
@@ -151,10 +168,10 @@ export default {
 <style>
 .book-background 
 {
-    display: flex;
-   flex-direction: column;
-   min-height: 100vh;
-   position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
 }
   
   /* 设置背景图像 */
