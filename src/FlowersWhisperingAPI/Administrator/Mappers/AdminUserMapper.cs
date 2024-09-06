@@ -77,9 +77,10 @@ namespace FlowersWhisperingAPI.Administrator.Mappers
                 {
                     int id = reader.GetInt32(reader.GetOrdinal("user_id"));
                     string uname = reader.GetString(reader.GetOrdinal("username"));
+                    string uemail = reader.GetString(reader.GetOrdinal("email"));
                     string ustatus = reader.GetString(reader.GetOrdinal("user_status"));
                     string urole = reader.GetString(reader.GetOrdinal("user_role"));
-                    users.Add(new UserAdmin(id, uname,ustatus,urole));
+                    users.Add(new UserAdmin(id, uname,uemail,ustatus,urole));
                 }
                 return users;
             }

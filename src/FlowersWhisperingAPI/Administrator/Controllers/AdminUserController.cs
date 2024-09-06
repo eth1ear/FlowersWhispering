@@ -37,9 +37,9 @@ namespace FlowersWhisperingAPI.Administrator.Controllers
         }
 
         [HttpGet("all/user")]
-        public IActionResult GetAllusers()
+        public IActionResult GetAllUsers()
         {
-            return Ok(_adminUserService.GetAllusers());
+            return Ok(_adminUserService.GetAllUsers());
         }
     }
 }
