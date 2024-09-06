@@ -62,26 +62,31 @@
       </div>
 
       
-
+      <div class="post-container1">
+    <h1 class="post-header1">帖子列表</h1>
+    <ul class="post-list1">
+      <li v-for="item in visiblePosts" :key="item.id" class="post-item1">
+        <div>
+          <h2 class="post-title1">{{ item.title }}</h2>
+          <p class="post-summar1y">{{ summarizeContent(item.content) }}</p>
+        </div>
+        <div class="post-info1">
+          <span class="post-author1">{{ item.author }}</span>
+          <span class="post-time1">{{ item.date }}</span>
+        </div>
+      </li>
+    </ul>
+    <div class="pagination-controls1">
+      <button @click="navigateToPrevious" :disabled="currentPage === 1">上一页</button>
+      <button @click="navigateToNext" :disabled="currentPage === totalPagesCount">下一页</button>
+    </div>
+  </div>
      
 
 
       
 
-         <!--热帖部分-->
-      <div v-if="activeTab === 'HotPosts'">
         
-
-          </div>
-         <!--热帖部分-->
-
-  <!--分类部分-->
-  <div v-if="activeTab === 'HotPosts'">
-        
-
-      </div>
-     <!--分类部分-->
-
      
   
     
@@ -135,7 +140,15 @@
       currentUser: 'getUserInfo', // 获取当前用户信息
       isAdmin: 'isAdmin',
     }),
-    
+    //帖子列表
+    totalPagesCount() {
+      return Math.ceil(this.postsData.length / this.itemsPerPage);
+    },
+    visiblePosts() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      return this.postsData.slice(startIndex, endIndex);
+    },
   },
     methods:
     {
@@ -154,7 +167,36 @@
           this.activeTab=tabName;  
         },  //设置选项卡
 
-    
+        async fetchPostsData1() {
+    // 模拟从后端获取数据
+      // this.postsData = await fetch('your-api-endpoint').then(response => response.json());
+    this.postsData = [
+      { id: 1, title: '帖子标题1', content: '这是帖子内容1...', author: '作者1', date: '2024-09-01' },
+      { id: 2, title: '帖子标题2', content: '这是帖子内容2...', author: '作者2', date: '2024-09-02' },
+      // 你可以添加更多的测试数据
+      { id: 3, title: '帖子标题3', content: '这是帖子内容3...', author: '作者3', date: '2024-09-03' },
+      { id: 4, title: '帖子标题4', content: '这是帖子内容4...', author: '作者4', date: '2024-09-04' },
+      // 确保数据量超过 itemsPerPage 以测试分页功能
+      { id: 5, title: '帖子标题5', content: '这是帖子内容5...', author: '作者5', date: '2024-09-05' },
+      { id: 6, title: '帖子标题6', content: '这是帖子内容6...', author: '作者6', date: '2024-09-06' },
+      { id: 7, title: '帖子标题7', content: '这是帖子内容7...', author: '作者7', date: '2024-09-07' },
+      { id: 8, title: '帖子标题8', content: '这是帖子内容8...', author: '作者8', date: '2024-09-08' },
+      { id: 9, title: '帖子标题9', content: '这是帖子内容9...', author: '作者9', date: '2024-09-09' },
+      { id: 10, title: '帖子标题10', content: '这是帖子内容10...', author: '作者10', date: '2024-09-10' },
+      { id: 11, title: '帖子标题11', content: '这是帖子内容11...', author: '作者11', date: '2024-09-11' },
+      // 添加更多测试数据以覆盖多个页面
+    ];
+  },
+      
+    summarizeContent(content) {
+      return content.length > 100 ? content.slice(0, 100) + '...' : content;
+    },
+    navigateToPrevious() {
+      if (this.currentPage > 1) this.currentPage--;
+    },
+    navigateToNext() {
+      if (this.currentPage < this.totalPagesCount) this.currentPage++;
+    },
     
   
 
@@ -181,7 +223,10 @@
       },//返回主页界面
       
      
-    }
+    },
+    created() {
+    this.fetchPostsData1();
+  }
   };
   </script>
   
@@ -352,7 +397,84 @@
 
 
   
+/* 帖子详情 */
 
+.post-container1 {
+  position: absolute;
+  top: 8%;
+  left: 20%;
+  width: 900px;
+  height: 600px;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgb(45, 198, 22);
+  color: rgb(45, 198, 22);
+}
+
+.post-header1 {
+  text-align: center;
+  font-size: 35px;
+  color: rgb(45, 198, 22);
+  margin-bottom: 0;
+}
+
+
+.post-list1 {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  max-height: 480px; /* 设置最大高度 */
+  overflow-y: auto; /* 启用垂直滚动条 */
+}
+
+
+.post-item1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  background-color: #d2f0ed;
+  margin: 8px 0;
+  border-radius: 5px;
+}
+
+.post-item1:hover {
+  transform: scale(1.05);
+}
+
+.post-title1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.post-summary1 {
+  font-size: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.post-info1 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.post-author1, .post-time1 {
+  color: rgb(45, 198, 22);
+}
+
+.pagination-controls1 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.pagination-controls1 button {
+  margin: 0 5px;
+}
 
 
 
