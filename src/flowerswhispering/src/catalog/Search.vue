@@ -1,22 +1,7 @@
 <template>
 
     <!--大标题-->
-    <header class="header">
-          <div class="logo">Flowers Whispering</div>
-          <div class="user-info" v-if="currentUser">
-            <span v-if="currentUser" class="username">{{ currentUser.username }}</span>
-            <div class="user-avatar-wrapper">
-              <img v-if="currentUser" src="../home/images/user-avatar.jpg" alt="User Avatar" @click="goToUserProfile()">
-              <!-- 用户详细信息列表 -->
-              <div class="user-info-list">
-                <p>用户名: {{ currentUser.username }}</p>
-                <p>邮箱: {{ currentUser.email }}</p>
-                <p>角色: {{ currentUser.role }}</p>
-              </div>
-            </div>
-            <button class="logout-button" @click="performLogout">{{ currentUser.role === 'guest' ? '登录' : '登出' }}</button>
-          </div>
-        </header>
+
          <!--大标题-->
     
     
@@ -95,11 +80,11 @@
 
           <!--贡献词条部分-->
           <div v-if="activeTab === 'contribution'" class="favorite-plants-container">    
-            <h2 class="contribution-title">贡献词条</h2>
-            <ul class="contribution-list">
-            <li v-for="(item, index) in paginatedContributions" :key="index" class="contribution-item">
+            <h2 class="search-contribution-title">贡献词条</h2>
+            <ul class="search-contribution-list">
+            <li v-for="(item, index) in paginatedContributions" :key="index" class="search-contribution-item">
               <span 
-              class="contribution-plant-name"
+              class="search-contribution-plant-name"
               @click="item.status === '已通过' ? viewPlantDetail(item.Plantid,item.Plantname) : null"
               :class="{ clickable: item.status === '已通过'}">
               {{ item.Plantname }}</span>
@@ -114,8 +99,8 @@
             <button @click="nextContributionPage" :disabled="contributionPage === contributionTotalPages">下一页</button>
             </div>
                 <!-- 贡献页面按钮 -->
-            <div class="contribution-button-container">
-              <button class="contribution-button" @click="GoToContributionPage">我要贡献</button>
+            <div class="search-contribution-button-container">
+              <button class="search-contribution-button" @click="GoToContributionPage">我要贡献</button>
             </div>
           </div>
           <!--贡献词条部分-->
@@ -140,19 +125,24 @@
           </div>
           <!--最新品种部分，待完成！-->
 
-    
     </div>
-    
-    
-    
+    <!-- 底部备案号 -->
+     <footer class="footer">
+      <p class="left"><a href="contact.html">联系我们</a></p>
+     <div class="center">
+    <span>© 2024 Flowers Whispering&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <a href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2024087175号-1</a>
+  </div>
+      <div class="right"></div>
+    </footer>
     </template>
     
     <script>
     import { useRouter } from 'vue-router';
     import { ref, onMounted } from 'vue';
-    
+    import { mapState, mapGetters, mapActions} from 'vuex';
     export default {
-      name: "Search",
+       name: "Search",
       data() {
         return {
           buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像
@@ -176,12 +166,18 @@
       },
       mounted()
       {
+        window.scrollTo(0,0);
         this.loadFavorites();
         this.loadContributions();
         this.loadNewPlants();
       },
 
       computed: {
+          ...mapState({
+         currentUser: state => state.currentUser , // 从Vuex store中获取 currentUser
+         userAvatar: state => state.userAvatar // 确保这里绑定了全局的 userAvatar
+        }),
+        ...mapGetters(['userAvatar']),  // 使用全局的userAvatar
       totalPages() {
       return Math.ceil(this.favoritePlants.length / this.itemsPerPage);
       },
@@ -210,18 +206,36 @@
          const end = start + this.newPlantsItemsPerPage;
          return this.newPlants.slice(start, end);
        },//最新品种页面计算
-
-       
-
-
       },  //页面计算功能
       methods:
       {
-        Gotouserpage()
+        toggleUserMenu() {
+            this.showUserMenu = !this.showUserMenu;
+        },
+        handleUserAvatarClick() {
+          if (this.currentUser.role === 'guest') {
+          this.$router.push('/login'); // 如果是guest用户，点击跳转到登录页面
+          } else {
+          this.goToUserProfile(); // 否则跳转到个人主页
+          }
+        },
+
+        goToUserProfile()
         {
             this.$router.push('/userprofile');
         }, //切换用户页面
-        
+         goToCommunity() {
+         this.$router.push('/community');
+        },
+        goToCatalog() {
+        this.$router.push('/catalog');
+        },
+        goHome() {
+          this.$router.push('/home');
+        },
+        goToAdminPanel() {
+          this.$router.push('/adminpanel');
+        },
         GoToHome()
         {
             this.$router.push('/catalog');
@@ -362,6 +376,16 @@
     
     
     <style scoped>
+    .header {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 0 20px;
+     background-color: rgba(70, 180, 118, 0.8); /* 使用rgba设置透明度，0.8表示80%的不透明度 */
+     color: white;
+     z-index: 10; /* 提高 z-index，确保 header 在其他内容上层 */
+     position: relative;
+    }
     .book-background 
     {
         display: flex;
@@ -428,6 +452,7 @@
         flex-direction: column;
         align-items: center;
         color: rgb(17, 213, 244); /* 设置文本颜色 */
+        z-index:20;
     }
     
     .user-name {
@@ -586,8 +611,7 @@
 .favorite-title
 {
   position:relative;
-  top:-5%;
-  left:42%;
+  top:0;
   font-size: 35PX;
   z-index:6;
   color:rgb(45, 198, 22);
@@ -673,7 +697,7 @@
 
 
 /* 贡献词条部分样式 */
-.contribution-container {
+.search-contribution-container {
   position:absolute;
   top:8%;
   left:20%;
@@ -686,22 +710,22 @@
   color:rgb(45, 198, 22);
 }
 
-.contribution-title {
+.search-contribution-title {
   position: relative;
-  top: -5%;
-  left: 42%;
+  top: 0;
   font-size: 35PX;
   z-index: 6;
   color: rgb(45, 198, 22);
   margin-bottom: 0;
 }
 
-.contribution-list {
+.search-contribution-list 
+{
   padding: 0;
   margin: 0;
 }
 
-.contribution-item {
+.search-contribution-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -713,12 +737,12 @@
   border-radius: 5px;
 }
 
-.contribution-plant-name {
+.search-contribution-plant-name {
   font-size: 22px!important;
   transition: color 0.3s ease;
 }
 
-.contribution-item:hover {
+.search-contribution-item:hover {
   transform: scale(1.05);
   color:rgb(17, 213, 244);
 }
@@ -744,13 +768,13 @@
   color: white;
 }
     
-.contribution-button-container {
+.search-contribution-button-container {
   display: flex;
   justify-content: center;
   margin-top: 20px;
 }
 
-.contribution-button {
+.search-contribution-button {
   padding: 10px 30px;
   font-size: 25px;
   color: white;
@@ -762,7 +786,7 @@
   transition: transform 0.3s ease; 
 }
 
-.contribution-button:hover {
+.search-contribution-button:hover {
   background-color: rgb(29, 180, 167);
   transform:scale(1.3);
 }
@@ -784,8 +808,7 @@
 
 .new-plants-title {
   position: relative;
-  top: -5%;
-  left: 42%;
+  top: 0;
   font-size: 35px;
   z-index: 6;
   color: rgb(45, 198, 22);
@@ -831,20 +854,12 @@
 .update-time {
   font-size: 18px;
   color: rgb(47, 162, 188);
-}
-
-
-    
-    
-    
-    
-    
-    
-    
+}    
     /*  固有写法，显示用户*/ 
     .user-avatar-wrapper {
         position: relative;
         display: inline-block;
+        z-index: 10; /* 提高头像的层级 */
       }
     
       .user-info-list {
@@ -905,20 +920,7 @@
         min-height: 800px;
         color: #333;
       }
-    
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 20px;
-        background-color: #46b476cc;
-        color: white;
-        z-index: 1;
-        position: relative;
-      }
-    
-    
-    
+  
       .logo {
         font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
         font-size: 28px;
@@ -953,5 +955,39 @@
     
       /*  固有写法，显示用户*/ 
     
-    
+   .footer {
+  display: flex;
+  justify-content: space-between;  /* 左中右均匀分布 */
+  align-items: center;             /* 垂直居中对齐 */
+  background-color: rgba(70, 180, 118, 0.8);
+  color: white;
+  position: relative;
+  width: 100%;                     /* 跨满页面 */
+  z-index: 10;
+}
+
+.footer .left {
+  text-align: left;
+  margin-left: 10px;               /* 左边距 */
+}
+
+.footer .center {
+  text-align: center;
+  flex: 1;                         /* 中间内容居中，并占据剩余空间 */
+}
+
+.footer .right {
+  text-align: right;
+  margin-right: 10px;              /* 右边距 */
+}
+
+.footer a {
+  color: white;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: rgb(24, 212, 209); /* 悬停下划线效果 */
+}
+ 
     </style>

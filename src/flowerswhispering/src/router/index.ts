@@ -6,9 +6,12 @@ import AdminPanel from '../adminpanel/AdminPanel.vue';
 import Catalog from '../catalog/Catalog.vue';
 import Search from '../catalog/Search.vue';
 import Information from '../catalog/information.vue';
+import FindError from '../catalog/FindError.vue';
+import Contribution from '../catalog/Contribution.vue';
 import Community from '../community/Community.vue';
 import Profile from '../userprofile/UserProfile.vue';
 import PostDetail from '../community/PostDetail.vue';
+
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -39,6 +42,18 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true }  // 需要验证
   },
   {
+    path: '/FindError',
+    name: 'FindError',
+    component: FindError,
+    meta: { requiresAuth: true }  // 需要验证
+  },
+  {
+    path: '/Contribution',
+    name: 'Contribution',
+    component: Contribution,
+    meta: { requiresAuth: true }  // 需要验证
+  },
+  {
     path: '/community',
     name: 'Community',
     component: Community,
@@ -62,6 +77,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Home,
     meta: { requiresAuth: true }  // 需要验证
   },
+  
   {
     path: '/adminpanel',
     name: 'AdminPanel',
