@@ -120,5 +120,74 @@ namespace FlowersWhisperingAPI.Administrator.Mappers
             }
             return null;
         }
+
+        public string GetImageUrl(int plantId)
+        {
+            string sql = "SELECT image_url FROM PlantImages WHERE plant_id = :PlantId";
+            using var connection = new OracleConnection(_connectionString);
+            connection.Open();
+            using var command = new OracleCommand(sql, connection);
+            command.Parameters.Add(":PlantId", OracleDbType.Int32).Value = plantId;
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                return reader.GetString(0);
+            }
+            return "";
+        }
+
+        public void AddImageUrl(int plantId, string imageUrl)
+        {
+            try{
+            string sql = "INSERT INTO PlantImages (plant_id, image_url) VALUES (:PlantId, :ImageUrl)";
+            using var connection = new OracleConnection(_connectionString);
+            connection.Open();
+            using var command = new OracleCommand(sql, connection);
+            command.Parameters.Add(":PlantId", OracleDbType.Int32).Value = plantId;
+            command.Parameters.Add(":ImageUrl", OracleDbType.Varchar2).Value = imageUrl;
+            command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("" + ex);
+            }
+        }
+
+        public void UpdateImageUrl(int plantId, string imageUrl)
+        {
+            string sql = "UPDATE PlantImages SET image_url = :ImageUrl WHERE plant_id = :PlantId";
+            using var connection = new OracleConnection(_connectionString);
+            connection.Open();
+            using var command = new OracleCommand(sql, connection);
+            command.Parameters.Add(":ImageUrl", OracleDbType.Varchar2).Value = imageUrl;
+            command.Parameters.Add(":PlantId", OracleDbType.Int32).Value = plantId;
+            command.ExecuteNonQuery();
+        }
+
+        public void DeleteImageUrl(int plantId)
+        {
+            string sql = "DELETE FROM PlantImages WHERE plant_id = :PlantId";
+            using var connection = new OracleConnection(_connectionString);
+            connection.Open();
+            using var command = new OracleCommand(sql, connection);
+            command.Parameters.Add(":PlantId", OracleDbType.Int32).Value = plantId;
+            command.ExecuteNonQuery();
+        }
+
+        public int GetPlantId(string scientificName)
+        {
+            string sql = "SELECT plant_id FROM Plants WHERE scientific_name = :ScientificName";
+            int plantId = 0;
+            using var connection = new OracleConnection(_connectionString);
+            connection.Open();
+            using var command = new OracleCommand(sql, connection);
+            command.Parameters.Add(":ScientificName", OracleDbType.Varchar2, 100).Value = scientificName;
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                plantId = reader.GetInt32(0);
+            }
+            return plantId;
+        }
     }
 }
