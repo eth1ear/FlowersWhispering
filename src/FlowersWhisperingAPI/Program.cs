@@ -35,7 +35,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigin",
         policy =>
         {
-            policy.WithOrigins("http://localhost:8080") // 替换为你的前端地址
+            policy.WithOrigins("http://localhost:8080", "http://www.p1nkhub.com") // 替换为你的前端地址
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();  // 如果你使用的是Cookie或认证
@@ -72,6 +72,13 @@ if(connectionString != null)
 }
 
 var app = builder.Build();
+
+// 启用静态文件服务，确保 wwwroot 中的文件可以被访问
+app.UseStaticFiles();
+app.UseDefaultFiles();  // 使 index.html 成为默认页面
+app.UseStaticFiles();
+
+
 var scope = app.Services.CreateScope();
 
 // Configure the HTTP request pipeline.

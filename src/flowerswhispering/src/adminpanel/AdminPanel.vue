@@ -8,7 +8,6 @@
           <ul>
             <li @click="currentView = 'users'" :class="{ active: currentView === 'users' }">用户管理</li>
             <li @click="currentView = 'posts'" :class="{ active: currentView === 'posts' }">帖子管理</li>
-            <li @click="currentView = 'comments'" :class="{ active: currentView === 'comments' }">评论管理</li>
             <li @click="currentView = 'plants'" :class="{ active: currentView === 'plants' }">植物审核</li>
             <li @click="currentView = 'feedbacks'" :class="{ active: currentView === 'feedbacks' }">用户反馈</li>
             <li @click="currentView = 'announcements'" :class="{ active: currentView === 'announcements' }">公告发布</li>  
@@ -27,9 +26,6 @@
         <!-- 用户管理视图 -->
         <div v-if="currentView === 'users'">
           <h2>用户管理</h2>
-          <button @click="toggleAddUserForm" class="btn-toggle-form my-animation-slide-top">
-            {{ showAddUserForm ? '取消' : '添加用户' }}
-          </button>
   
           <form v-if="showAddUserForm" @submit.prevent="handleAddUser" class="form-container my-animation-slide-bottom">
             <input v-model="newUser.username" placeholder="用户名" class="form-input" />
@@ -40,7 +36,7 @@
           </form>
   
           <ul class="item-list">
-            <li v-for="user in users" :key="user.username" class="item">
+            <li v-for="user in users" :key="user.user_id" class="item">
               <div class="item-details">
                 <p><strong>用户名:</strong> {{ user.username }}</p>
                 <p><strong>邮箱:</strong> {{ user.email }}</p>
@@ -53,10 +49,10 @@
                 </p>
               </div>
               <div class="item-actions">
-                <button v-if="isActive" @click="changeUserState" class="btn-edit my-animation-slide-bottom">封禁</button>
-                <button v-else @click="changeUserState" class="btn-edit my-animation-slide-bottom">解封</button>
-                <button v-if="!user.editing" @click="editUser(user)" class="btn-edit my-animation-slide-bottom">修改</button>
-                <button v-else @click="saveUser(user)" class="btn-submit my-animation-slide-bottom">保存</button>
+                <button v-if="user.user_status=='active'" @click="changeUserState(user)" class="btn-edit btn-ban my-animation-slide-bottom">封禁</button>
+                <button v-else @click="changeUserState(user)" class="btn-edit btn-release my-animation-slide-bottom">解封</button>
+                <!--button v-if="!user.editing" @click="editUser(user)" class="btn-edit my-animation-slide-bottom">修改</button>
+                <button v-else @click="saveUser(user)" class="btn-submit my-animation-slide-bottom">保存</button-->
               </div>
             </li>
           </ul>
@@ -85,21 +81,6 @@
           </ul>
         </div>
   
-        <!-- 评论管理视图 -->
-        <div v-if="currentView === 'comments'">
-          <h2>评论管理</h2>
-          <ul class="item-list">
-            <li v-for="comment in comments" :key="comment.id" class="item">
-              <div class="item-details">
-                <p><strong>评论内容:</strong> {{ comment.content }}</p>
-                <p><strong>所属帖子ID:</strong> {{ comment.postId }}</p>
-              </div>
-              <div class="item-actions">
-                <button @click="handleDeleteComment(comment.id)" class="btn-delete my-animation-slide-bottom">删除</button>
-              </div>
-            </li>
-          </ul>
-        </div>
        <!-- 植物审核视图 -->
       <div v-if="currentView === 'plants'" class="plants-review-section">
         <!-- 已通过审核 -->
@@ -240,19 +221,29 @@
         expandedFeedback: null,
         expandedAnnouncement: null, // 当前展开的公告
         showHomeDropdown: false, // 控制返回主页下拉菜单显示
-        newUser: {
-          username: '',
-          email: '',
-          password: '',
-          role: ''
-        },
         newAnnouncement: {
           title: '',
           content: ''
-        }
+        },
+        users:[
+          {
+            user_id : 1,
+            userName: '111',
+            password: '12345678',
+            email: 'mingyanghao6@gamail.com',
+            registration_date: '2024-09-06 08:11:47',
+            user_status: 'active',
+            user_role:'admin',
+            language_preference: 'zh-CN',
+            bio: 'hhhhhhhhh',
+            gender:'不愿透漏',
+            avatar:'https://cdn.jsdelivr.net/gh/linxinfa/CDN/img/avatar.jpg',
+          }
+        ]
       };
     },
     computed: {
+      /*
       ...mapGetters(['allUsers', 'allPosts', 'allComments', 'allFeedbacks', 'allAnnouncements','allPlants']),
       users() {
         return this.allUsers;
@@ -274,7 +265,7 @@
     },
       pendingPlants() {
       return this.allPlants.filter(plant => !plant.approved);
-    }
+    }*/
     },
     methods: {
       ...mapActions(['addUser', 'deleteUser', 'updateUser', 'deletePost', 'deleteComment', 'deleteAnnouncement', 'addAnnouncement','updateAdmin']),
@@ -282,8 +273,11 @@
       isActive(){
         return this.user.active;
       },
-      changeUserState(){
-        this.user.active = !this.user.active;
+      changeUserState(user){
+        if(user.user_status == 'active')
+          user.user_status = 'banned';
+        else
+          user.user_status = 'active';
       },
       toggleExpandAnnouncement(announcement) {
       if (this.expandedAnnouncement === announcement) {
@@ -564,12 +558,21 @@ h2 {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+
+.btn-ban{
+  background-color: #f00;
+  color: #fff;
+}
+.btn-release{
+  background-color: rgb(112, 157, 112);
+  color: #fff;
+}
+
   .btn-toggle-form,
   .btn-submit,
   .btn-edit,
   .btn-details {
-    background-color: #597187;
-    color: rgb(250, 250, 250);
+    
     border: none;
     padding: 8px 16px;
     border-radius: 8px;

@@ -14,7 +14,7 @@
     </nav>
     <div class="user-info">
       <div class="user-avatar-wrapper">
-        <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
+        <img :src="currentUser.avatar" alt="User Avatar" @click="handleUserAvatarClick">
         <div class="user-info-list">
           <div v-if="currentUser.userRole !== 'guest'">
             <p>用户名: {{ currentUser.username }}</p>
@@ -44,8 +44,12 @@
 <div class="user-interface">
     <!-- 竖条图片容器 -->
     <div class="side-bar">
+      <button class="user-avatar-button" @click="goToUserProfile"> <!--用户头像-->
+        <img :src="currentUser.avatar" alt="User Avatar" />   
+      </button>
+
         <div class="user-info">
-            <p class="user-name">{{userName}}</p>    <!--显示用户名-->
+            <p class="user-name">{{currentUser.username}}</p>    <!--显示用户名-->
 
             <div class="tabs">              <!--显示选项卡-->
                 <button @click="GoToHome">返回主页</button>
@@ -53,21 +57,11 @@
         </div>
     </div>
 
-    <div class="top-banner">
-        <button class="currentUser.avatar" @click="Gotouserpage">   <!--用户头像-->
-            <img :src="currentUser.avatar" alt="User" />   
-        </button>
-    </div>
-
     <!--功能点按钮设置卡片效果-->
     <div class="card-container">                        
       <div class="card" @click="GoToBook()">
         <img src="../catalog/images/plant_book.png" alt="Card 1" />
         <div class="card-info">搜寻植物信息</div>
-      </div>
-      <div class="card" @click="GoToCultivation()">
-        <img src="../catalog/images/planting.png" alt="Card 2" />
-        <div class="card-info">养护植物助手</div>
       </div>
       <div class="card" @click="GoToRecognition()">
         <img src="../catalog/images/plant_tool.png" alt="Card 3" />
@@ -135,10 +129,6 @@ export default {
     GoToHome() {
        this.$router.push('/home');
     },
-    GoToSubmissions()
-    {
-
-    },//切换到贡献页面
     goToAdminPanel() {
       this.$router.push('/adminpanel');
     },
@@ -149,11 +139,7 @@ export default {
     GoToBook()
     {
       this.$router.push('/search');
-    }, //切换到百科，待实现-----
-    GoToCultivation()
-    {
-
-    }, //切换到养护，待实现-----
+    }, 
     GoToRecognition()
     {
 
@@ -263,45 +249,45 @@ export default {
     color: #11c3e7; /* 鼠标悬停时文本颜色 */
 }
 
-
-
-
-/* 横条图片格式*/ 
+/* 顶部横幅 */
 .top-banner {
-  width: 100%; /* 横条图片容器宽度占据整个用户界面宽度 */
-  display: flex;
-  position: absolute;
-  top: 0; /* 将横条图片定位到容器顶部 */
-  left: 0; /* 从左侧开始对齐 */
-  z-index: 4; /* 确保横条图片在用户界面内容之上 */
+  position: relative; /* 确保内部元素的相对定位 */
+  width: 100%;
+  height: 100px; /* 可根据需要调整 */
+}
+
+/* 用户头像按钮 */
+.user-avatar-button {
+  position: absolute; /* 使用绝对定位 */
+  top: -110px; /* 距离顶部，可根据需要调整 */
+  left: 10px; /* 距离左侧，可根据需要调整 */
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  width: 50px; /* 头像的宽度 */
+  height: 50px; /* 头像的高度 */
+  border-radius: 50%; /* 圆形按钮 */
+  overflow: hidden; /* 隐藏溢出部分 */
+  z-index: 9999; /* 设置高的 z-index 值，确保处于最上层 */
+}
+
+/* 圆形头像图片 */
+.user-avatar-button img {
+  width: 100%; /* 图片填充按钮 */
+  height: 100%; /* 图片填充按钮 */
+  object-fit: cover; /* 保持图片比例并填充区域 */
+  border-radius: 50%; /* 圆形图片 */
+}
+
+/* 鼠标悬停时的效果 */
+.user-avatar-button img:hover {
+  transform: scale(1.1); /* 放大效果 */
+  transition: transform 0.3s ease; /* 平滑过渡 */
 }
 
 
 
-
-.top-banner img {
-  width: 870px; /* 自定义横条宽度 */
-  height: 150px; /* 自定义高度 */
-}
-
-.user-button
-{
-   z-index: 4;
-  border: 5px solid rgb(4, 195, 202); /* 绿色边框 */
-  box-sizing: border-box; 
-  transition: transform 0.3s ease, background-color 0.3s ease;  /*动态平滑*/
-  cursor: pointer; /*指针变化*/
-}
-
-.user-button img {
-  width: 120px; /* 自定义按钮图片的宽度 */
-  height: 135px; /* 自定义按钮图片的高度 */
-}
-
-/* 鼠标悬停效果 */
-.user-button:hover {
-  transform: scale(1.1); /* 放大按钮 */
-}
 
 /* 卡片按钮格式 */
 .card-container 
