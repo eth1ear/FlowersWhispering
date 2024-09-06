@@ -7,9 +7,9 @@ namespace FlowersWhisperingAPI.Administrator.Services.Interface
         public List<Review> GetAllReviews();
         public void Pass(int reviewId);
         public void NotPass(int reviewId);
-        public Plant? SelectPlantById(int plantId);
-        public void AddPlant(Plant plant);
-        public void UpdatePlant(Plant plant);
+        public Models.Plant? SelectPlantById(int plantId);
+        public void AddPlant(Models.Plant plant);
+        public void UpdatePlant(Models.Plant plant);
         public void DeletePlant(int plantId);
     }
 }
