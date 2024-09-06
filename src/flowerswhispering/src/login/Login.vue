@@ -5,17 +5,22 @@
           <source src="../assets/video/background.mp4" type="video/mp4">
         </video>
       </div>
-    <div class="main-box">
-      <div :class="['container', 'container-register', { 'is-txl': isLogin }]">
-        <form>
-          <h2 class="title">注册</h2>
-          <div class="form__icons">
-            <img class="form__icon" src="./images/wechat.png" alt="微信登录">
-            <img class="form__icon" src="./images/alipay.png" alt="支付宝登录">
-            <img class="form__icon" src="./images/QQ.png" alt="QQ登录">
+          <div class="main-box">
+            <div :class="['container', 'container-register', { 'is-txl': isLogin }]">
+              <form>
+                <h2 class="title">注册</h2>
+                <div class="input-wrapper">
+          <div class="avatar-upload-area" @click="triggerUpload">
+            <img v-if="avatarPreview" :src="avatarPreview" alt="头像预览" class="avatar-preview" />
+          <div v-else class="avatar-placeholder">点击上传头像</div>
+          </div>
+            <input id="avatarUpload" type="file" accept="image/*" @change="handleAvatarUpload" class="avatar-upload-input" />
           </div>
           <div class="input-wrapper">
-            <input v-model="registerForm.username" class="form__input" type="text" placeholder="请输入用户名" required />
+            <input v-model="registerForm.username" @input="handleInput('username')" class="form__input" type="username" placeholder="请输入用户名" required />
+            <span class="validation-feedback" v-if="registerForm.touched.username" :class="{ 'error': !isUsernameValid, 'success': isUsernameValid }">
+              {{ isUsernameValid ? '✓ 用户名格式正确' : '✗ 用户名不可与邮箱格式相同' }}
+            </span>
           </div>
           <div class="input-wrapper">
             <input v-model="registerForm.email" @input="handleInput('email')" class="form__input" type="email" placeholder="请输入邮箱" required />
@@ -35,7 +40,9 @@
             {{ arePasswordsMatching ? '✓ 密码匹配' : '✗ 两次输入的密码不一致' }}
             </span>
           </div>
-          <div class="form__button" @click="performRegister">立即注册</div>
+          <div class="form__button" :disabled="isRegisterDisabled" @click="performRegister">
+            立即注册
+          </div>
         </form>
       </div>
       <div :class="['container', 'container-login', { 'is-txl is-z200': isLogin }]">
@@ -76,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref ,computed} from 'vue';
+import { defineComponent, ref ,watch,computed} from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 
@@ -87,7 +94,8 @@ export default defineComponent({
     const router = useRouter();
 
     const isLogin = ref(true);
-
+    const avatarPreview = ref<string | null>(null);
+    avatarPreview.value = require('@/userprofile/images/user-avatar.jpg');
     const loginForm = ref({
       usernameOrEmail: '',
       password: ''
@@ -99,12 +107,36 @@ export default defineComponent({
       password: '',
       confirmPassword: '',
       touched: {
+        username: false,
         email: false,
         password: false,
         confirmPassword: false
       }
     });
-
+    watch(isLogin, (newValue) => {
+      if (newValue) {
+        // 重置登录表单
+        loginForm.value.usernameOrEmail = '';
+        loginForm.value.password = '';
+      } else {
+        // 重置注册表单
+        avatarPreview.value = require('@/userprofile/images/user-avatar.jpg');
+        registerForm.value.username = '';
+        registerForm.value.email = '';
+        registerForm.value.password = '';
+        registerForm.value.confirmPassword = '';
+        registerForm.value.touched = {
+          username: false,
+          email: false,
+          password: false,
+          confirmPassword: false
+        };
+      }
+    });
+    const isUsernameValid = computed(() => {
+      const nameRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return !nameRegex.test(registerForm.value.username);
+    });
     const isEmailValid = computed(() => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(registerForm.value.email);
@@ -119,10 +151,18 @@ export default defineComponent({
       return registerForm.value.password === registerForm.value.confirmPassword;
     });
 
+    const isRegisterDisabled = computed(() => {
+      return (
+        !isUsernameValid.value ||
+        !isEmailValid.value ||
+        !isPasswordValid.value ||
+        !arePasswordsMatching.value
+      );
+    });
     const handleInput = (field: keyof typeof registerForm.value.touched) => {
       registerForm.value.touched[field] = true;
     };
-
+    
     const performLogin = async () => {
       const { usernameOrEmail, password } = loginForm.value;
 
@@ -154,36 +194,47 @@ export default defineComponent({
       }
     };
 
+    // 触发文件上传选择
+    const triggerUpload = () => {
+      const uploadInput = document.getElementById('avatarUpload') as HTMLInputElement;
+      uploadInput.click(); // 模拟点击文件输入
+    };
+
+    const handleAvatarUpload = (event: Event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      
+      if (file) {
+        const reader = new FileReader();
+        
+        // 使用 FileReader 读取文件
+        reader.readAsDataURL(file);
+        
+        // 文件读取成功后，将结果存储到 avatarPreview
+        reader.onload = () => {
+          avatarPreview.value = reader.result as string; // 确保结果被正确赋值
+          console.log('头像预览数据:', avatarPreview.value); //检查是否得到了正确的 Base64 数据
+        };
+
+        // 处理文件读取错误
+        reader.onerror = () => {
+          console.error('文件读取失败');
+        };
+      }
+    };
+
+
     const performRegister = async () => {
+      if (isRegisterDisabled.value) {
+        return; // 如果按钮禁用，直接返回
+      }
       const { username, email, password, confirmPassword } = registerForm.value;
-
-      if (!username.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
-        alert('所有字段都必须填写，并且不能为空！');
-        return;
-      }
-
-      if (!isEmailValid.value) {
-        alert('请输入有效的邮箱地址！');
-        return;
-      }
-
-      if (!isPasswordValid.value) {
-        alert('密码长度必须在8到20个字符之间！');
-        return;
-      }
-
-      if (!arePasswordsMatching.value) {
-        alert('两次输入的密码不一致');
-        return;
-      }
-
       try {
         const response = await store.dispatch('register', {
           username,
           email,
-          password
+          password,
+          avatar: avatarPreview.value
         });
-
         if (response) {
           alert('注册成功!请登录');
           isLogin.value = true;
@@ -192,8 +243,8 @@ export default defineComponent({
         }
       } catch (error:any) {
         alert(error.message || '注册失败');
-      }
-    };
+     }
+   };
 
     return {
       isLogin,
@@ -201,11 +252,16 @@ export default defineComponent({
       registerForm,
       isEmailValid,
       isPasswordValid,
+      isUsernameValid,
       arePasswordsMatching,
+      isRegisterDisabled,
       handleInput,
       performLogin,
       performGuestLogin,
-      performRegister
+      performRegister,
+      handleAvatarUpload,
+      triggerUpload,
+      avatarPreview,
     };
   }
 });
@@ -213,6 +269,41 @@ export default defineComponent({
 
 
 <style lang="scss" scoped>
+.avatar-upload-area {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.avatar-upload-area:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.avatar-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  font-size: 14px;
+  color: #888;
+  text-align: center;
+}
+
+.avatar-upload-input {
+  display: none; /* 隐藏原生文件输入 */
+}
+
+
 .body {
   width: 100%;
   height: 100vh;

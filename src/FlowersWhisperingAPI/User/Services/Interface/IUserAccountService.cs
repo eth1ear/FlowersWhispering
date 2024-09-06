@@ -12,6 +12,7 @@ namespace FlowersWhisperingAPI.User.Services.Interface
         bool IsHaveEmail(string email);
         int GetUserIdByUsername(string username);
         int GetUserIdByEmail(string email);
+        DateTime GetRegistrationTimeById(int id);
         UserInfo? GetUserInfoById(int id);
     }
 
