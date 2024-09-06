@@ -24,17 +24,17 @@ namespace FlowersWhisperingAPI.Administrator.Services
             _reviewMapper.UpdateReviewStatus(reviewId,"不通过");
         }
 
-        public Plant? SelectPlantById(int plantId)
+        public Models.Plant? SelectPlantById(int plantId)
         {
             return _reviewMapper.SelectPlantById(plantId);
         }
 
-        public void AddPlant(Plant plant)
+        public void AddPlant(Models.Plant plant)
         {
             _reviewMapper.AddPlant(plant.CommonName, plant.ScientificName, plant.Category, plant.Portrayal, plant.GrowthEnvironment, plant.CareConditions);
         }
 
-        public void UpdatePlant(Plant plant)
+        public void UpdatePlant(Models.Plant plant)
         {
             _reviewMapper.UpdatePlant(plant.PlantId, plant.CommonName, plant.ScientificName, plant.Category, plant.Portrayal, plant.GrowthEnvironment, plant.CareConditions);
         }
