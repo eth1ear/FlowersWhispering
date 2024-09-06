@@ -24,5 +24,16 @@ namespace FlowersWhisperingAPI.Plants.Controllers
             }
             return Ok(FavorPlants); // 返回 200 OK 和 latestPlants
         }
+
+        [HttpPost("addFavor")]
+        public IActionResult AddFavorPlant (int userId, int plantId)
+        {
+            var result = _plantFavorService.AddFavorPlant(userId, plantId);
+            if (result)
+            {
+                return Ok("添加成功"); // 返回 200 OK 和提示信息
+            }
+            return BadRequest("添加失败"); // 返回 400 Bad Request
+        }
     }   
 }

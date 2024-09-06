@@ -52,6 +52,32 @@ namespace FlowersWhisperingAPI.Plants.Mappers
             return null!;
         }
 
+
+        public bool AddFavorPlant(int userId, int plantId)
+        {
+            try
+            {
+                using (OracleConnection connection = new OracleConnection(connectionString))
+                {
+                    connection.Open();
+                    string sql = "INSERT INTO Favorites (USER_ID, PLANT_ID) VALUES (:userId, :plantId)";
+                    
+                    using (OracleCommand command = new OracleCommand(sql, connection))
+                    {
+                        command.Parameters.Add(new OracleParameter("userId", userId));
+                        command.Parameters.Add(new OracleParameter("plantId", plantId));
+                        
+                        command.ExecuteNonQuery();
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding favorite plant: {ex.Message}");
+            }
+            return false;
+        }
     }
 
 }
