@@ -28,11 +28,20 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
 // 添加CORS支持
+
+// 添加 CORS 服务
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.WithOrigins("http://example.com"));
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:8080") // 替换为你的前端地址
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();  // 如果你使用的是Cookie或认证
+        });
 });
+
 
 // 添加JWT认证服务
 builder.Services.AddAuthentication(options =>

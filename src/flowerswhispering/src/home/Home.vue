@@ -6,22 +6,32 @@
           <source src="../assets/video/background.mp4" type="video/mp4">
         </video>
       </div>
-    <header class="header">
-      <div class="logo">Flowers Whispering</div>
-      <div class="user-info" v-if="currentUser">
-        <span v-if="currentUser" class="username">{{ currentUser.username }}</span>
-        <div class="user-avatar-wrapper">
-          <img v-if="currentUser" src="./images/user-avatar.jpg" alt="User Avatar" @click="goToUserProfile()">
-          <!-- 用户详细信息列表 -->
-          <div class="user-info-list">
+  <header class="header">
+  <div class="logo">Flowers Whispering</div>
+  <div class="nav-user-container">
+    <nav class="nav-links">
+      <nav v-if="currentUser.role === 'admin'">
+         <button @click="goToAdminPanel" class="nav-button">管理</button>
+      </nav>
+      <button @click="goHome" class="nav-button">首页</button>
+      <button @click="goToCommunity" class="nav-button">社区</button>
+      <button @click="goToCatalog" class="nav-button">图鉴</button>
+    </nav>
+    <div class="user-info">
+      <div class="user-avatar-wrapper">
+        <img :src="userAvatar" alt="User Avatar" @click="handleUserAvatarClick">
+        <div class="user-info-list">
+          <div v-if="currentUser.role !== 'guest'">
             <p>用户名: {{ currentUser.username }}</p>
             <p>邮箱: {{ currentUser.email }}</p>
-            <p>角色: {{ currentUser.role }}</p>
+            <p>角色: {{ currentUser.userRole }}</p>
           </div>
         </div>
-        <button class="logout-button" @click="performLogout">{{ currentUser.role === 'guest' ? '登录' : '登出' }}</button>
       </div>
-    </header>
+    </div>
+  </div>
+</header>
+
 
     <main class="main-content">
       <!-- 用户界面 -->
@@ -72,9 +82,13 @@
       </div>
     </main>
 
-    <footer class="footer">
+    <!-- 底部备案号 -->
+     <footer class="footer">
       <p class="left"><a href="contact.html">联系我们</a></p>
-      <p class="center">© 2024 Flowers Whispering</p>
+     <div class="center">
+    <span>© 2024 Flowers Whispering&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <a href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2024087175号-1</a>
+  </div>
       <div class="right"></div>
     </footer>
   </div>
@@ -91,7 +105,10 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapGetters(['currentUser', 'isAdmin']),
+    ...mapGetters({
+      currentUser: 'getUserInfo', // 获取当前用户信息
+      isAdmin: 'isAdmin',
+    }),
   },
   methods: {
     ...mapActions(['logout']),
@@ -137,6 +154,16 @@ export default defineComponent({
         arrowButton.classList.add('fade-out'); 
         arrowButton.style.pointerEvents = 'none'; // 禁用点击
       }
+    },
+    handleUserAvatarClick() {
+      if (this.currentUser.role === 'guest') {
+        this.$router.push('/login'); // 如果是guest用户，点击跳转到登录页面
+      } else {
+        this.goToUserProfile(); // 否则跳转到个人主页
+      }
+    },
+    goHome() {
+      this.$router.push('/home');
     },
     goToCatalog() {
       this.$router.push('/catalog');
@@ -231,7 +258,7 @@ export default defineComponent({
   .user-info-list {
     position: absolute;
     top: 50px;
-    left: -125px;
+    left: -200px!important;
     background-color: rgba(255, 255, 255, 0.95);
     border: 2px solid #46b476;
     border-radius: 8px; 
@@ -287,47 +314,88 @@ export default defineComponent({
     color: #333;
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    background-color: #46b476cc;
-    color: white;
-    z-index: 1;
-    position: relative;
-  }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  background-color: rgba(70, 180, 118, 0.8); /* 使用rgba设置透明度，0.8表示80%的不透明度 */
+  color: white;
+  z-index: 10; /* 提高 z-index，确保 header 在其他内容上层 */
+  position: relative;
+}
 
-  .logo {
-    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
-    font-size: 28px;
-    font-weight: bold;
-  }
+.logo {
+  font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
+  font-size: 28px;
+  font-weight: bold;
+}
 
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+.nav-user-container {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 按钮与头像之间的间距 */
+}
 
-  .user-info img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-  }
+.nav-links {
+  display: flex;
+  gap: 20px; /* 按钮之间的间距 */
+}
 
-  .user-info img:hover {
-    transform: scale(1.1);
-    
-  }
+.nav-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
 
-  .username {
-    font-family: 'Caveat-VariableFont','ZhiMangXing-Regular', sans-serif;
-    font-size: 28px;
-    font-weight: bold;
-  }
+.nav-button:hover {
+  color: #ffcc00; /* 鼠标悬停时变色 */
+}
+
+.user-info {
+  position: relative;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.user-avatar-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.user-info-list {
+  z-index: 20; /* 提高用户信息列表的层级，确保它显示在 header 之上 */
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background-color: white; /* 为弹出的内容添加背景色，避免透明度导致内容不清晰 */
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 添加阴影效果，确保弹出层次感 */
+}
+
+.login-prompt {
+  display: flex;
+  justify-content: center;  /* 水平居中对齐 */
+  align-items: center;      /* 垂直居中对齐 */
+  height: 100%;             /* 让内容充满父容器的高度 */
+  color: blue;
+  cursor: pointer;
+  text-align: center;
+}
+
+.login-prompt:hover {
+  text-decoration: underline;
+}
+
 
   .main-content {
     flex: 1;
@@ -534,27 +602,31 @@ export default defineComponent({
     transform: translateY(0);
   }
 
-  .footer {
+.footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0px 20px;
-  background-color: #46b476cc;
-  font-size: 15px;
+  justify-content: space-between;  /* 左中右均匀分布 */
+  align-items: center;             /* 垂直居中对齐 */
+  background-color: rgba(70, 180, 118, 0.8);
   color: white;
+  position: relative;
+  bottom: 0;
+  width: 100%;                     /* 跨满页面 */
+  z-index: 10;
 }
 
 .footer .left {
-  flex: 1; /* 左侧元素占用剩余空间 */
+  text-align: left;
+  margin-left: 10px;               /* 左边距 */
 }
 
 .footer .center {
-  flex: 1;
-  text-align: center; /* 居中对齐 */
+  text-align: center;
+  flex: 1;                         /* 中间内容居中，并占据剩余空间 */
 }
 
 .footer .right {
-  flex: 1; /* 右侧占位元素占用剩余空间,保持居中 */
+  text-align: right;
+  margin-right: 10px;              /* 右边距 */
 }
 
 .footer a {
@@ -563,7 +635,7 @@ export default defineComponent({
 }
 
 .footer a:hover {
-  text-decoration: underline;
+  color: rgb(24, 212, 209); /* 悬停下划线效果 */
 }
 
 </style>
