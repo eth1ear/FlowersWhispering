@@ -111,7 +111,6 @@ export default defineComponent({
     ...mapGetters({
       currentUser: 'getUserInfo', // 获取当前用户信息
       isAdmin: 'isAdmin',
-      userAvatar: 'userAvatar',
     }),
   },
   methods: {

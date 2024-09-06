@@ -30,8 +30,8 @@
     </div>
 
     <div class="top-banner">
-        <button class="user-button" @click="Gotouserpage">   <!--用户头像-->
-            <img src="../catalog/images/user_example.png" alt="User" />   
+        <button class="currentUser.avatar" @click="Gotouserpage">   <!--用户头像-->
+            <img :src="currentUser.avatar" alt="User" />   
         </button>
     </div>
 
@@ -68,23 +68,16 @@
 
 <script>
 import { useRouter } from 'vue-router';
-import { ref, onMounted } from 'vue';
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { ref, onMounted,defineComponent } from 'vue';
+import { mapGetters, mapActions ,mapState} from 'vuex';
 
 export default {
   name: "Catalog",
    computed: {
-    ...mapState({
-      currentUser: state => state.currentUser , // 从Vuex store中获取 currentUser
-      userAvatar: state => state.userAvatar // 确保这里绑定了全局的 userAvatar
+    ...mapGetters({
+      currentUser: 'getUserInfo', // 获取当前用户信息
+      isAdmin: 'isAdmin',
     }),
-    ...mapGetters(['userAvatar'])  // 使用全局的userAvatar
-  },
-  data() {
-    return {
-      buttonImageUrl: '../catalog/images/user_example.png',  // 默认图片，后端接入用户头像
-      userName: 'Wuhuairline' // 默认用户名,后端接入用户姓名
-    };
   },
   mounted()
       {

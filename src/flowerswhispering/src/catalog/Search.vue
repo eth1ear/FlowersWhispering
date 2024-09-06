@@ -39,7 +39,7 @@
     
         <div class="top-banner">
             <button class="user-button" @click="Gotouserpage">   <!--用户头像-->
-                <img src="../catalog/images/user_example.png" alt="User" />   
+                <img :src="currentUser.avatar" alt="User" />   
             </button>
         </div>
 
