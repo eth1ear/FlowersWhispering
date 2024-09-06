@@ -9,6 +9,7 @@ namespace FlowersWhisperingAPI.Community.Models
         public string Content { get; set; } = content;
         public DateTime CreatedDate { get; set; } = createdDate;
        public string Username { get; set; } = null!;
+       public string ArticleTitle { get; set; } = null!;
 
     }
 

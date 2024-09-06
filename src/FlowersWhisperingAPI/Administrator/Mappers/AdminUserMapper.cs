@@ -63,5 +63,31 @@ namespace FlowersWhisperingAPI.Administrator.Mappers
                 return [];
             }
         }
+        public List<UserAdmin> GetAllUsers()
+        {
+            List<UserAdmin> users = [];
+            string sql="SELECT * FROM users";
+            try
+            {
+                using var connection = new OracleConnection(_connectionString);
+                connection.Open();
+                using var command = new OracleCommand(sql, connection);
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    int id = reader.GetInt32(reader.GetOrdinal("user_id"));
+                    string uname = reader.GetString(reader.GetOrdinal("username"));
+                    string ustatus = reader.GetString(reader.GetOrdinal("user_status"));
+                    string urole = reader.GetString(reader.GetOrdinal("user_role"));
+                    users.Add(new UserAdmin(id, uname,ustatus,urole));
+                }
+                return users;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return [];
+            }
+        }
     }
 }

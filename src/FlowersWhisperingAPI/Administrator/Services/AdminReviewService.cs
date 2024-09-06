@@ -26,22 +26,33 @@ namespace FlowersWhisperingAPI.Administrator.Services
 
         public Models.Plant? SelectPlantById(int plantId)
         {
-            return _reviewMapper.SelectPlantById(plantId);
+            Models.Plant? plant = _reviewMapper.SelectPlantById(plantId);
+            string url = _reviewMapper.GetImageUrl(plantId);
+            if(plant != null && url != null) 
+                plant.ImageUrl = url;
+            return plant;
         }
 
         public void AddPlant(Models.Plant plant)
         {
             _reviewMapper.AddPlant(plant.CommonName, plant.ScientificName, plant.Category, plant.Portrayal, plant.GrowthEnvironment, plant.CareConditions);
+            int plantId = _reviewMapper.GetPlantId(plant.ScientificName);
+            if(plant.ImageUrl != null)
+                _reviewMapper.AddImageUrl(plantId,plant.ImageUrl);
         }
 
         public void UpdatePlant(Models.Plant plant)
         {
             _reviewMapper.UpdatePlant(plant.PlantId, plant.CommonName, plant.ScientificName, plant.Category, plant.Portrayal, plant.GrowthEnvironment, plant.CareConditions);
+            int plantId = _reviewMapper.GetPlantId(plant.ScientificName);
+            if(plant.ImageUrl != null)
+                _reviewMapper.UpdateImageUrl(plantId,plant.ImageUrl);
         }
 
         public void DeletePlant(int plantId)
         {
-            _reviewMapper.DeletePlant(plantId);
+            _reviewMapper.DeleteImageUrl(plantId);
+            _reviewMapper.DeletePlant(plantId);  
         }
     }
 }

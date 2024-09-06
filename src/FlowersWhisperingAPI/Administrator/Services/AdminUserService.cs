@@ -21,5 +21,8 @@ namespace FlowersWhisperingAPI.Administrator.Services
         {
             return _userMapper.GetAllFeedback();
         }
+        public List<UserAdmin> GetAllUsers(){
+            return _userMapper.GetAllUsers();
+        }
     }
 }

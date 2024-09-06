@@ -7,7 +7,7 @@ import Catalog from '../catalog/Catalog.vue';
 import Search from '../catalog/Search.vue';
 import Information from '../catalog/information.vue';
 import FindError from '../catalog/FindError.vue';
-import Contribution from '../catalog/Contribution.vue';
+import Recognition from '../catalog/Recognition.vue';
 import Community from '../community/Community.vue';
 import Profile from '../userprofile/UserProfile.vue';
 import PostDetail from '../community/PostDetail.vue';
@@ -40,7 +40,8 @@ const routes: Array<RouteRecordRaw> = [
     path: '/information',
     name: 'Information',
     component: Information,
-    meta: { requiresAuth: true }  // 需要验证
+    meta: { requiresAuth: true } , // 需要验证
+    props: route => ({ outputName: route.query.outputName }) //以传输植物名字到 outputName
   },
   {
     path: '/FindError',
@@ -49,9 +50,9 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true }  // 需要验证
   },
   {
-    path: '/Contribution',
-    name: 'Contribution',
-    component: Contribution,
+    path: '/recognition',
+    name: 'Recognition',
+    component: Recognition,
     meta: { requiresAuth: true }  // 需要验证
   },
   {
