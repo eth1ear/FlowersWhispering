@@ -6,9 +6,10 @@ import createPersistedState from 'vuex-persistedstate';
 import adminAnnoModule from './modules/adminAnno';
 import adminBanUserModule from './modules/adminBanUser';
 import adminFeedbackModule from './modules/adminFeedback';
-//import postModule from './modules/post';
-//import commentModule from './modules/comment';
-//import favoriteModule from './modules/favorite';
+import postModule from './modules/post';
+import commentModule from './modules/comment';
+import favoriteModule from './modules/favorite';
+import scoreModule from './modules/score';
 export default createStore({
   modules: {
     user: userModule,
@@ -17,9 +18,10 @@ export default createStore({
     adminAnno: adminAnnoModule,
     adminBanUser: adminBanUserModule,
     adminFeedback: adminFeedbackModule,
-    //post: postModule,
-    //comment:commentModule,
-    //favorite:favoriteModule,
+    post: postModule,
+    comment:commentModule,
+    favorite:favoriteModule,
+    score:scoreModule,
   },
   plugins: [createPersistedState()],
 });

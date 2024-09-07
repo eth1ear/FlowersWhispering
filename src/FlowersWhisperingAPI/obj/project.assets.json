@@ -3488,23 +3488,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ASUS\\.nuget\\packages\\": {},
-    "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\10718\\.nuget\\packages\\": {},
+    "D:\\visual studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
+      "projectUniqueName": "D:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
       "projectName": "FlowersWhisperingAPI",
-      "projectPath": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
-      "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-      "outputPath": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\obj\\",
+      "projectPath": "D:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
+      "packagesPath": "C:\\Users\\10718\\.nuget\\packages\\",
+      "outputPath": "D:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        "D:\\visual studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\10718\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3512,7 +3512,6 @@
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3590,7 +3589,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

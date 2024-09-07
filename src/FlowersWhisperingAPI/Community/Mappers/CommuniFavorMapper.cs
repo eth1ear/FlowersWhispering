@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using FlowersWhisperingAPI.Community.Models;
 using Oracle.ManagedDataAccess.Client;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -63,9 +64,9 @@ namespace FlowersWhisperingAPI.Community.Mappers
             command.ExecuteNonQuery();
 
         }
-        public List<Article> GetAllFavor(int userId)
+        public List<Favor> GetAllFavor(int userId)
         {
-            List<Article> favors = [];
+            List<Favor> favors = [];
             string sql = "SELECT * FROM FavoritesArticles WHERE user_id = :UserId";
             try
             {
@@ -76,12 +77,16 @@ namespace FlowersWhisperingAPI.Community.Mappers
                 using var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
+                    int FavorId = reader.GetInt32(reader.GetOrdinal("favorite_id"));
+                    int UserId = reader.GetInt32(reader.GetOrdinal("user_id"));
                     int articleId = reader.GetInt32(reader.GetOrdinal("article_id"));
-
                     Article ?article = GetArticleById(articleId);
+
                     if (article != null)
                     {
-                        favors.Add(article);  // 将文章添加到列表中
+                        favors.Add(new Favor(FavorId,UserId,articleId,article.Title,article.Content,article.PublisherId,
+                        article.PublishedDate));  // 将文章添加到列表中
+
                     }
                 }
                 return favors;
