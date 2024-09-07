@@ -10,6 +10,7 @@ import postModule from './modules/post';
 import commentModule from './modules/comment';
 import favoriteModule from './modules/favorite';
 import scoreModule from './modules/score';
+import adminReplyModule from './modules/adminReply';
 export default createStore({
   modules: {
     user: userModule,
@@ -22,6 +23,7 @@ export default createStore({
     comment:commentModule,
     favorite:favoriteModule,
     score:scoreModule,
+    adminReply:adminReplyModule,
   },
   plugins: [createPersistedState()],
 });

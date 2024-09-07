@@ -7,6 +7,7 @@ interface User {
   userstatus: string;
   uemail: string;
   userrole: string;
+  replyContent: string;
 }
 
 interface BanUserState {

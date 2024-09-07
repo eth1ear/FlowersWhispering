@@ -36,12 +36,25 @@
               <p><strong>邮箱:</strong> {{ user.uemail }}</p>
               <p><strong>角色:</strong>{{ user.userrole }}</p>
             </div>
+
+            <div v-if="replyingUser === user" class="expanded-content my-animation-slide-bottom">
+              <form @submit.prevent="sendReply(user.userId)" class="form-reply">
+                <textarea v-model="user.replyContent" placeholder="输入回复内容" class="form-input"></textarea>
+                <button type="submit" class="btn-submit">发送</button>
+              </form>
+            </div>
             <div class="item-actions">
+              <button @click="toggleReplyForm(user)" class="btn-edit btn-release my-animation-slide-bottom">
+                        {{ replyingUser === user ? '取消' : '联系' }}
+              </button>
+
               <button v-if="user.userstatus == 'active'" @click="changeUserState(user)"
                 class="btn-edit btn-ban my-animation-slide-bottom">封禁</button>
               <button v-else @click="changeUserState(user)"
                 class="btn-edit btn-release my-animation-slide-bottom">解封</button>
             </div>
+
+            
           </li>
         </ul>
 
@@ -50,7 +63,7 @@
       <!-- 帖子管理视图 -->
       <div v-if="currentView === 'posts'">
         <h2>帖子管理</h2>
-        <ul class="item-list">
+        <ul class="item-list">s
           <li v-for="post in posts" :key="post.articleId" class="item">
             <div class="item-details">
               <p><strong>标题:</strong> {{ post.title }}</p>
@@ -196,6 +209,8 @@ export default {
       expandedAnnouncement: null, // 当前展开的公告
       expandedApprovedReviews: null,//当前展开的已审核植物信息
       expandedPendingReviews: null,//当前展开的未审核植物信息
+      replyingUser: null, // 当前回复的用户
+      replyContent: '', // 存储回复内容
       showHomeDropdown: false, // 控制返回主页下拉菜单显示
       newUser: {
         username: '',
@@ -243,7 +258,35 @@ export default {
   methods: {
     ...mapActions(['banUser', 'unblockUser', 'deletePost', 'deleteComment', 'deleteAnnouncement', 'publishAnnouncement',
       'fetchAnnouncements', 'fetchAllFeedbacks', 'fetchAllReviews', 'fetchAllPosts', 'fetchAllUsers',
-      'approveReview', 'rejectReview']),
+      'approveReview', 'rejectReview','replyToUser']),
+
+    //管理员联系用户相关方法
+    toggleReplyForm(user) {
+      if (this.replyingUser === user) {
+        this.replyingUser = null;
+      } else {
+        this.replyingUser = user;
+        user.replyContent = ''; // 重置输入框内容
+      }
+    },
+    async sendReply(userId) {
+      const content = this.replyingUser.replyContent;
+      if (content.trim()) {
+        try {
+          const success = await this.replyToUser({ userId, content });
+          if (success) {
+            alert('回复成功');
+            this.replyingUser = null; // 关闭文本框
+          } else {
+            alert('回复失败');
+          }
+        } catch (error) {
+          alert('回复失败: ' + error.message);
+        }
+      } else {
+        alert('请输入回复内容');
+      }
+    },  
 
     changeUserState(user) {
       this.fetchAllUsers();
@@ -336,6 +379,9 @@ export default {
     },
     toggleExpandFeedback(feedback) {
       this.expandedFeedback = this.expandedFeedback === feedback ? null : feedback;
+    },
+    toggleReplyForm(user) {
+      this.replyingUser = this.replyingUser === user ? null : user;
     },
     //审核review
     approveRev(reviewId) {
@@ -645,6 +691,49 @@ textarea.form-input {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+/*联系用户相关的css*/
+.form-reply {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px 50px;
+  border-radius: 15px; /* 更圆润的边角 */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  display: flex; /* 使用 Flexbox 布局 */
+  flex-direction: column; /* 元素垂直排列 */
+  align-items: center; /* 水平居中 */
+  justify-content: center; /* 垂直居中 */
+  gap: 20px;
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+.form-input,
+textarea.form-input {
+  border: 2px solid #ced4da;
+  border-radius: 12px; /* 更圆润的边角 */
+  font-size: 16px;
+  background-color: #ffffff;
+}
+
+textarea.form-input {
+  width: 100%; /* 宽度充满容器 */
+  padding: 5px 30px;
+  height: 100px;
+  resize: none; /* 阻止调整大小 */
+}
+
+.btn-submit {
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px; /* 更圆润的边角 */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+  font-size: 14px;
+}
+
+.btn-submit:hover {
+  background-color: #128a22; /* 鼠标悬停时更亮的绿色 */
+}
+
+
 /* PLANTS*/
 /* 省略其他样式，只展示植物详情样式 */
 
@@ -745,6 +834,7 @@ textarea.form-input {
 .my-animation-fade-in {
   animation: fade-in 0.5s ease-out forwards;
 }
+
 
 @keyframes fade-in {
   0% {
