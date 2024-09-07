@@ -90,6 +90,7 @@
 
     </div>
     <!--公告部分-->
+      
 
     <!--发帖部分-->
     <div v-if="activeTab === 'SentPost'">
@@ -119,8 +120,26 @@
     </div>
     <!--发帖部分-->
 
-    <!--热帖部分-->
-    <div v-if="activeTab === 'HotPosts'">
+  <!--热帖部分-->
+  <div v-if="activeTab === 'HotPosts'">
+
+<div class="news-carousel">
+    <div class="news-wrapper">
+      <div class="news-item" :style="{ transform: `translateX(${-currentNewsIndex * 100}%)` }"  v-for="(news, index) in newsList" :key="index">
+        {{ news }}
+      </div>
+    </div>
+    <!-- Modal for displaying selected news -->
+    <div v-if="isModalVisible" class="modal-overlay" @click="hideModal">
+      <div class="modal-content" @click.stop>
+        <h3>新闻详情</h3>
+        <p>{{ selectedNews }}</p>
+        <button @click="hideModal">关闭</button>
+      </div>
+    </div>
+  </div>
+
+
 
       <div class="information-box1"> <!--搜索框，重要部分！！！-->
         <input type="text" v-model="searchQuery" placeholder="搜索你喜欢的帖子！" class="information-input1" />
@@ -276,8 +295,7 @@ export default {
       return Math.ceil(this.allPosts.length / this.itemsPerPage);
     }
   },
-  methods:
-  {
+  methods:{
     ...mapActions(['logout']),
     async getAllPosts() {
       try {
@@ -329,7 +347,7 @@ export default {
         console.log('搜索成功:', response);  // 调试信息
         if (response) {
           //console.log('搜索成功:', response);  // 调试信息
-          this.allPosts=response;
+          this.allPosts = response;
           this.currentPage = 1;  // 搜索后重置为第一页
         }
       } catch (error) {
@@ -355,7 +373,22 @@ export default {
 
     },
     startCarousel() {
-      setInterval(this.nextSlide, 3000);
+      setInterval(() => {
+        this.currentNewsIndex = (this.currentNewsIndex + 1) % this.newsList.length;
+      }, 5000); // 每5秒切换一次新闻
+    },
+
+    // 前一页
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+    // 下一页
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
     },
 
     async submitPost() {
@@ -391,6 +424,10 @@ export default {
       this.content = '';
     },
 
+    calculateContribution() {
+      // 这里是函数的逻辑
+    },
+
     Gotouserpage() {
       this.$router.push('/userprofile');
     }, //切换用户页面
@@ -410,60 +447,103 @@ export default {
       this.$router.push('/home');
     },//返回主页界面
 
+    async fetchPostsData() {
+      // 模拟从后端获取数据
+      // this.postsData = await fetch('your-api-endpoint').then(response => response.json());
+      this.postsData = [
+        { id: 1, title: '帖子标题1', content: '这是帖子内容1...', author: '作者1', date: '2024-09-01' },
+        { id: 2, title: '帖子标题2', content: '这是帖子内容2...', author: '作者2', date: '2024-09-02' },
+        // 你可以添加更多的测试数据
+        { id: 3, title: '帖子标题3', content: '这是帖子内容3...', author: '作者3', date: '2024-09-03' },
+        { id: 4, title: '帖子标题4', content: '这是帖子内容4...', author: '作者4', date: '2024-09-04' },
+        // 确保数据量超过 itemsPerPage 以测试分页功能
+        { id: 5, title: '帖子标题5', content: '这是帖子内容5...', author: '作者5', date: '2024-09-05' },
+        { id: 6, title: '帖子标题6', content: '这是帖子内容6...', author: '作者6', date: '2024-09-06' },
+        { id: 7, title: '帖子标题7', content: '这是帖子内容7...', author: '作者7', date: '2024-09-07' },
+        { id: 8, title: '帖子标题8', content: '这是帖子内容8...', author: '作者8', date: '2024-09-08' },
+        { id: 9, title: '帖子标题9', content: '这是帖子内容9...', author: '作者9', date: '2024-09-09' },
+        { id: 10, title: '帖子标题10', content: '这是帖子内容10...', author: '作者10', date: '2024-09-10' },
+        { id: 11, title: '帖子标题11', content: '这是帖子内容11...', author: '作者11', date: '2024-09-11' },
+        // 添加更多测试数据以覆盖多个页面
+      ];
+    },
 
-    summarizeContent(content) {
-      return content.length > 100 ? content.slice(0, 100) + '...' : content;
-    },
-    showPostDetails(post) {
-      this.selectedPost = post;
-      this.showModal = true;
-      this.fetchPostComments(post.articleId);
-    },
-    closeModal() {
-      this.showModal = false;
-      this.selectedPost = null;
-    },
-    async addComment() {
-      if (this.newComment.trim() === '') return;
-      try {
-        // 调用 Vuex 的 addComment action，将评论添加到后端
-        const success = await this.$store.dispatch('addComment', {
-          articleId: this.selectedPost.articleId,
-          content: this.newComment
-        });
 
-        if (success) {
-          // 如果后端成功添加评论，将评论加入到前端显示的评论列表中
-          this.fetchPostComments(this.selectedPost.articleId)
-          this.newComment = ''; // 清空输入框
-          console.log('评论添加成功');
-        } else {
-          console.error('评论添加失败');
-        }
-      } catch (error) {
-        console.error('评论添加失败:', error);
+  Gotouserpage() {
+    this.$router.push('/userprofile');
+  }, //切换用户页面
+
+  GotoPostDetil() {
+    this.$router.push('/postDetail');
+  }, //切换用户页面
+
+  GoToMycomment() {
+    this.$router.push('/myComment');
+  },
+
+  GotoMyfavourite() {
+    this.$router.push('/myfavourite');
+  }, //切换用户页面
+  GoToHome() {
+    this.$router.push('/home');
+  },//返回主页界面
+
+
+  summarizeContent(content) {
+    return content.length > 100 ? content.slice(0, 100) + '...' : content;
+  },
+  showPostDetails(post) {
+    this.selectedPost = post;
+    this.showModal = true;
+    this.fetchPostComments(post.articleId);
+  },
+  closeModal() {
+    this.showModal = false;
+    this.selectedPost = null;
+  },
+  async addComment() {
+    if (this.newComment.trim() === '') return;
+    try {
+      // 调用 Vuex 的 addComment action，将评论添加到后端
+      const success = await this.$store.dispatch('addComment', {
+        articleId: this.selectedPost.articleId,
+        content: this.newComment
+      });
+
+      if (success) {
+        // 如果后端成功添加评论，将评论加入到前端显示的评论列表中
+        this.fetchPostComments(this.selectedPost.articleId)
+        this.newComment = ''; // 清空输入框
+        console.log('评论添加成功');
+      } else {
+        console.error('评论添加失败');
       }
-    },
-    deletePost() {
-      this.showDeleteConfirm = true; // 显示删除确认弹窗
-    },
-    confirmDelete() {
-      const index = this.visiblePosts.findIndex(post => post.id === this.selectedPost.id);
-      if (index !== -1) {
-        this.visiblePosts.splice(index, 1);
-        this.closeModal();
-      }
-      this.showDeleteConfirm = false; // 关闭删除确认弹窗
-    },
-    cancelDelete() {
-      this.showDeleteConfirm = false; // 关闭删除确认弹窗
-    },
-    navigateToPrevious() {
-      if (this.currentPage > 1) this.currentPage--;
-    },
-    navigateToNext() {
-      if (this.currentPage < this.totalPagesCount) this.currentPage++;
+    } catch (error) {
+      console.error('评论添加失败:', error);
     }
+  },
+  deletePost() {
+    this.showDeleteConfirm = true; // 显示删除确认弹窗
+  },
+  confirmDelete() {
+    const index = this.visiblePosts.findIndex(post => post.id === this.selectedPost.id);
+    if (index !== -1) {
+      this.visiblePosts.splice(index, 1);
+      this.closeModal();
+    }
+    this.showDeleteConfirm = false; // 关闭删除确认弹窗
+  },
+  cancelDelete() {
+    this.showDeleteConfirm = false; // 关闭删除确认弹窗
+  },
+  navigateToPrevious() {
+    if (this.currentPage > 1) this.currentPage--;
+  },
+  navigateToNext() {
+    if (this.currentPage < this.totalPagesCount) this.currentPage++;
+  },
+
+
 
 
 
@@ -737,13 +817,12 @@ export default {
 
 /*  搜索框   */
 
-.information-box1 {
-  display: flex;
-  position: relative;
-  left: 8%;
-  z-index: 2;
-  margin-top: -350px;
-  /* 设置距离顶部的间距 */
+   .information-box1 
+  {
+    display: flex;
+    position:relative;
+    left:8%;
+    z-index:2;
 }
 
 .information-input1 {
@@ -789,7 +868,7 @@ export default {
 .post-container1 {
   position: absolute;
   top: 20%;
-  left: 25%;
+  left: 20%;
   width: 900px;
   height: 600px;
   padding: 20px;
@@ -1194,6 +1273,65 @@ export default {
 .btn-cancel:hover {
   background-color: rgb(37, 210, 226);
   color: #fff;
+}
+
+/* 公告轮播 */
+.news-carousel {
+  width: 100%;
+  max-width: 600px; /* 控制轮播栏的最大宽度 */
+  height: 50px;
+  overflow: hidden; /* 限制只显示一个公告 */
+  background-color: #f8f9fa; /* 更加柔和的背景颜色 */
+  position: relative;
+  top: -20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -360px;
+  margin-left: 200px;
+  border-radius: 8px; /* 添加圆角 */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影使其更加立体 */
+  border: 1px solid #e0e0e0; /* 添加边框让其更加突出 */
+}
+
+.news-wrapper {
+  display: flex;
+  transition: transform 0.5s ease-in-out; /* 改善切换时的平滑动画 */
+  height: 100%;
+  align-items: center; /* 保证内容垂直居中 */
+}
+
+.news-item {
+  flex-shrink: 0;
+  width: 100%; /* 每条新闻的宽度与轮播栏一致，确保一次只显示一条 */
+  text-align: center;
+  padding: 10px;
+  font-size: 18px;
+  color: #1cc454; /* 优雅的文本颜色 */
+  font-weight: bold; /* 加粗文本 */
+  background: linear-gradient(to right, #e0f7fa, #e0f4ff); /* 渐变背景 */
+  border-radius: 5px; /* 给每条新闻添加圆角 */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* 给新闻条目添加阴影 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 鼠标悬停时新闻的高亮效果 */
+.news-item:hover {
+  background: linear-gradient(to right, #a7ffeb, #e0f4ff);
+  transform: scale(1.05); /* 鼠标悬停时轻微放大 */
+  transition: transform 0.3s ease;
+}
+
+/* 小动画效果 */
+@keyframes newsItemSlide {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 

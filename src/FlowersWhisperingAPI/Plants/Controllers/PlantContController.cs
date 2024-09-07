@@ -14,7 +14,6 @@ namespace FlowersWhisperingAPI.Plants.Controllers
         public IActionResult GetContPlants (int userId)
         {
             var ContPlants = _plantContService.GetContPlants(userId);
-            
             if (ContPlants == null )
             {
                 return BadRequest("获取失败"); // 返回 400 Bad Request
@@ -26,5 +25,14 @@ namespace FlowersWhisperingAPI.Plants.Controllers
             return Ok(ContPlants); // 返回 200 OK 和 latestPlants
         }
 
+        [HttpPost("addContribute")]
+        public IActionResult AddContPlant (int userId, string plantName, string reviewContent)
+        {
+            if (_plantContService.AddContPlant(userId, plantName, reviewContent))
+            {
+                return Ok("添加成功"); // 返回 200 OK 和提示信息
+            }
+            return BadRequest("添加失败"); // 返回 400 Bad Request
+        }
     }   
 }

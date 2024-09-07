@@ -281,8 +281,7 @@
           </div>
         </div>
       </div>
-      <!-- 底部备案号 -->
-      <Footer />
+      
     </div>
 
 
@@ -290,6 +289,8 @@
   <div v-else>
     加载中...
   </div>
+  <!-- 底部备案号 -->
+      <Footer />
 </template>
 
 
@@ -1127,7 +1128,7 @@ textarea {
 }
 
 .footer {
-  position: absolute;
+  position: fixed;
 }
 
 
@@ -1569,8 +1570,4 @@ textarea {
   /* 限制显示的字符数为 20 */
 }
 
-.footer {
-  position: fixed;
-  left: 0;
-}
 </style>
