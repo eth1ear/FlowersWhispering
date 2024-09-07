@@ -17,12 +17,12 @@ namespace FlowersWhisperingAPI.Plants.Mappers
                 {
                     connection.Open();
                     string sql = @"
-                            select PLANT.PLANT_ID, COMMON_NAME, SCIENTIFIC_NAME, CATEGORY, 
+                            select PLANTS.PLANT_ID, COMMON_NAME, SCIENTIFIC_NAME, CATEGORY, 
                                 PORTRAYAL, GROWTH_ENVIRONMENT, CARE_CONDITIONS, 
                                 UPDATETIME, PLANTIMAGES.IMAGE_URL
-                            from PLANT 
-                            INNER JOIN PLANTIMAGES ON PLANT.PLANT_ID = PLANTIMAGES.PLANT_ID
-                            where PLANT.PLANT_ID IN(
+                            from PLANTS 
+                            INNER JOIN PLANTIMAGES ON PLANTS.PLANT_ID = PLANTIMAGES.PLANT_ID
+                            where PLANTS.PLANT_ID IN(
                                 select PLANT_ID
                                 from FAVORITES
                                 where USER_ID = :userId)
@@ -69,9 +69,11 @@ namespace FlowersWhisperingAPI.Plants.Mappers
         {
             try
             {
+                // 查询 plantId 
                 using (OracleConnection connection = new OracleConnection(connectionString))
                 {
                     connection.Open();
+
                     string sql = "INSERT INTO Favorites (USER_ID, PLANT_ID) VALUES (:userId, :plantId)";
                     
                     using (OracleCommand command = new OracleCommand(sql, connection))

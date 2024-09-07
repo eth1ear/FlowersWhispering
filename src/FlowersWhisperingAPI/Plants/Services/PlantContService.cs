@@ -8,9 +8,14 @@ namespace FlowersWhisperingAPI.Plants.Services
     {
         private readonly PlantContMapper _ContMapper = ContMapper;
 
-        public List<Plant> GetContPlants (int userId)
+        public List<PlantWithReview> GetContPlants (int userId)
         {
             return _ContMapper.GetContPlants(userId);
+        }
+
+        public bool AddContPlant (int userId, string plantName, string reviewContent)
+        {
+            return _ContMapper.AddContPlant(userId, plantName, reviewContent);
         }
         
     }
