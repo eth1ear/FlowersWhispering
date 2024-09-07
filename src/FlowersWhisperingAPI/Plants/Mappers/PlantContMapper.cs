@@ -69,7 +69,7 @@ namespace FlowersWhisperingAPI.Plants.Mappers
                         FROM PLANTS 
                         WHERE COMMON_NAME = :plantName OR SCIENTIFIC_NAME = :plantName";
                     
-                    int plantId;
+                    int? plantId;
                     using (OracleCommand queryCommand = new OracleCommand(querySql, connection))
                     {
                         queryCommand.Parameters.Add(new OracleParameter("plantName", plantName));
@@ -81,16 +81,17 @@ namespace FlowersWhisperingAPI.Plants.Mappers
                             }
                             else
                             {
-                                Console.WriteLine("Plant not found.");
-                                return false;
+                                // Console.WriteLine("Plant not found.");
+                                // return false;
+                                plantId=null!;
                             }
                         }
                     }
 
                     // 插入评论记录
                     string insertSql = @"
-                        INSERT INTO REVIEWS (PLANT_ID, SUBMITTER_ID, MODIFIED_CONTENT)
-                        VALUES (:plantId, :userId, :reviewContent)";
+                        INSERT INTO REVIEWS (PLANT_ID, SUBMITTER_ID, MODIFIED_CONTENT,REVIEW_STATUS)
+                        VALUES (:plantId, :userId, :reviewContent,'待审核')";
                     
                     using (OracleCommand insertCommand = new OracleCommand(insertSql, connection))
                     {
