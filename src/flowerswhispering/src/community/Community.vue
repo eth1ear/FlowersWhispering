@@ -295,8 +295,7 @@ export default {
       return Math.ceil(this.allPosts.length / this.itemsPerPage);
     }
   },
-  methods:
-  {
+  methods:{
     ...mapActions(['logout']),
     async getAllPosts() {
       try {
@@ -469,7 +468,6 @@ export default {
       ];
     },
 
-  },
 
   Gotouserpage() {
     this.$router.push('/userprofile');
@@ -547,7 +545,7 @@ export default {
 
 
 
-    
+
 
   },
 
