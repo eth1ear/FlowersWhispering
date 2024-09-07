@@ -69,9 +69,11 @@ namespace FlowersWhisperingAPI.Plants.Mappers
         {
             try
             {
+                // 查询 plantId 
                 using (OracleConnection connection = new OracleConnection(connectionString))
                 {
                     connection.Open();
+
                     string sql = "INSERT INTO Favorites (USER_ID, PLANT_ID) VALUES (:userId, :plantId)";
                     
                     using (OracleCommand command = new OracleCommand(sql, connection))
