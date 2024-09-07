@@ -17,7 +17,7 @@ namespace FlowersWhisperingAPI.Community.Services
             _favorMapper.DeleteFavor(favorId);
         }
 
-        public List<Article> GetAllFavor(int userId)
+        public List<Favor> GetAllFavor(int userId)
         {
             return _favorMapper.GetAllFavor(userId);
         }

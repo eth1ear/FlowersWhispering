@@ -36,6 +36,7 @@ const postModule: Module<PostState, any> = {
         const response = await apiClient.get('/api/CommuniPostsandComments/post/all');
         if (response) {
           commit('SET_POSTS', response.data);
+          return response.data;
         }
       } catch (error: any) {
         throw new Error(error.response?.data.message || '获取帖子列表失败');
@@ -47,6 +48,7 @@ const postModule: Module<PostState, any> = {
         const response = await apiClient.get(`/api/CommuniPostsandComments/post/user/all?userId=${userId}`);
         if (response) {
           commit('SET_POSTS', response.data);
+          return response.data; // 返回数据以便外部调用时使用
         }
       } catch (error: any) {
         throw new Error(error.response?.data.message || '获取用户帖子失败');
@@ -105,6 +107,7 @@ const postModule: Module<PostState, any> = {
         const response = await apiClient.get(`/api/CommuniPostsandComments/post/all/search?text=${searchText}`);
         if (response) {
           commit('SET_POSTS', response.data);
+          return response.data;
         }
       } catch (error: any) {
         throw new Error(error.response?.data.message || '搜索帖子失败');
