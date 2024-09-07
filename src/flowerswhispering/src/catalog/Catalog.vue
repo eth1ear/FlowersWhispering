@@ -63,7 +63,8 @@
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { mapState, mapGetters, mapActions } from 'vuex';
-
+import Header from '@/home/Header.vue';
+import Footer from '@/home/Footer.vue';
 export default {
   name: "Catalog",
   components: {
