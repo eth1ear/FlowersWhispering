@@ -77,28 +77,7 @@
 
 
 
-      <!--公告部分-->
-      <div v-if="activeTab === 'Announcement'" class="card-container">
-        <div class="card-container">                        
-            <div class="love-time-title1">
-              欢迎来到叶语花谣社区
-            </div>
-        </div>
-
-        <div class ="information-box1">    <!--搜索框，重要部分！！！-->
-             <input 
-              type="text" 
-              v-model="searchQuery"   
-              placeholder="搜索你喜欢的帖子！" 
-              class="information-input1" 
-             />
-            <button @click="searchDatabase" class="information-button1">搜索</button>
-           </div>
-  
-
-
-          </div>
-         <!--公告部分-->
+      
 
          <!--发帖部分-->
       <div v-if="activeTab === 'SentPost'">
@@ -130,6 +109,24 @@
 
   <!--热帖部分-->
   <div v-if="activeTab === 'HotPosts'">
+
+<div class="news-carousel">
+    <div class="news-wrapper">
+      <div class="news-item" :style="{ transform: `translateX(${-currentNewsIndex * 100}%)` }"  v-for="(news, index) in newsList" :key="index">
+        {{ news }}
+      </div>
+    </div>
+    <!-- Modal for displaying selected news -->
+    <div v-if="isModalVisible" class="modal-overlay" @click="hideModal">
+      <div class="modal-content" @click.stop>
+        <h3>新闻详情</h3>
+        <p>{{ selectedNews }}</p>
+        <button @click="hideModal">关闭</button>
+      </div>
+    </div>
+  </div>
+
+
 
     <div class ="information-box1">    <!--搜索框，重要部分！！！-->
              <input 
@@ -273,10 +270,24 @@
       { username: 'David7', posts: 7, comments: 12 },
       { username: 'David8', posts: 7, comments: 12 },
       { username: 'David8', posts: 7, comments: 12 },
-      { username: 'David8', posts: 7, comments: 12 },
+        { username: 'David8', posts: 7, comments: 12 },
+
+        
       
      
-    ],
+        ],
+        //新闻
+
+        newsList: [
+        "新闻 1: 这是一段新闻的文字内容。",
+        "新闻 2: 这里是另一条新闻。",
+        "新闻 3: 更多新闻内容。",
+        "新闻 4: 滚动展示新闻条目。",
+        "新闻 5: 最后一条新闻内容。"
+      ],
+      currentNewsIndex: 0,
+      isModalVisible: false,
+      selectedNews: '',
      // 发帖
      title: '',
       content: '',
@@ -302,6 +313,10 @@
       currentUser: 'getUserInfo', // 获取当前用户信息
       isAdmin: 'isAdmin',
     }),
+
+    currentNews() {
+      return this.newsList[this.currentNewsIndex];
+    },
     // 计算分页后的用户列表
     paginatedContributors() {
      
@@ -357,12 +372,11 @@
     
     },
    startCarousel() {
-      setInterval(this.nextSlide, 3000);
+      setInterval(() => {
+        this.currentNewsIndex = (this.currentNewsIndex + 1) % this.newsList.length;
+      }, 5000); // 每5秒切换一次新闻
     },
-    calculateContribution(user) {
-      // 计算贡献分数 = 发帖数 * 5 + 评论数
-      return (user.posts * 5) + user.comments;
-    },
+  
     // 前一页
     prevPage() {
       if (this.currentPage > 1) {
@@ -402,7 +416,11 @@
     clearForm() {
       this.title = '';
       this.content = '';
-    },
+      },
+
+      calculateContribution() {
+    // 这里是函数的逻辑
+  },
   
       Gotouserpage()
       {
@@ -487,6 +505,8 @@
     }
 
 
+
+    
 
     },
     created() {
@@ -721,7 +741,6 @@
     position:relative;
     left:8%;
     z-index:2;
-    margin-top: -350px; /* 设置距离顶部的间距 */
 }
 
 .information-input1 
@@ -761,7 +780,7 @@
 
 .post-container1 {
   position: absolute;
-  top: 15%;
+  top: 20%;
   left: 20%;
   width: 900px;
   height: 600px;
@@ -1151,6 +1170,65 @@
 .btn-cancel:hover {
   background-color: rgb(37, 210, 226);
   color: #fff;
+}
+
+/* 公告轮播 */
+.news-carousel {
+  width: 100%;
+  max-width: 600px; /* 控制轮播栏的最大宽度 */
+  height: 50px;
+  overflow: hidden; /* 限制只显示一个公告 */
+  background-color: #f8f9fa; /* 更加柔和的背景颜色 */
+  position: relative;
+  top: -20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -360px;
+  margin-left: 200px;
+  border-radius: 8px; /* 添加圆角 */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影使其更加立体 */
+  border: 1px solid #e0e0e0; /* 添加边框让其更加突出 */
+}
+
+.news-wrapper {
+  display: flex;
+  transition: transform 0.5s ease-in-out; /* 改善切换时的平滑动画 */
+  height: 100%;
+  align-items: center; /* 保证内容垂直居中 */
+}
+
+.news-item {
+  flex-shrink: 0;
+  width: 100%; /* 每条新闻的宽度与轮播栏一致，确保一次只显示一条 */
+  text-align: center;
+  padding: 10px;
+  font-size: 18px;
+  color: #1cc454; /* 优雅的文本颜色 */
+  font-weight: bold; /* 加粗文本 */
+  background: linear-gradient(to right, #e0f7fa, #e0f4ff); /* 渐变背景 */
+  border-radius: 5px; /* 给每条新闻添加圆角 */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* 给新闻条目添加阴影 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 鼠标悬停时新闻的高亮效果 */
+.news-item:hover {
+  background: linear-gradient(to right, #a7ffeb, #e0f4ff);
+  transform: scale(1.05); /* 鼠标悬停时轻微放大 */
+  transition: transform 0.3s ease;
+}
+
+/* 小动画效果 */
+@keyframes newsItemSlide {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 

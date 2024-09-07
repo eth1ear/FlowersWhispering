@@ -3,7 +3,7 @@
     <div class="logo">Flowers Whispering</div>
     <div class="nav-user-container">
       <nav class="nav-links">
-        <nav v-if="currentUser && currentUser.role === 'admin'">
+        <nav v-if="currentUser && currentUser.userRole === 'admin'">
           <button @click="goToAdminPanel" class="nav-button">管理</button>
         </nav>
         <button @click="goHome" class="nav-button">首页</button>
@@ -79,7 +79,7 @@ export default {
 <style scoped>
 
 .header {
-  display: relative;
+  display:flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
@@ -88,8 +88,15 @@ export default {
   z-index: 10; /* 提高 z-index，确保 header 在其他内容上层 */
   width:98%;
   position: fixed;
+  height: 60px; /* 或者你想设置的其他适合的高度 */
 }
-
+.user-avatar-wrapper img {
+  width: 40px; /* 设置头像图片的固定宽度 */
+  height: 40px; /* 设置头像图片的固定高度 */
+  border-radius: 50%; /* 如果想要圆形头像 */
+  object-fit: cover; /* 确保图片按比例填充，避免变形 */
+  cursor: pointer;
+}
 .logo {
   font-family: 'Caveat-VariableFont', 'ZhiMangXing-Regular', sans-serif;
   font-size: 28px;
