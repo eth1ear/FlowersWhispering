@@ -8,5 +8,7 @@ namespace FlowersWhisperingAPI.Administrator.Services.Interface
         public bool Feedback(int id,string feedback);
         public List<Feedback> GetAllFeedback();
         public List<UserAdmin> GetAllUsers();
+        public void Reply(ReplyDTO replyDTO);
+        public List<Reply> GetReplies(int userId);
     }
 }

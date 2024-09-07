@@ -24,5 +24,15 @@ namespace FlowersWhisperingAPI.Administrator.Services
         public List<UserAdmin> GetAllUsers(){
             return _userMapper.GetAllUsers();
         }
+
+        public List<Reply> GetReplies(int userId)
+        {
+            return _userMapper.GetReplies(userId);
+        }
+
+        public void Reply(ReplyDTO replyDTO)
+        {
+            _userMapper.Reply(replyDTO.UserId, replyDTO.Content);
+        }
     }
 }

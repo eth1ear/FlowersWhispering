@@ -36,6 +36,19 @@ namespace FlowersWhisperingAPI.Administrator.Controllers
             return Ok(_adminUserService.GetAllFeedback().OrderBy(x => x.FeedbackId).ToList());
         }
 
+        [HttpPost("reply")]
+        public void Reply([FromBody] ReplyDTO replyDTO)
+        {
+            _adminUserService.Reply(replyDTO);
+        }
+
+        [HttpGet("all/replies")]
+        public IActionResult GetAllReplies(int userId)
+        {
+            return Ok(_adminUserService.GetReplies(userId).OrderBy(x => x.Id).ToList());
+        }
+
+
         [HttpGet("all/user")]
         public IActionResult GetAllUsers()
         {

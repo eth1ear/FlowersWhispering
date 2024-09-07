@@ -38,6 +38,48 @@ namespace FlowersWhisperingAPI.Administrator.Mappers
             
         }
 
+        public void Reply(int userId, string content){
+            try
+            {
+                using var connection = new OracleConnection(_connectionString);
+                connection.Open();
+                using var command = new OracleCommand("INSERT INTO REPLIES (USER_ID, REPLY_CONTENT) VALUES (:Id, :Content)", connection);
+                command.Parameters.Add(":Id", OracleDbType.Int32).Value = userId;
+                command.Parameters.Add(":Content", OracleDbType.Varchar2).Value = content;
+                command.ExecuteNonQuery();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public List<Reply> GetReplies(int userId)
+        {
+            List<Reply> replies = [];
+            try
+            {
+                using var connection = new OracleConnection(_connectionString);
+                connection.Open();
+                using var command = new OracleCommand("SELECT * FROM REPLIES WHERE USER_ID = :Id", connection);
+                command.Parameters.Add(":Id", OracleDbType.Int32).Value = userId;
+                var read = command.ExecuteReader();
+                while (read.Read())
+                {
+                    int id  = read.GetInt32(0);
+                    int _userId = read.GetInt32(1);
+                    string content = read.GetString(2);
+                    DateTime time = read.GetDateTime(3);
+                    replies.Add(new Reply(id,_userId,content,time));
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return replies;
+        }
+
         public List<Feedback> GetAllFeedback()
         {
             List<Feedback> feedbacks = [];
