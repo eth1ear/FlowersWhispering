@@ -3,7 +3,7 @@
     <div class="logo">Flowers Whispering</div>
     <div class="nav-user-container">
       <nav class="nav-links">
-        <nav v-if="currentUser && currentUser.role === 'admin'">
+        <nav v-if="currentUser && currentUser.userRole === 'admin'">
           <button @click="goToAdminPanel" class="nav-button">管理</button>
         </nav>
         <button @click="goHome" class="nav-button">首页</button>

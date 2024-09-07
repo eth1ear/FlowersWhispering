@@ -12,7 +12,7 @@ namespace FlowersWhisperingAPI.Plants.Mappers
         public int GetPlantId(string name)
         {
             // SQL 查询字符串
-            string sql = "SELECT PLANT_ID FROM plant WHERE COMMON_NAME = :PlantName OR SCIENTIFIC_NAME = :PlantName";
+            string sql = "SELECT PLANT_ID FROM PLANTS WHERE COMMON_NAME = :PlantName OR SCIENTIFIC_NAME = :PlantName";
             
             try
             {
@@ -45,11 +45,11 @@ namespace FlowersWhisperingAPI.Plants.Mappers
         {
             // SQL 查询字符串
             string sql = @"
-                            select PLANT.PLANT_ID, COMMON_NAME, SCIENTIFIC_NAME, CATEGORY, 
+                            select PLANTS.PLANT_ID, COMMON_NAME, SCIENTIFIC_NAME, CATEGORY, 
                                 PORTRAYAL, GROWTH_ENVIRONMENT, CARE_CONDITIONS, 
                                 UPDATETIME, PLANTIMAGES.IMAGE_URL
-                            from PLANT 
-                            INNER JOIN PLANTIMAGES ON PLANT.PLANT_ID = PLANTIMAGES.PLANT_ID
+                            from PLANTS 
+                            INNER JOIN PLANTIMAGES ON PLANTS.PLANT_ID = PLANTIMAGES.PLANT_ID
                             where COMMON_NAME = :PlantName OR SCIENTIFIC_NAME = :PlantName
                             ";
             try

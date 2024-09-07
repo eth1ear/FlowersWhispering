@@ -14,6 +14,7 @@ namespace FlowersWhisperingAPI.Plants.Controllers
         public IActionResult GetContPlants (int userId)
         {
             var ContPlants = _plantContService.GetContPlants(userId);
+            
             if (ContPlants == null )
             {
                 return BadRequest("获取失败"); // 返回 400 Bad Request
@@ -24,5 +25,6 @@ namespace FlowersWhisperingAPI.Plants.Controllers
             }
             return Ok(ContPlants); // 返回 200 OK 和 latestPlants
         }
+
     }   
 }

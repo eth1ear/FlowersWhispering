@@ -149,7 +149,7 @@ namespace FlowersWhisperingAPI.Administrator.Mappers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("" + ex);
+                Console.WriteLine("≤Â»ÎÕº∆¨¥ÌŒÛ£∫" + ex);
             }
         }
 
