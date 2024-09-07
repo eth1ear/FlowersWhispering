@@ -69,7 +69,7 @@ namespace FlowersWhisperingAPI.Plants.Mappers
                         FROM PLANTS 
                         WHERE COMMON_NAME = :plantName OR SCIENTIFIC_NAME = :plantName";
                     
-                    int plantId;
+                    int? plantId;
                     using (OracleCommand queryCommand = new OracleCommand(querySql, connection))
                     {
                         queryCommand.Parameters.Add(new OracleParameter("plantName", plantName));
@@ -81,8 +81,7 @@ namespace FlowersWhisperingAPI.Plants.Mappers
                             }
                             else
                             {
-                                Console.WriteLine("Plant not found.");
-                                return false;
+                                plantId = null!;
                             }
                         }
                     }
