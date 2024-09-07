@@ -7,21 +7,17 @@ namespace FlowersWhisperingAPI.Plants.Mappers
 {
     public class PlantContMapper(string connectionString)
     {
-        public List<Plant> GetContPlants(int userId)
+        public List<PlantWithReview> GetContPlants(int userId)
         {
-            List<Plant> plants = new List<Plant>();
+            List<PlantWithReview> plants = new List<PlantWithReview>();
             try
             {
                 string sql = @"
-                            select PLANTS.PLANT_ID, COMMON_NAME, SCIENTIFIC_NAME, CATEGORY, 
-                                PORTRAYAL, GROWTH_ENVIRONMENT, CARE_CONDITIONS, 
-                                UPDATETIME, PLANTIMAGES.IMAGE_URL
-                            from PLANTS 
-                            INNER JOIN PLANTIMAGES ON PLANTS.PLANT_ID = PLANTIMAGES.PLANT_ID
-                            where PLANTS.PLANT_ID IN(
-                                select PLANT_ID
-                                from REVIEWS
-                                where SUBMITTER_ID = :userId AND REVIEW_STATUS='审核通过')
+                            SELECT REVIEW_ID, PLANTS.PLANT_ID, COMMON_NAME, SCIENTIFIC_NAME, 
+                                   MODIFIED_CONTENT, REVIEW_STATUS
+                            FROM REVIEWS
+                            INNER JOIN PLANTS ON REVIEWS.PLANT_ID = PLANTS.PLANT_ID
+                            WHERE SUBMITTER_ID = :userId
                             ";
                 using (OracleConnection connection = new OracleConnection(connectionString))
                 {
@@ -34,16 +30,14 @@ namespace FlowersWhisperingAPI.Plants.Mappers
                             while (reader.Read())
                             {
                                 int plantId = reader.GetInt32(reader.GetOrdinal("PLANT_ID"));
+                                int reviewId = reader.GetInt32(reader.GetOrdinal("REVIEW_ID"));
                                 string commonName = reader.GetString(reader.GetOrdinal("COMMON_NAME"));
                                 string scientificName = reader.GetString(reader.GetOrdinal("SCIENTIFIC_NAME"));
-                                string CATEGORY = reader.GetString(reader.GetOrdinal("CATEGORY"));
-                                string PORTRAYAL = reader.GetString(reader.GetOrdinal("PORTRAYAL"));
-                                string GROWTH_EN = reader.GetString(reader.GetOrdinal("GROWTH_ENVIRONMENT"));
-                                string care_con = reader.GetString(reader.GetOrdinal("CARE_CONDITIONS"));
-                                DateTime time = reader.GetDateTime(reader.GetOrdinal("UPDATETIME"));
-                                string ImageUrl = reader.GetString(reader.GetOrdinal("IMAGE_URL")); 
-                                var plant = new Plant(plantId, commonName, scientificName, CATEGORY, PORTRAYAL, GROWTH_EN, care_con, time);
-                                plant.ImageUrl = ImageUrl;
+                               
+                                string modifiedContent = reader.GetString(reader.GetOrdinal("MODIFIED_CONTENT"));
+                                string reviewStatus = reader.GetString(reader.GetOrdinal("REVIEW_STATUS"));
+                                
+                                var plant = new PlantWithReview(plantId, reviewId, commonName, scientificName, modifiedContent, reviewStatus);
                                 plants.Add(plant);
                             }
                         }
