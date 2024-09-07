@@ -7,7 +7,7 @@ namespace FlowersWhisperingAPI.Community.Services.Interface
         public void AddFavor(FavorDTO favordto);
         public void DeleteFavor(int favorId);
 
-        public List<Article> GetAllFavor(int userId);
+        public List<Favor> GetAllFavor(int userId);
     }
 }
 

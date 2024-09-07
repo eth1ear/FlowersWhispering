@@ -1,4 +1,10 @@
-const { defineConfig } = require('@vue/cli-service')
+const { defineConfig } = require('@vue/cli-service');
+
 module.exports = defineConfig({
-  transpileDependencies: true
-})
+  transpileDependencies: true,
+
+  // 添加 devServer 配置
+  devServer: {
+    allowedHosts: 'all',
+  }
+});

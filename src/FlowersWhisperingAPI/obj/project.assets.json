@@ -3488,19 +3488,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\17615\\.nuget\\packages\\": {}
+    "C:\\Users\\10718\\.nuget\\packages\\": {},
+    "D:\\visual studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\桌面\\大二\\数据库\\课设\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
+      "projectUniqueName": "D:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
       "projectName": "FlowersWhisperingAPI",
-      "projectPath": "D:\\桌面\\大二\\数据库\\课设\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
-      "packagesPath": "C:\\Users\\17615\\.nuget\\packages\\",
-      "outputPath": "D:\\桌面\\大二\\数据库\\课设\\FlowersWhispering\\src\\FlowersWhisperingAPI\\obj\\",
+      "projectPath": "D:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\FlowersWhisperingAPI.csproj",
+      "packagesPath": "C:\\Users\\10718\\.nuget\\packages\\",
+      "outputPath": "D:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "D:\\visual studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\17615\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\10718\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -3583,7 +3589,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -69,7 +69,7 @@ namespace FlowersWhisperingAPI.Administrator.Mappers
         {
             string sql = "UPDATE Plants SET common_name = :CommonName, scientific_name = :ScientificName," +
                         "category = :Category, portrayal = :Portrayal, growth_environment = :GrowthEnvironment, " +
-                        "care_conditions = :CareConditions WHERE plant_id = :PlantId";
+                        "care_conditions = :CareConditions, UPDATETIME = SYSDATE WHERE plant_id = :PlantId";
             using OracleConnection connection = new OracleConnection(_connectionString);
             connection.Open();
             using OracleCommand command = new OracleCommand(sql, connection);              
@@ -149,7 +149,7 @@ namespace FlowersWhisperingAPI.Administrator.Mappers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("" + ex);
+                Console.WriteLine("≤Â»ÎÕº∆¨¥ÌŒÛ£∫" + ex);
             }
         }
 

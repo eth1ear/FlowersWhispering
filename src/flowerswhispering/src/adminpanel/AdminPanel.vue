@@ -29,7 +29,7 @@
         <h2>用户管理</h2>
 
         <ul class="item-list">
-          <li v-for="user in users" :key="user.userId" class="item">
+          <li v-for="user in filteredUsers" :key="user.userId" class="item">
             <div class="item-details">
               <p><strong>ID:</strong> {{ user.userId }}</p>
               <p><strong>用户名:</strong> {{ user.userName }}</p>
@@ -44,6 +44,7 @@
             </div>
           </li>
         </ul>
+
       </div>
 
       <!-- 帖子管理视图 -->
@@ -70,23 +71,6 @@
           </li>
         </ul>
       </div>
-
-      <!-- 评论管理视图 -->
-      <div v-if="currentView === 'comments'">
-        <h2>评论管理</h2>
-        <ul class="item-list">
-          <li v-for="comment in comments" :key="comment.id" class="item">
-            <div class="item-details">
-              <p><strong>评论内容:</strong> {{ comment.content }}</p>
-              <p><strong>所属帖子ID:</strong> {{ comment.postId }}</p>
-            </div>
-            <div class="item-actions">
-              <button @click="handleDeleteComment(comment.id)" class="btn-delete my-animation-slide-bottom">删除</button>
-            </div>
-          </li>
-        </ul>
-      </div>
-
       <!-- 植物审核视图 -->
       <div v-if="currentView === 'plants'" class="plants-review-section">
         <!-- 已通过审核 -->
@@ -124,7 +108,8 @@
               <p>{{ review.modifiedContent }}</p>
             </div>
             <div class="item-actions plant-btn">
-              <button @click="approveRev(review.reviewId)" class="btn-edit btn-release my-animation-slide-bottom">通过</button>
+              <button @click="approveRev(review.reviewId)"
+                class="btn-edit btn-release my-animation-slide-bottom">通过</button>
               <button @click="rejectRev(review.reviewId)" class="btn-edit btn-ban my-animation-slide-bottom">拒绝</button>
             </div>
           </li>
@@ -174,7 +159,7 @@
           <li v-for="announcement in announcements" :key="announcement.announcementId" class="item">
             <div class="item-details">
               <p><strong>标题:</strong> {{ announcement.title }}</p>
-              <p><strong>发布管理员ID:</strong> {{ announcement.publisherId }}</p>
+              <p><strong>发布者:</strong> {{ announcement.publisherId }}</p>
               <p><strong>发布日期:</strong> {{ announcement.publishedDate }}</p>
               <button @click="toggleExpandAnnouncement(announcement)" class="btn-details">
                 {{ expandedAnnouncement === announcement ? '收起' : '展示' }}内容
@@ -230,6 +215,9 @@ export default {
     users() {
       console.log('从 Vuex 获取的用户数据:', this.getAllUsers); // 调试信息
       return this.getAllUsers;
+    },
+    filteredUsers() {
+      return this.users.filter(user => user.userrole === 'user');
     },
     posts() {
       return this.getPosts;
@@ -373,14 +361,14 @@ export default {
     deletePlant(plantId) {
       this.$store.commit('DELETE_PLANT', plantId);
     },
-},
-mounted() {
-  this.fetchAnnouncements();
-  this.fetchAllFeedbacks();
-  this.fetchAllReviews();
-  this.fetchAllPosts();
-  this.fetchAllUsers();
-}
+  },
+  mounted() {
+    this.fetchAnnouncements();
+    this.fetchAllFeedbacks();
+    this.fetchAllReviews();
+    this.fetchAllPosts();
+    this.fetchAllUsers();
+  }
 }
 
 </script>
@@ -571,8 +559,8 @@ h2 {
   gap: 10px;
 }
 
-.plant-btn{
-  margin-top:7%;
+.plant-btn {
+  margin-top: 7%;
 }
 
 .btn-ban {
@@ -595,7 +583,7 @@ h2 {
   border: none;
   padding: 8px 16px;
   border-radius: 8px;
-  cursor: pointer; 
+  cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease-in-out;
   font-size: 14px;
 }
@@ -609,9 +597,8 @@ h2 {
 }
 
 .btn-delete:hover,
-.btn-ban:hover
-{
-  background-color:#b00b0b
+.btn-ban:hover {
+  background-color: #b00b0b
 }
 
 
@@ -691,7 +678,7 @@ textarea.form-input {
 
 /**/
 .plants-review-section {
-  width:100%;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   gap: 12px;
