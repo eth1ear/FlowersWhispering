@@ -20,12 +20,12 @@ namespace FlowersWhisperingAPI.Plants.Mappers
                     string sql = @"
                             SELECT * 
                             FROM (
-                                SELECT PLANT.PLANT_ID, COMMON_NAME, SCIENTIFIC_NAME, CATEGORY, 
+                                SELECT PLANTS.PLANT_ID, COMMON_NAME, SCIENTIFIC_NAME, CATEGORY, 
                                     PORTRAYAL, GROWTH_ENVIRONMENT, CARE_CONDITIONS, 
                                     UPDATETIME, PLANTIMAGES.IMAGE_URL
-                                FROM PLANT
-                                INNER JOIN PLANTIMAGES ON PLANT.PLANT_ID = PLANTIMAGES.PLANT_ID
-                                ORDER BY PLANT.PLANT_ID DESC
+                                FROM PLANTS
+                                INNER JOIN PLANTIMAGES ON PLANTS.PLANT_ID = PLANTIMAGES.PLANT_ID
+                                ORDER BY PLANTS.PLANT_ID DESC
                             ) WHERE ROWNUM <= 8
                             ";
                     using (var command = new OracleCommand(sql, connection))

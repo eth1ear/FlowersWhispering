@@ -13,12 +13,12 @@ namespace FlowersWhisperingAPI.Plants.Mappers
             try
             {
                 string sql = @"
-                            select PLANT.PLANT_ID, COMMON_NAME, SCIENTIFIC_NAME, CATEGORY, 
+                            select PLANTS.PLANT_ID, COMMON_NAME, SCIENTIFIC_NAME, CATEGORY, 
                                 PORTRAYAL, GROWTH_ENVIRONMENT, CARE_CONDITIONS, 
                                 UPDATETIME, PLANTIMAGES.IMAGE_URL
-                            from PLANT 
-                            INNER JOIN PLANTIMAGES ON PLANT.PLANT_ID = PLANTIMAGES.PLANT_ID
-                            where PLANT.PLANT_ID IN(
+                            from PLANTS 
+                            INNER JOIN PLANTIMAGES ON PLANTS.PLANT_ID = PLANTIMAGES.PLANT_ID
+                            where PLANTS.PLANT_ID IN(
                                 select PLANT_ID
                                 from REVIEWS
                                 where SUBMITTER_ID = :userId AND REVIEW_STATUS='审核通过')
