@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "k+iEAG3QaWdi9Udq5MDVDaCjPyj7gZ6OWazKTOv4QH4=",
+  "Hash": "s8HGQ9WpKQyKeEuGvwymRmJ+zJMnhGMef2J5fm7RXSg=",
   "Source": "FlowersWhisperingAPI",
   "BasePath": "_content/FlowersWhisperingAPI",
   "Mode": "Default",
@@ -17,12 +17,12 @@
   ],
   "Assets": [
     {
-      "Identity": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\css\\app.7a3e9019.css",
+      "Identity": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\css\\app.c5f0d080.css",
       "SourceId": "FlowersWhisperingAPI",
       "SourceType": "Discovered",
       "ContentRoot": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\",
       "BasePath": "_content/FlowersWhisperingAPI",
-      "RelativePath": "css/app.7a3e9019.css",
+      "RelativePath": "css/app.c5f0d080.css",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -33,7 +33,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\css\\app.7a3e9019.css"
+      "OriginalItemSpec": "wwwroot\\css\\app.c5f0d080.css"
     },
     {
       "Identity": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\favicon.ico",
@@ -492,12 +492,12 @@
       "OriginalItemSpec": "wwwroot\\index.html"
     },
     {
-      "Identity": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\app.612095aa.js",
+      "Identity": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\app.8eb898b7.js",
       "SourceId": "FlowersWhisperingAPI",
       "SourceType": "Discovered",
       "ContentRoot": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\",
       "BasePath": "_content/FlowersWhisperingAPI",
-      "RelativePath": "js/app.612095aa.js",
+      "RelativePath": "js/app.8eb898b7.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -508,15 +508,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\app.612095aa.js"
+      "OriginalItemSpec": "wwwroot\\js\\app.8eb898b7.js"
     },
     {
-      "Identity": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\app.612095aa.js.map",
+      "Identity": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\app.8eb898b7.js.map",
       "SourceId": "FlowersWhisperingAPI",
       "SourceType": "Discovered",
       "ContentRoot": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\",
       "BasePath": "_content/FlowersWhisperingAPI",
-      "RelativePath": "js/app.612095aa.js.map",
+      "RelativePath": "js/app.8eb898b7.js.map",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -527,15 +527,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\app.612095aa.js.map"
+      "OriginalItemSpec": "wwwroot\\js\\app.8eb898b7.js.map"
     },
     {
-      "Identity": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\chunk-vendors.f46cf8da.js",
+      "Identity": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\chunk-vendors.bafaa8c3.js",
       "SourceId": "FlowersWhisperingAPI",
       "SourceType": "Discovered",
       "ContentRoot": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\",
       "BasePath": "_content/FlowersWhisperingAPI",
-      "RelativePath": "js/chunk-vendors.f46cf8da.js",
+      "RelativePath": "js/chunk-vendors.bafaa8c3.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -546,15 +546,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\chunk-vendors.f46cf8da.js"
+      "OriginalItemSpec": "wwwroot\\js\\chunk-vendors.bafaa8c3.js"
     },
     {
-      "Identity": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\chunk-vendors.f46cf8da.js.map",
+      "Identity": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\chunk-vendors.bafaa8c3.js.map",
       "SourceId": "FlowersWhisperingAPI",
       "SourceType": "Discovered",
       "ContentRoot": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\",
       "BasePath": "_content/FlowersWhisperingAPI",
-      "RelativePath": "js/chunk-vendors.f46cf8da.js.map",
+      "RelativePath": "js/chunk-vendors.bafaa8c3.js.map",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -565,7 +565,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\chunk-vendors.f46cf8da.js.map"
+      "OriginalItemSpec": "wwwroot\\js\\chunk-vendors.bafaa8c3.js.map"
     },
     {
       "Identity": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\media\\background.9ff7d69b.mp4",

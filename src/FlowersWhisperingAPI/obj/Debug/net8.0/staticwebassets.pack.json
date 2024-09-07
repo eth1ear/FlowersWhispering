@@ -1,8 +1,8 @@
 {
   "Files": [
     {
-      "Id": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\css\\app.7a3e9019.css",
-      "PackagePath": "staticwebassets\\css\\app.7a3e9019.css"
+      "Id": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\css\\app.c5f0d080.css",
+      "PackagePath": "staticwebassets\\css\\app.c5f0d080.css"
     },
     {
       "Id": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\favicon.ico",
@@ -101,20 +101,20 @@
       "PackagePath": "staticwebassets\\index.html"
     },
     {
-      "Id": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\app.612095aa.js",
-      "PackagePath": "staticwebassets\\js\\app.612095aa.js"
+      "Id": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\app.8eb898b7.js",
+      "PackagePath": "staticwebassets\\js\\app.8eb898b7.js"
     },
     {
-      "Id": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\app.612095aa.js.map",
-      "PackagePath": "staticwebassets\\js\\app.612095aa.js.map"
+      "Id": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\app.8eb898b7.js.map",
+      "PackagePath": "staticwebassets\\js\\app.8eb898b7.js.map"
     },
     {
-      "Id": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\chunk-vendors.f46cf8da.js",
-      "PackagePath": "staticwebassets\\js\\chunk-vendors.f46cf8da.js"
+      "Id": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\chunk-vendors.bafaa8c3.js",
+      "PackagePath": "staticwebassets\\js\\chunk-vendors.bafaa8c3.js"
     },
     {
-      "Id": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\chunk-vendors.f46cf8da.js.map",
-      "PackagePath": "staticwebassets\\js\\chunk-vendors.f46cf8da.js.map"
+      "Id": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\js\\chunk-vendors.bafaa8c3.js.map",
+      "PackagePath": "staticwebassets\\js\\chunk-vendors.bafaa8c3.js.map"
     },
     {
       "Id": "F:\\FlowersWhispering\\src\\FlowersWhisperingAPI\\wwwroot\\media\\background.9ff7d69b.mp4",
