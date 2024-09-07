@@ -12,6 +12,11 @@ namespace FlowersWhisperingAPI.Plants.Services
         {
             return _ContMapper.GetContPlants(userId);
         }
+
+        public bool AddContPlant (int userId, string plantName, string reviewContent)
+        {
+            return _ContMapper.AddContPlant(userId, plantName, reviewContent);
+        }
         
     }
 }

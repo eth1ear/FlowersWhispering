@@ -65,13 +65,37 @@ namespace FlowersWhisperingAPI.Plants.Mappers
         }
 
 
-        public bool AddFavorPlant(int userId, int plantId)
+        public bool AddFavorPlant(int userId, string plantName)
         {
             try
             {
+                // 查询 plantId 
                 using (OracleConnection connection = new OracleConnection(connectionString))
                 {
                     connection.Open();
+
+                    string querySql = @"
+                        SELECT PLANT_ID 
+                        FROM PLANTS 
+                        WHERE COMMON_NAME = :plantName OR SCIENTIFIC_NAME = :plantName";
+                    
+                    int plantId;
+                    using (OracleCommand queryCommand = new OracleCommand(querySql, connection))
+                    {
+                        queryCommand.Parameters.Add(new OracleParameter("plantName", plantName));
+                        using (OracleDataReader reader = queryCommand.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                plantId = reader.GetInt32(reader.GetOrdinal("PLANT_ID"));
+                            }
+                            else
+                            {
+                                Console.WriteLine("Plant not found.");
+                                return false;
+                            }
+                        }
+                    }   
                     string sql = "INSERT INTO Favorites (USER_ID, PLANT_ID) VALUES (:userId, :plantId)";
                     
                     using (OracleCommand command = new OracleCommand(sql, connection))
@@ -91,13 +115,35 @@ namespace FlowersWhisperingAPI.Plants.Mappers
             return false;
         }
 
-        public bool DeleteFavorPlant(int userId, int plantId)
+        public bool DeleteFavorPlant(int userId, string plantName)
         {
             try
             {
                 using (OracleConnection connection = new OracleConnection(connectionString))
                 {
                     connection.Open();
+                    string querySql = @"
+                        SELECT PLANT_ID 
+                        FROM PLANTS 
+                        WHERE COMMON_NAME = :plantName OR SCIENTIFIC_NAME = :plantName";
+                    
+                    int plantId;
+                    using (OracleCommand queryCommand = new OracleCommand(querySql, connection))
+                    {
+                        queryCommand.Parameters.Add(new OracleParameter("plantName", plantName));
+                        using (OracleDataReader reader = queryCommand.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                plantId = reader.GetInt32(reader.GetOrdinal("PLANT_ID"));
+                            }
+                            else
+                            {
+                                Console.WriteLine("Plant not found.");
+                                return false;
+                            }
+                        }
+                    }   
                     string sql = "DELETE FROM Favorites WHERE USER_ID = :userId AND PLANT_ID = :plantId";
                     
                     using (OracleCommand command = new OracleCommand(sql, connection))

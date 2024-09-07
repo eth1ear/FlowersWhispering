@@ -26,9 +26,9 @@ namespace FlowersWhisperingAPI.Plants.Controllers
         }
 
         [HttpPost("addFavor")]
-        public IActionResult AddFavorPlant (int userId, int plantId)
+        public IActionResult AddFavorPlant (int userId, string plantName)
         {
-            var result = _plantFavorService.AddFavorPlant(userId, plantId);
+            var result = _plantFavorService.AddFavorPlant(userId, plantName);
             if (result)
             {
                 return Ok("添加成功"); // 返回 200 OK 和提示信息
@@ -37,9 +37,9 @@ namespace FlowersWhisperingAPI.Plants.Controllers
         }
 
         [HttpDelete("deleteFavor")]
-        public IActionResult DeleteFavorPlant (int userId, int plantId)
+        public IActionResult DeleteFavorPlant (int userId, string plantName)
         {
-            var result = _plantFavorService.DeleteFavorPlant(userId, plantId);
+            var result = _plantFavorService.DeleteFavorPlant(userId, plantName);
             if (result)
             {
                 return Ok("删除成功"); // 返回 200 OK 和提示信息
